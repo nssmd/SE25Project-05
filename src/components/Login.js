@@ -54,18 +54,52 @@ const Login = ({ onLogin }) => {
     setIsLoading(true);
     
     try {
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // 模拟成功登录
-      const userData = {
-        id: 1,
-        name: '用户',
-        email: formData.email,
-        avatar: null
-      };
-      
-      onLogin(userData);
+      // 尝试使用真实API，如果不可用则回退到模拟模式
+      try {
+        const { authAPI, apiUtils } = await import('../services/api');
+        
+        const response = await authAPI.login({
+          email: formData.email,
+          password: formData.password
+        });
+        
+        // 保存token和用户信息
+        apiUtils.setAuthToken(response.token);
+        apiUtils.setCurrentUser(response.user);
+        
+        onLogin(response.user);
+      } catch (apiError) {
+        console.warn('API不可用，使用演示模式:', apiError.message);
+        
+        // 回退到演示模式
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // 根据邮箱模拟不同角色
+        let role = 'user';
+        let name = '普通用户';
+        
+        if (formData.email.includes('admin')) {
+          role = 'admin';
+          name = '管理员';
+        } else if (formData.email.includes('support')) {
+          role = 'support';
+          name = '客服';
+        }
+        
+        // 模拟成功登录
+        const userData = {
+          id: 1,
+          name: name,
+          email: formData.email,
+          role: role,
+          avatar: null
+        };
+        
+        // 模拟保存到localStorage
+        localStorage.setItem('user', JSON.stringify(userData));
+        
+        onLogin(userData);
+      }
     } catch (error) {
       setErrors({ submit: '登录失败，请重试' });
     } finally {
@@ -145,6 +179,22 @@ const Login = ({ onLogin }) => {
         </form>
 
         <div className="auth-footer">
+          <div className="demo-accounts">
+            <h4>演示账户：</h4>
+            <div className="demo-list">
+              <div className="demo-item">
+                <strong>普通用户：</strong> user@example.com
+              </div>
+              <div className="demo-item">
+                <strong>客服：</strong> support@example.com
+              </div>
+              <div className="demo-item">
+                <strong>管理员：</strong> admin@example.com
+              </div>
+            </div>
+            <p className="demo-note">密码：任意6位字符</p>
+          </div>
+          
           <p>
             还没有账户？{' '}
             <Link to="/register" className="auth-link">

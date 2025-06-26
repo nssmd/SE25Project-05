@@ -14,7 +14,12 @@ import {
   Send,
   Upload,
   Cpu,
-  Cloud
+  Cloud,
+  Search,
+  Database,
+  Shield,
+  User,
+  Crown
 } from 'lucide-react';
 import './Dashboard.css';
 
@@ -223,14 +228,37 @@ const Dashboard = ({ user, onLogout }) => {
               <Cpu className="nav-icon" />
               <span>数据微调</span>
             </button>
-            <button className="nav-item">
-              <History className="nav-icon" />
-              <span>历史记录</span>
+            <button 
+              className="nav-item"
+              onClick={() => navigate('/history')}
+            >
+              <Search className="nav-icon" />
+              <span>历史搜索</span>
             </button>
-            <button className="nav-item">
-              <Settings className="nav-icon" />
-              <span>设置</span>
+            <button 
+              className="nav-item"
+              onClick={() => navigate('/data-management')}
+            >
+              <Database className="nav-icon" />
+              <span>数据管理</span>
             </button>
+            <button 
+              className="nav-item"
+              onClick={() => navigate('/profile')}
+            >
+              <User className="nav-icon" />
+              <span>个人中心</span>
+            </button>
+            {/* 管理员专用功能 */}
+            {user?.role === 'admin' && (
+              <button 
+                className="nav-item admin-only"
+                onClick={() => navigate('/admin')}
+              >
+                <Crown className="nav-icon" />
+                <span>管理员面板</span>
+              </button>
+            )}
           </div>
         </nav>
 

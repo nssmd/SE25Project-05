@@ -255,6 +255,45 @@
   100% { transform: rotate(360deg); }
 }
 
+.demo-accounts {
+  background: #f0f4ff;
+  border: 1px solid #c7d2fe;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.demo-accounts h4 {
+  margin: 0 0 0.75rem;
+  color: #4338ca;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.demo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.demo-item {
+  font-size: 0.85rem;
+  color: #4a5568;
+}
+
+.demo-item strong {
+  color: #2d3748;
+}
+
+.demo-note {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
 .auth-footer {
   text-align: center;
   margin-top: 2rem;

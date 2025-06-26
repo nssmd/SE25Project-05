@@ -140,6 +140,21 @@
   height: 1.25rem;
 }
 
+.nav-item.admin-only {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  margin: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+}
+
+.nav-item.admin-only:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(245, 158, 11, 0.4);
+}
+
 .sidebar-footer {
   padding: 1rem 1.5rem;
   border-top: 1px solid #e2e8f0;
