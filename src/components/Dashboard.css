@@ -196,6 +196,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.main-header.hidden {
+  height: 0;
+  padding: 0 2rem;
+  border-bottom: none;
+  min-height: 0;
 }
 
 .header-left h1 {
@@ -224,6 +233,27 @@
   border-radius: 8px;
   font-size: 0.85rem;
   color: #4a5568;
+}
+
+.hide-header-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #4a5568;
+  transition: all 0.2s ease;
+  margin-left: 1rem;
+}
+
+.hide-header-btn:hover {
+  background: #ebf4ff;
+  border-color: #667eea;
+  color: #667eea;
 }
 
 .content-area {
@@ -311,6 +341,14 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.chat-list-sidebar.hidden {
+  width: 0;
+  border-right: none;
+  min-width: 0;
 }
 
 .chat-list-header {
@@ -320,6 +358,13 @@
   padding: 1rem 1.5rem;
   border-bottom: 1px solid #e2e8f0;
   background: #f8fafc;
+  flex-shrink: 0;
+}
+
+.chat-list-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .chat-list-header h3 {
@@ -329,7 +374,8 @@
   color: #2d3748;
 }
 
-.new-chat-btn {
+.new-chat-btn,
+.hide-sidebar-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -343,9 +389,18 @@
   transition: all 0.2s ease;
 }
 
-.new-chat-btn:hover {
+.new-chat-btn:hover,
+.hide-sidebar-btn:hover {
   background: #5a67d8;
   transform: scale(1.05);
+}
+
+.hide-sidebar-btn {
+  background: #718096;
+}
+
+.hide-sidebar-btn:hover {
+  background: #4a5568;
 }
 
 .chat-list {
@@ -499,11 +554,21 @@
 
 .chat-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
   padding: 1rem 1.5rem;
   border-bottom: 1px solid #e2e8f0;
   background: white;
+  flex-shrink: 0; /* 防止头部被压缩 */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.chat-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .toggle-chat-list {
@@ -518,12 +583,68 @@
   cursor: pointer;
   color: #4a5568;
   transition: all 0.2s ease;
+  gap: 0.5rem;
+  white-space: nowrap;
 }
 
 .toggle-chat-list:hover {
   background: #ebf4ff;
   border-color: #667eea;
   color: #667eea;
+}
+
+.toggle-chat-list.prominent {
+  background: #667eea;
+  color: white;
+  width: auto;
+  padding: 0 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.toggle-chat-list.prominent:hover {
+  background: #5a67d8;
+  border-color: #5a67d8;
+}
+
+.toggle-text {
+  font-size: 0.85rem;
+}
+
+.toggle-header-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #4a5568;
+  transition: all 0.2s ease;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.toggle-header-btn:hover {
+  background: #ebf4ff;
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.toggle-header-btn.prominent {
+  background: #667eea;
+  color: white;
+  width: auto;
+  padding: 0 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.toggle-header-btn.prominent:hover {
+  background: #5a67d8;
+  border-color: #5a67d8;
 }
 
 .current-chat-info {
@@ -576,6 +697,7 @@
   flex-direction: column;
   height: 100%;
   background: white;
+  min-height: 0; /* 确保flex子元素可以缩小 */
 }
 
 .chat-messages {
@@ -585,6 +707,27 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  min-height: 0; /* 确保可以滚动 */
+  scroll-behavior: smooth;
+}
+
+/* 滚动条样式 */
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 
 .message {
@@ -671,6 +814,10 @@
   padding: 1rem 1.5rem;
   border-top: 1px solid #e2e8f0;
   background: white;
+  flex-shrink: 0; /* 防止输入框被压缩 */
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }
 
 .chat-input input {

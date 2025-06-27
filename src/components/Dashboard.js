@@ -39,6 +39,17 @@ const Dashboard = ({ user, onLogout }) => {
   const [chatList, setChatList] = useState([]);
   const [isLoadingChats, setIsLoadingChats] = useState(false);
   const [showChatList, setShowChatList] = useState(true);
+  const [showHeader, setShowHeader] = useState(true);
+  const messagesEndRef = React.useRef(null);
+
+  // 滚动到消息底部
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  React.useEffect(() => {
+    scrollToBottom();
+  }, [chatHistory]);
 
   const aiModels = [
     { id: 'gpt-4', name: 'GPT-4', type: 'cloud', description: '最强大的语言模型' },
@@ -65,16 +76,19 @@ const Dashboard = ({ user, onLogout }) => {
   const loadChatList = async () => {
     setIsLoadingChats(true);
     try {
-      const response = await fetch('/history/chats', {
+      const response = await fetch('http://localhost:8080/api/history/chats', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
           'Content-Type': 'application/json'
         }
       });
       
       if (response.ok) {
         const data = await response.json();
+        console.log('获取到的对话列表:', data);
         setChatList(data.chats || []);
+      } else {
+        console.error('获取对话列表失败，状态码:', response.status);
       }
     } catch (error) {
       console.error('加载对话列表失败:', error);
@@ -115,16 +129,19 @@ const Dashboard = ({ user, onLogout }) => {
       
       // 获取对话的消息历史
       if (chat.id) {
-        const response = await fetch(`/history/chats/${chat.id}`, {
+        const response = await fetch(`http://localhost:8080/api/history/chats/${chat.id}`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
             'Content-Type': 'application/json'
           }
         });
         
         if (response.ok) {
           const data = await response.json();
+          console.log('获取到的对话消息:', data);
           setChatHistory(data.messages || []);
+        } else {
+          console.error('获取对话消息失败，状态码:', response.status);
         }
       }
     } catch (error) {
@@ -277,10 +294,10 @@ const Dashboard = ({ user, onLogout }) => {
         {activeTab === 'text_to_text' && (
           <div className="chat-layout">
             {/* 对话列表侧边栏 */}
-            {showChatList && (
-              <div className="chat-list-sidebar">
-                <div className="chat-list-header">
-                  <h3>对话历史</h3>
+            <div className={`chat-list-sidebar ${showChatList ? 'visible' : 'hidden'}`}>
+              <div className="chat-list-header">
+                <h3>对话历史</h3>
+                <div className="chat-list-actions">
                   <button 
                     className="new-chat-btn"
                     onClick={createNewChat}
@@ -288,71 +305,91 @@ const Dashboard = ({ user, onLogout }) => {
                   >
                     <Plus size={16} />
                   </button>
-                </div>
-                
-                <div className="chat-list">
-                  {isLoadingChats ? (
-                    <div className="loading-chats">加载中...</div>
-                  ) : chatList.length === 0 ? (
-                    <div className="empty-chats">
-                      <MessageSquare size={24} />
-                      <p>还没有对话记录</p>
-                      <button onClick={createNewChat} className="start-chat-btn">
-                        开始对话
-                      </button>
-                    </div>
-                  ) : (
-                    chatList.map(chat => (
-                      <div 
-                        key={chat.id}
-                        className={`chat-item ${currentChat?.id === chat.id ? 'active' : ''}`}
-                        onClick={() => switchChat(chat)}
-                      >
-                        <div className="chat-item-content">
-                          <div className="chat-title">
-                            {chat.title || '新对话'}
-                          </div>
-                          <div className="chat-meta">
-                            <span className="message-count">
-                              {chat.messageCount || 0} 条消息
-                            </span>
-                            <span className="last-activity">
-                              {formatTime(chat.lastActivity)}
-                            </span>
-                          </div>
-                        </div>
-                        
-                        <div className="chat-actions">
-                          {chat.isFavorite && <Star size={12} className="favorite-icon" />}
-                          {chat.isProtected && <Lock size={12} className="protected-icon" />}
-                          <button 
-                            className="delete-chat-btn"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              deleteChat(chat.id);
-                            }}
-                            title="删除对话"
-                          >
-                            <Trash2 size={12} />
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  )}
+                  <button 
+                    className="hide-sidebar-btn"
+                    onClick={() => setShowChatList(false)}
+                    title="隐藏侧边栏"
+                  >
+                    <History size={16} />
+                  </button>
                 </div>
               </div>
-            )}
+                
+              <div className="chat-list">
+                {isLoadingChats ? (
+                  <div className="loading-chats">加载中...</div>
+                ) : chatList.length === 0 ? (
+                  <div className="empty-chats">
+                    <MessageSquare size={24} />
+                    <p>还没有对话记录</p>
+                    <button onClick={createNewChat} className="start-chat-btn">
+                      开始对话
+                    </button>
+                  </div>
+                ) : (
+                  chatList.map(chat => (
+                    <div 
+                      key={chat.id}
+                      className={`chat-item ${currentChat?.id === chat.id ? 'active' : ''}`}
+                      onClick={() => switchChat(chat)}
+                    >
+                      <div className="chat-item-content">
+                        <div className="chat-title">
+                          {chat.title || '新对话'}
+                        </div>
+                        <div className="chat-meta">
+                          <span className="message-count">
+                            {chat.messageCount || 0} 条消息
+                          </span>
+                          <span className="last-activity">
+                            {formatTime(chat.lastActivity)}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="chat-actions">
+                        {chat.isFavorite && <Star size={12} className="favorite-icon" />}
+                        {chat.isProtected && <Lock size={12} className="protected-icon" />}
+                        <button 
+                          className="delete-chat-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteChat(chat.id);
+                          }}
+                          title="删除对话"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
             
             {/* 对话区域 */}
             <div className="chat-container">
               <div className="chat-header">
-                <button 
-                  className="toggle-chat-list"
-                  onClick={() => setShowChatList(!showChatList)}
-                  title={showChatList ? '隐藏对话列表' : '显示对话列表'}
-                >
-                  <History size={16} />
-                </button>
+                <div className="chat-header-left">
+                  <button 
+                    className={`toggle-chat-list ${!showChatList ? 'prominent' : ''}`}
+                    onClick={() => setShowChatList(!showChatList)}
+                    title={showChatList ? '隐藏对话列表' : '显示对话列表'}
+                  >
+                    <History size={16} />
+                    {!showChatList && <span className="toggle-text">显示历史</span>}
+                  </button>
+                  {!showHeader && (
+                    <button 
+                      className="toggle-header-btn prominent"
+                      onClick={() => setShowHeader(true)}
+                      title="显示顶部栏"
+                    >
+                      <Settings size={16} />
+                      <span className="toggle-text">显示顶栏</span>
+                    </button>
+                  )}
+                </div>
                 <div className="current-chat-info">
                   <h4>{currentChat?.title || '新对话'}</h4>
                   {currentChat?.messageCount > 0 && (
@@ -394,6 +431,9 @@ const Dashboard = ({ user, onLogout }) => {
                     </div>
                   </div>
                 )}
+                
+                {/* 用于滚动到底部的隐藏元素 */}
+                <div ref={messagesEndRef} />
               </div>
               
               <div className="chat-input">
@@ -523,7 +563,7 @@ const Dashboard = ({ user, onLogout }) => {
       </aside>
 
       <main className="main-content">
-        <header className="main-header">
+        <header className={`main-header ${showHeader ? 'visible' : 'hidden'}`}>
           <div className="header-left">
             <h1>AI工作台</h1>
             <p>选择下方功能开始您的AI之旅</p>
@@ -539,6 +579,13 @@ const Dashboard = ({ user, onLogout }) => {
                 <span>本地模型: 2个</span>
               </div>
             </div>
+            <button 
+              className="hide-header-btn"
+              onClick={() => setShowHeader(false)}
+              title="隐藏顶部栏"
+            >
+              <Settings size={16} />
+            </button>
           </div>
         </header>
 

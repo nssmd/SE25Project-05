@@ -189,12 +189,13 @@ public class ChatController {
             throw new BusinessException("用户未登录");
         }
         
-        String username = authentication.getName();
-        log.debug("当前认证用户名: {}", username);
+        String principal = authentication.getName();
+        log.debug("当前认证主体: {}", principal);
         
-        // 通过username查询用户获取ID
-        User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new BusinessException("用户不存在: " + username));
+        // 首先尝试通过邮箱查找用户，如果失败再尝试用户名
+        User user = userRepository.findByEmail(principal)
+            .orElseGet(() -> userRepository.findByUsername(principal)
+                .orElseThrow(() -> new BusinessException("用户不存在: " + principal)));
         
         return user.getId();
     }
