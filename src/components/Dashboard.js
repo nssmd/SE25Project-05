@@ -41,6 +41,7 @@ const Dashboard = ({ user, onLogout }) => {
   const [isLoadingChats, setIsLoadingChats] = useState(false);
   const [showChatList, setShowChatList] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
+  const [contextMenu, setContextMenu] = useState({ show: false, x: 0, y: 0, chatId: null });
   const messagesEndRef = React.useRef(null);
 
   // 滚动到消息底部
@@ -198,6 +199,84 @@ const Dashboard = ({ user, onLogout }) => {
       console.error('删除对话失败:', error);
     }
   };
+
+  // 切换收藏状态
+  const toggleFavorite = async (chatId) => {
+    try {
+      await chatAPI.toggleFavorite(chatId);
+      
+      // 重新加载对话列表以更新状态
+      await loadChatList();
+      
+      // 如果是当前聊天，也更新当前聊天状态
+      if (currentChat?.id === chatId) {
+        setCurrentChat(prev => ({
+          ...prev,
+          isFavorite: !prev.isFavorite
+        }));
+      }
+      
+      // 关闭上下文菜单
+      setContextMenu({ show: false, x: 0, y: 0, chatId: null });
+    } catch (error) {
+      console.error('切换收藏失败:', error);
+      alert('操作失败，请重试');
+    }
+  };
+
+  // 切换保护状态
+  const toggleProtection = async (chatId) => {
+    try {
+      await chatAPI.toggleProtection(chatId);
+      
+      // 重新加载对话列表以更新状态
+      await loadChatList();
+      
+      // 如果是当前聊天，也更新当前聊天状态
+      if (currentChat?.id === chatId) {
+        setCurrentChat(prev => ({
+          ...prev,
+          isProtected: !prev.isProtected
+        }));
+      }
+      
+      // 关闭上下文菜单
+      setContextMenu({ show: false, x: 0, y: 0, chatId: null });
+    } catch (error) {
+      console.error('切换保护失败:', error);
+      alert('操作失败，请重试');
+    }
+  };
+
+  // 显示右键菜单
+  const showContextMenu = (e, chatId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    setContextMenu({
+      show: true,
+      x: e.clientX,
+      y: e.clientY,
+      chatId: chatId
+    });
+  };
+
+  // 关闭右键菜单
+  const hideContextMenu = () => {
+    setContextMenu({ show: false, x: 0, y: 0, chatId: null });
+  };
+
+  // 点击页面其他地方关闭菜单
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (contextMenu.show) {
+        hideContextMenu();
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [contextMenu.show]);
 
   // 格式化时间
   const formatTime = (timestamp) => {
@@ -357,6 +436,7 @@ const Dashboard = ({ user, onLogout }) => {
                       key={chat.id}
                       className={`chat-item ${currentChat?.id === chat.id ? 'active' : ''}`}
                       onClick={() => switchChat(chat)}
+                      onContextMenu={(e) => showContextMenu(e, chat.id)}
                     >
                       <div className="chat-item-content">
                         <div className="chat-title">
@@ -376,14 +456,14 @@ const Dashboard = ({ user, onLogout }) => {
                         {chat.isFavorite && <Star size={12} className="favorite-icon" />}
                         {chat.isProtected && <Lock size={12} className="protected-icon" />}
                         <button 
-                          className="delete-chat-btn"
+                          className="more-actions-btn"
                           onClick={(e) => {
                             e.stopPropagation();
-                            deleteChat(chat.id);
+                            showContextMenu(e, chat.id);
                           }}
-                          title="删除对话"
+                          title="更多操作"
                         >
-                          <Trash2 size={12} />
+                          <MoreVertical size={12} />
                         </button>
                       </div>
                     </div>
@@ -504,6 +584,39 @@ const Dashboard = ({ user, onLogout }) => {
 
   return (
     <div className="dashboard">
+      {/* 右键上下文菜单 */}
+      {contextMenu.show && (
+        <div 
+          className="context-menu"
+          style={{
+            position: 'fixed',
+            top: contextMenu.y,
+            left: contextMenu.x,
+            zIndex: 1000
+          }}
+        >
+          <div className="context-menu-item" onClick={() => toggleFavorite(contextMenu.chatId)}>
+            <Star size={14} />
+            <span>
+              {chatList.find(chat => chat.id === contextMenu.chatId)?.isFavorite ? '取消收藏' : '添加收藏'}
+            </span>
+          </div>
+          <div className="context-menu-item" onClick={() => toggleProtection(contextMenu.chatId)}>
+            <Lock size={14} />
+            <span>
+              {chatList.find(chat => chat.id === contextMenu.chatId)?.isProtected ? '取消保护' : '设为保护'}
+            </span>
+          </div>
+          <div className="context-menu-divider"></div>
+          <div className="context-menu-item delete" onClick={() => {
+            hideContextMenu();
+            deleteChat(contextMenu.chatId);
+          }}>
+            <Trash2 size={14} />
+            <span>删除对话</span>
+          </div>
+        </div>
+      )}
       <aside className="sidebar">
         <div className="sidebar-header">
           <div className="logo">

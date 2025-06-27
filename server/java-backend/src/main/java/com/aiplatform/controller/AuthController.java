@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "*")
 @Tag(name = "认证管理", description = "用户认证相关接口")
 public class AuthController {
 
@@ -70,9 +71,19 @@ public class AuthController {
 
     @Operation(summary = "修改密码", description = "修改当前用户的登录密码")
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@Valid @RequestBody UserDTO.PasswordChangeRequest request) {
-        userService.changePassword(request);
-        return ResponseEntity.ok("密码修改成功");
+    public ResponseEntity<?> changePassword(@Valid @RequestBody UserDTO.PasswordChangeRequest request) {
+        try {
+            log.info("收到密码修改请求");
+            userService.changePassword(request);
+            log.info("密码修改成功");
+            return ResponseEntity.ok("密码修改成功");
+        } catch (BusinessException e) {
+            log.error("密码修改业务异常: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("密码修改系统异常: ", e);
+            return ResponseEntity.internalServerError().body(new ErrorResponse("密码修改失败，请稍后重试"));
+        }
     }
 
     @Operation(summary = "用户登出", description = "用户登出接口")

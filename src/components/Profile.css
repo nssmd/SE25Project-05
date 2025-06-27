@@ -65,6 +65,7 @@
   margin: 0 auto;
   gap: 2rem;
   padding: 2rem;
+  min-height: calc(100vh - 120px);
 }
 
 /* Sidebar */
@@ -679,4 +680,96 @@ input:checked + .toggle-slider:before {
   margin: 0;
   color: #718096;
   font-size: 0.85rem;
+}
+
+/* Usage Chart */
+.usage-chart {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.usage-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.usage-item:last-child {
+  border-bottom: none;
+}
+
+.usage-item span:first-child {
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.usage-item span:last-child {
+  color: #2d3748;
+  font-weight: 600;
+}
+
+/* Billing Section */
+.billing-section {
+  margin-bottom: 2rem;
+}
+
+.billing-section h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.billing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.plan-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.billing-details {
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.billing-details p {
+  margin-bottom: 0.5rem;
+}
+
+/* Security Section */
+.security-section {
+  margin-bottom: 2rem;
+}
+
+.security-section h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+/* Form Section Spacing */
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.form-section:last-child {
+  margin-bottom: 0;
 } 

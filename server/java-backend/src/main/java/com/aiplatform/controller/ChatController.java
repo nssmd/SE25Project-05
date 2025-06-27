@@ -182,6 +182,89 @@ public class ChatController {
         }
     }
 
+    @Operation(summary = "切换收藏状态", description = "切换聊天会话的收藏状态")
+    @PatchMapping("/{chatId}/favorite")
+    public ResponseEntity<Map<String, Object>> toggleFavorite(@PathVariable Long chatId) {
+        try {
+            log.info("切换收藏状态: {}", chatId);
+            
+            Long userId = getCurrentUserId();
+            Chat chat = chatService.toggleFavorite(chatId, userId);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("isFavorite", chat.getIsFavorite());
+            response.put("message", chat.getIsFavorite() ? "已添加到收藏" : "已取消收藏");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (BusinessException e) {
+            log.error("切换收藏状态业务异常: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(createErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("切换收藏状态系统异常: ", e);
+            return ResponseEntity.internalServerError().body(createErrorResponse("操作失败"));
+        }
+    }
+
+    @Operation(summary = "切换保护状态", description = "切换聊天会话的保护状态")
+    @PatchMapping("/{chatId}/protect")
+    public ResponseEntity<Map<String, Object>> toggleProtection(@PathVariable Long chatId) {
+        try {
+            log.info("切换保护状态: {}", chatId);
+            
+            Long userId = getCurrentUserId();
+            Chat chat = chatService.toggleProtection(chatId, userId);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("isProtected", chat.getIsProtected());
+            response.put("message", chat.getIsProtected() ? "已设为保护对话" : "已取消保护");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (BusinessException e) {
+            log.error("切换保护状态业务异常: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(createErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("切换保护状态系统异常: ", e);
+            return ResponseEntity.internalServerError().body(createErrorResponse("操作失败"));
+        }
+    }
+
+    @Operation(summary = "更新对话标题", description = "更新聊天会话的标题")
+    @PatchMapping("/{chatId}/title")
+    public ResponseEntity<Map<String, Object>> updateTitle(
+            @PathVariable Long chatId, 
+            @RequestBody Map<String, Object> request) {
+        try {
+            log.info("更新对话标题: {}", chatId);
+            
+            Long userId = getCurrentUserId();
+            String title = (String) request.get("title");
+            
+            if (title == null || title.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(createErrorResponse("标题不能为空"));
+            }
+            
+            Chat chat = chatService.updateChatTitle(chatId, userId, title);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("title", chat.getTitle());
+            response.put("message", "标题更新成功");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (BusinessException e) {
+            log.error("更新对话标题业务异常: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(createErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("更新对话标题系统异常: ", e);
+            return ResponseEntity.internalServerError().body(createErrorResponse("操作失败"));
+        }
+    }
+
     // 辅助方法：获取当前用户ID
     private Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

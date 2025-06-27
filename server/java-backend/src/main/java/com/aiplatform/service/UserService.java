@@ -1,8 +1,11 @@
 package com.aiplatform.service;
 
 import com.aiplatform.dto.UserDTO;
+import com.aiplatform.entity.Chat;
 import com.aiplatform.entity.User;
 import com.aiplatform.exception.BusinessException;
+import com.aiplatform.repository.ChatRepository;
+import com.aiplatform.repository.MessageRepository;
 import com.aiplatform.repository.UserRepository;
 import com.aiplatform.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +19,14 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,6 +36,8 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ChatRepository chatRepository;
+    private final MessageRepository messageRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
@@ -125,6 +132,9 @@ public class UserService {
             user.setLastLogin(LocalDateTime.now());
             userRepository.save(user);
             
+            // 登录成功后，触发自动清理（异步执行）
+            triggerAutoCleanupForUser(user.getId());
+            
             // 生成token
             String token = jwtTokenProvider.generateToken(user.getEmail());
             String refreshToken = jwtTokenProvider.generateRefreshToken(user.getEmail());
@@ -138,6 +148,44 @@ public class UserService {
             // 简化的错误处理
             log.warn("用户登录失败: {}", user.getEmail());
             throw new BusinessException("用户名或密码错误");
+        }
+    }
+
+    /**
+     * 登录时触发自动清理（异步执行）
+     */
+    @Async
+    public void triggerAutoCleanupForUser(Long userId) {
+        try {
+            log.info("开始为用户 {} 执行登录自动清理", userId);
+            
+            // 计算30天前的时间
+            LocalDateTime cutoffDate = LocalDateTime.now().minusDays(30);
+            
+            // 查找需要清理的聊天（非保护且超过30天）
+            List<Chat> chatsToCleanup = chatRepository.findChatsToCleanup(userId, cutoffDate);
+            
+            if (!chatsToCleanup.isEmpty()) {
+                int deletedChats = 0;
+                for (Chat chat : chatsToCleanup) {
+                    try {
+                        // 删除聊天的所有消息
+                        messageRepository.deleteByChatId(chat.getId());
+                        // 删除聊天记录
+                        chatRepository.delete(chat);
+                        deletedChats++;
+                    } catch (Exception e) {
+                        log.warn("删除过期聊天失败 - chatId: {}, error: {}", chat.getId(), e.getMessage());
+                    }
+                }
+                
+                log.info("用户 {} 登录自动清理完成: 删除了 {} 个过期对话", userId, deletedChats);
+            } else {
+                log.info("用户 {} 没有需要清理的过期对话", userId);
+            }
+            
+        } catch (Exception e) {
+            log.error("用户 {} 登录自动清理失败: {}", userId, e.getMessage());
         }
     }
 
@@ -281,6 +329,5 @@ public class UserService {
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-
 
 } 

@@ -3,18 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
   User, 
-  Settings, 
-  Bell, 
   Shield, 
-  CreditCard, 
   Edit,
   Save,
   X,
   Eye,
   EyeOff,
-  Key,
-  Clock,
-  MapPin
+  Key
 } from 'lucide-react';
 import { userAPI, authAPI } from '../services/api';
 import './Profile.css';
@@ -40,10 +35,7 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
 
   const tabs = [
     { id: 'profile', name: '个人信息', icon: User },
-    { id: 'settings', name: '账户设置', icon: Settings },
-    { id: 'notifications', name: '通知设置', icon: Bell },
-    { id: 'security', name: '安全设置', icon: Shield },
-    { id: 'billing', name: '账单管理', icon: CreditCard }
+    { id: 'security', name: '安全设置', icon: Shield }
   ];
 
   // 加载用户统计数据
@@ -130,7 +122,8 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
       setLoading(true);
       await authAPI.changePassword({
         currentPassword: passwordForm.currentPassword,
-        newPassword: passwordForm.newPassword
+        newPassword: passwordForm.newPassword,
+        confirmPassword: passwordForm.confirmPassword
       });
       
       alert('密码修改成功');
@@ -144,7 +137,26 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
       });
     } catch (error) {
       console.error('密码修改失败:', error);
-      alert(error.message || '密码修改失败，请重试');
+      
+      // 处理不同类型的错误响应
+      let errorMessage = '密码修改失败，请重试';
+      
+      if (error.response?.data) {
+        const errorData = error.response.data;
+        if (errorData.error) {
+          errorMessage = errorData.error;
+          
+          // 如果有验证错误详情，显示具体字段错误
+          if (errorData.details) {
+            const details = Object.values(errorData.details).join(', ');
+            errorMessage = `${errorData.error}: ${details}`;
+          }
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -242,111 +254,7 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
           </div>
         );
 
-      case 'settings':
-        return (
-          <div className="tab-content">
-            <div className="settings-section">
-              <h3>界面设置</h3>
-              <div className="setting-item">
-                <div className="setting-info">
-                  <h4>深色模式</h4>
-                  <p>切换到深色主题</p>
-                </div>
-                <label className="toggle-switch">
-                  <input type="checkbox" />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-              <div className="setting-item">
-                <div className="setting-info">
-                  <h4>语言设置</h4>
-                  <p>选择界面语言</p>
-                </div>
-                <select className="setting-select">
-                  <option value="zh">中文</option>
-                  <option value="en">English</option>
-                </select>
-              </div>
-            </div>
 
-            <div className="settings-section">
-              <h3>隐私设置</h3>
-              <div className="setting-item">
-                <div className="setting-info">
-                  <h4>数据收集</h4>
-                  <p>允许收集使用数据以改善服务</p>
-                </div>
-                <label className="toggle-switch">
-                  <input type="checkbox" defaultChecked />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-              <div className="setting-item">
-                <div className="setting-info">
-                  <h4>对话历史</h4>
-                  <p>保存对话记录</p>
-                </div>
-                <label className="toggle-switch">
-                  <input type="checkbox" defaultChecked />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'notifications':
-        return (
-          <div className="tab-content">
-            <div className="settings-section">
-              <h3>推送通知</h3>
-              <div className="setting-item">
-                <div className="setting-info">
-                  <h4>训练完成通知</h4>
-                  <p>模型训练完成时通知我</p>
-                </div>
-                <label className="toggle-switch">
-                  <input type="checkbox" defaultChecked />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-              <div className="setting-item">
-                <div className="setting-info">
-                  <h4>系统更新</h4>
-                  <p>新功能和更新通知</p>
-                </div>
-                <label className="toggle-switch">
-                  <input type="checkbox" defaultChecked />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-            </div>
-
-            <div className="settings-section">
-              <h3>邮件通知</h3>
-              <div className="setting-item">
-                <div className="setting-info">
-                  <h4>每周报告</h4>
-                  <p>接收每周使用统计报告</p>
-                </div>
-                <label className="toggle-switch">
-                  <input type="checkbox" />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-              <div className="setting-item">
-                <div className="setting-info">
-                  <h4>安全提醒</h4>
-                  <p>账户安全相关提醒</p>
-                </div>
-                <label className="toggle-switch">
-                  <input type="checkbox" defaultChecked />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-            </div>
-          </div>
-        );
 
       case 'security':
         return (
@@ -422,62 +330,11 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
               </div>
             </div>
 
-            <div className="security-section">
-              <h3>安全信息</h3>
-              <div className="security-info">
-                <div className="security-item">
-                  <Clock size={20} />
-                  <div>
-                    <h4>最后登录时间</h4>
-                    <p>{user?.lastLogin ? new Date(user.lastLogin).toLocaleString() : '未知'}</p>
-                  </div>
-                </div>
-                <div className="security-item">
-                  <MapPin size={20} />
-                  <div>
-                    <h4>登录地点</h4>
-                    <p>中国</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+
           </div>
         );
 
-      case 'billing':
-        return (
-          <div className="tab-content">
-            <div className="billing-section">
-              <h3>账单信息</h3>
-              <div className="billing-card">
-                <div className="billing-header">
-                  <h4>当前套餐</h4>
-                  <span className="plan-badge">免费版</span>
-                </div>
-                <div className="billing-details">
-                  <p>• 每日100次对话</p>
-                  <p>• 基础AI功能</p>
-                  <p>• 7天历史记录</p>
-                </div>
-                <button className="btn-primary">升级套餐</button>
-              </div>
-            </div>
 
-            <div className="billing-section">
-              <h3>使用记录</h3>
-              <div className="usage-chart">
-                <div className="usage-item">
-                  <span>本月对话次数</span>
-                  <span>{stats?.totalChats || 0}</span>
-                </div>
-                <div className="usage-item">
-                  <span>剩余额度</span>
-                  <span>无限制</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
 
       default:
         return null;
@@ -485,34 +342,30 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
   };
 
   return (
-    <div className="profile-container">
+    <div className="profile-page">
       <div className="profile-header-bar">
         <button className="back-button" onClick={() => navigate('/dashboard')}>
           <ArrowLeft size={20} />
-          返回
+          <span className="back-text">返回</span>
         </button>
         <h1>个人中心</h1>
-        <div className="header-actions">
-          <button className="logout-button" onClick={onLogout}>
-            退出登录
-          </button>
-        </div>
+        <button className="logout-btn" onClick={onLogout}>
+          退出登录
+        </button>
       </div>
 
-      <div className="profile-content">
+      <div className="profile-container">
         <div className="profile-sidebar">
-          <nav className="profile-nav">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                className={`nav-item ${activeTab === tab.id ? 'active' : ''}`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                <tab.icon size={20} />
-                <span>{tab.name}</span>
-              </button>
-            ))}
-          </nav>
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <tab.icon size={20} />
+              <span>{tab.name}</span>
+            </button>
+          ))}
         </div>
 
         <div className="profile-main">
