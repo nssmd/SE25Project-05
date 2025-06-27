@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
@@ -7,25 +7,35 @@ import {
   Bell, 
   Shield, 
   CreditCard, 
-  Download, 
-  Upload,
   Edit,
   Save,
-  X
+  X,
+  Eye,
+  EyeOff,
+  Key,
+  Clock,
+  MapPin
 } from 'lucide-react';
-import { userAPI } from '../services/api';
+import { userAPI, authAPI } from '../services/api';
 import './Profile.css';
 
 const Profile = ({ user, onLogout, onUpdateUser }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState(null);
   const [formData, setFormData] = useState({
-    name: user?.username || user?.name || '',
-    email: user?.email || '',
-    phone: user?.phone || '',
-    bio: user?.bio || '',
-    avatar: user?.avatar || null
+    username: user?.username || '',
+    email: user?.email || ''
+  });
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+    showCurrentPassword: false,
+    showNewPassword: false,
+    showConfirmPassword: false
   });
 
   const tabs = [
@@ -35,6 +45,33 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
     { id: 'security', name: '安全设置', icon: Shield },
     { id: 'billing', name: '账单管理', icon: CreditCard }
   ];
+
+  // 加载用户统计数据
+  useEffect(() => {
+    loadUserStats();
+    loadUserProfile();
+  }, []);
+
+  const loadUserProfile = async () => {
+    try {
+      const response = await userAPI.getProfile();
+      setFormData({
+        username: response.username || '',
+        email: response.email || ''
+      });
+    } catch (error) {
+      console.error('加载用户资料失败:', error);
+    }
+  };
+
+  const loadUserStats = async () => {
+    try {
+      const response = await userAPI.getUsageStats();
+      setStats(response);
+    } catch (error) {
+      console.error('加载用户统计失败:', error);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -46,31 +83,70 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
 
   const handleSave = async () => {
     try {
-      // 使用真实的API保存用户信息
+      setLoading(true);
       const response = await userAPI.updateProfile(formData);
       
-      if (response.user) {
-        onUpdateUser(response.user);
-        setIsEditing(false);
-        alert('个人信息更新成功');
-      }
+      setIsEditing(false);
+      alert('个人信息更新成功');
+      
+      // 重新加载资料
+      loadUserProfile();
     } catch (error) {
       console.error('更新个人信息失败:', error);
-      alert('更新个人信息失败，请重试');
+      alert(error.response?.data || '更新个人信息失败，请重试');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleAvatarUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setFormData(prev => ({
-          ...prev,
-          avatar: e.target.result
-        }));
-      };
-      reader.readAsDataURL(file);
+  // 密码表单处理
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const togglePasswordVisibility = (field) => {
+    setPasswordForm(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
+  };
+
+  const handleChangePassword = async () => {
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      alert('新密码和确认密码不匹配');
+      return;
+    }
+
+    if (passwordForm.newPassword.length < 6) {
+      alert('新密码长度不能少于6位');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await authAPI.changePassword({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword
+      });
+      
+      alert('密码修改成功');
+      setPasswordForm({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+        showCurrentPassword: false,
+        showNewPassword: false,
+        showConfirmPassword: false
+      });
+    } catch (error) {
+      console.error('密码修改失败:', error);
+      alert(error.message || '密码修改失败，请重试');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,24 +158,9 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
             <div className="profile-header">
               <div className="avatar-section">
                 <div className="avatar-container">
-                  {formData.avatar ? (
-                    <img src={formData.avatar} alt="头像" className="user-avatar-large" />
-                  ) : (
-                    <div className="user-avatar-large placeholder">
-                      {formData.name?.charAt(0) || 'U'}
-                    </div>
-                  )}
-                  {isEditing && (
-                    <label className="avatar-upload">
-                      <Upload size={16} />
-                      <input 
-                        type="file" 
-                        accept="image/*" 
-                        onChange={handleAvatarUpload}
-                        style={{ display: 'none' }}
-                      />
-                    </label>
-                  )}
+                  <div className="user-avatar-large placeholder">
+                    {formData.username?.charAt(0)?.toUpperCase() || 'U'}
+                  </div>
                 </div>
                 <div className="profile-actions">
                   {!isEditing ? (
@@ -109,9 +170,13 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
                     </button>
                   ) : (
                     <div className="edit-actions">
-                      <button className="btn-success" onClick={handleSave}>
+                      <button 
+                        className="btn-success" 
+                        onClick={handleSave}
+                        disabled={loading}
+                      >
                         <Save size={16} />
-                        保存
+                        {loading ? '保存中...' : '保存'}
                       </button>
                       <button className="btn-secondary" onClick={() => setIsEditing(false)}>
                         <X size={16} />
@@ -128,13 +193,14 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
                 <h3>基本信息</h3>
                 <div className="form-grid">
                   <div className="form-group">
-                    <label>姓名</label>
+                    <label>用户名</label>
                     <input
                       type="text"
-                      name="name"
-                      value={formData.name}
+                      name="username"
+                      value={formData.username}
                       onChange={handleInputChange}
                       disabled={!isEditing}
+                      placeholder="请输入用户名"
                     />
                   </div>
                   <div className="form-group">
@@ -145,30 +211,9 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
                       value={formData.email}
                       onChange={handleInputChange}
                       disabled={!isEditing}
+                      placeholder="请输入邮箱"
                     />
                   </div>
-                  <div className="form-group">
-                    <label>手机号</label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      disabled={!isEditing}
-                      placeholder="请输入手机号"
-                    />
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label>个人简介</label>
-                  <textarea
-                    name="bio"
-                    value={formData.bio}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    placeholder="介绍一下自己..."
-                    rows={4}
-                  />
                 </div>
               </div>
 
@@ -176,20 +221,20 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
                 <h3>使用统计</h3>
                 <div className="stats-grid">
                   <div className="stat-card">
-                    <div className="stat-value">1,234</div>
+                    <div className="stat-value">{stats?.totalChats || 0}</div>
                     <div className="stat-label">总对话次数</div>
                   </div>
                   <div className="stat-card">
-                    <div className="stat-value">56</div>
-                    <div className="stat-label">生成图片</div>
+                    <div className="stat-value">{stats?.totalMessages || 0}</div>
+                    <div className="stat-label">消息总数</div>
                   </div>
                   <div className="stat-card">
-                    <div className="stat-value">12</div>
-                    <div className="stat-label">训练模型</div>
+                    <div className="stat-value">{stats?.favoriteChats || 0}</div>
+                    <div className="stat-label">收藏对话</div>
                   </div>
                   <div className="stat-card">
-                    <div className="stat-value">89h</div>
-                    <div className="stat-label">使用时长</div>
+                    <div className="stat-value">{stats?.usageDays || 0}</div>
+                    <div className="stat-label">使用天数</div>
                   </div>
                 </div>
               </div>
@@ -281,11 +326,21 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
               <h3>邮件通知</h3>
               <div className="setting-item">
                 <div className="setting-info">
-                  <h4>周报摘要</h4>
-                  <p>每周发送使用报告</p>
+                  <h4>每周报告</h4>
+                  <p>接收每周使用统计报告</p>
                 </div>
                 <label className="toggle-switch">
                   <input type="checkbox" />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+              <div className="setting-item">
+                <div className="setting-info">
+                  <h4>安全提醒</h4>
+                  <p>账户安全相关提醒</p>
+                </div>
+                <label className="toggle-switch">
+                  <input type="checkbox" defaultChecked />
                   <span className="toggle-slider"></span>
                 </label>
               </div>
@@ -296,28 +351,93 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
       case 'security':
         return (
           <div className="tab-content">
-            <div className="settings-section">
-              <h3>密码安全</h3>
-              <button className="btn-primary">修改密码</button>
-              <button className="btn-secondary">启用双因素认证</button>
+            <div className="security-section">
+              <h3>修改密码</h3>
+              <div className="password-form">
+                <div className="form-group">
+                  <label>当前密码</label>
+                  <div className="password-input">
+                    <input
+                      type={passwordForm.showCurrentPassword ? "text" : "password"}
+                      name="currentPassword"
+                      value={passwordForm.currentPassword}
+                      onChange={handlePasswordChange}
+                      placeholder="请输入当前密码"
+                    />
+                    <button 
+                      type="button" 
+                      className="password-toggle"
+                      onClick={() => togglePasswordVisibility('showCurrentPassword')}
+                    >
+                      {passwordForm.showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>新密码</label>
+                  <div className="password-input">
+                    <input
+                      type={passwordForm.showNewPassword ? "text" : "password"}
+                      name="newPassword"
+                      value={passwordForm.newPassword}
+                      onChange={handlePasswordChange}
+                      placeholder="请输入新密码"
+                    />
+                    <button 
+                      type="button" 
+                      className="password-toggle"
+                      onClick={() => togglePasswordVisibility('showNewPassword')}
+                    >
+                      {passwordForm.showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>确认新密码</label>
+                  <div className="password-input">
+                    <input
+                      type={passwordForm.showConfirmPassword ? "text" : "password"}
+                      name="confirmPassword"
+                      value={passwordForm.confirmPassword}
+                      onChange={handlePasswordChange}
+                      placeholder="请再次输入新密码"
+                    />
+                    <button 
+                      type="button" 
+                      className="password-toggle"
+                      onClick={() => togglePasswordVisibility('showConfirmPassword')}
+                    >
+                      {passwordForm.showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+                <button 
+                  className="btn-primary" 
+                  onClick={handleChangePassword}
+                  disabled={loading}
+                >
+                  <Key size={16} />
+                  {loading ? '修改中...' : '修改密码'}
+                </button>
+              </div>
             </div>
 
-            <div className="settings-section">
-              <h3>登录记录</h3>
-              <div className="login-records">
-                <div className="login-record">
-                  <div className="record-info">
-                    <div className="device">Windows PC - Chrome</div>
-                    <div className="time">2024-01-16 14:30</div>
+            <div className="security-section">
+              <h3>安全信息</h3>
+              <div className="security-info">
+                <div className="security-item">
+                  <Clock size={20} />
+                  <div>
+                    <h4>最后登录时间</h4>
+                    <p>{user?.lastLogin ? new Date(user.lastLogin).toLocaleString() : '未知'}</p>
                   </div>
-                  <div className="location">北京市</div>
                 </div>
-                <div className="login-record">
-                  <div className="record-info">
-                    <div className="device">iPhone - Safari</div>
-                    <div className="time">2024-01-15 09:15</div>
+                <div className="security-item">
+                  <MapPin size={20} />
+                  <div>
+                    <h4>登录地点</h4>
+                    <p>中国</p>
                   </div>
-                  <div className="location">上海市</div>
                 </div>
               </div>
             </div>
@@ -327,41 +447,32 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
       case 'billing':
         return (
           <div className="tab-content">
-            <div className="billing-overview">
+            <div className="billing-section">
+              <h3>账单信息</h3>
               <div className="billing-card">
-                <h3>当前套餐</h3>
-                <div className="plan-info">
-                  <div className="plan-name">专业版</div>
-                  <div className="plan-price">¥99/月</div>
+                <div className="billing-header">
+                  <h4>当前套餐</h4>
+                  <span className="plan-badge">免费版</span>
+                </div>
+                <div className="billing-details">
+                  <p>• 每日100次对话</p>
+                  <p>• 基础AI功能</p>
+                  <p>• 7天历史记录</p>
                 </div>
                 <button className="btn-primary">升级套餐</button>
               </div>
             </div>
 
-            <div className="settings-section">
-              <h3>账单历史</h3>
-              <div className="billing-history">
-                <div className="billing-item">
-                  <div className="billing-info">
-                    <div className="billing-date">2024-01-01</div>
-                    <div className="billing-desc">专业版月费</div>
-                  </div>
-                  <div className="billing-amount">¥99</div>
-                  <button className="btn-link">
-                    <Download size={16} />
-                    下载
-                  </button>
+            <div className="billing-section">
+              <h3>使用记录</h3>
+              <div className="usage-chart">
+                <div className="usage-item">
+                  <span>本月对话次数</span>
+                  <span>{stats?.totalChats || 0}</span>
                 </div>
-                <div className="billing-item">
-                  <div className="billing-info">
-                    <div className="billing-date">2023-12-01</div>
-                    <div className="billing-desc">专业版月费</div>
-                  </div>
-                  <div className="billing-amount">¥99</div>
-                  <button className="btn-link">
-                    <Download size={16} />
-                    下载
-                  </button>
+                <div className="usage-item">
+                  <span>剩余额度</span>
+                  <span>无限制</span>
                 </div>
               </div>
             </div>
@@ -374,38 +485,39 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
   };
 
   return (
-    <div className="profile-page">
-      <header className="profile-header-bar">
-        <button 
-          className="back-button"
-          onClick={() => navigate('/dashboard')}
-        >
+    <div className="profile-container">
+      <div className="profile-header-bar">
+        <button className="back-button" onClick={() => navigate('/dashboard')}>
           <ArrowLeft size={20} />
-          <span className="back-text">返回</span>
+          返回
         </button>
         <h1>个人中心</h1>
-        <button onClick={onLogout} className="logout-btn">
-          退出
-        </button>
-      </header>
+        <div className="header-actions">
+          <button className="logout-button" onClick={onLogout}>
+            退出登录
+          </button>
+        </div>
+      </div>
 
-      <div className="profile-container">
-        <nav className="profile-sidebar">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              <tab.icon size={20} />
-              <span>{tab.name}</span>
-            </button>
-          ))}
-        </nav>
+      <div className="profile-content">
+        <div className="profile-sidebar">
+          <nav className="profile-nav">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                className={`nav-item ${activeTab === tab.id ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                <tab.icon size={20} />
+                <span>{tab.name}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
 
-        <main className="profile-main">
+        <div className="profile-main">
           {renderTabContent()}
-        </main>
+        </div>
       </div>
     </div>
   );

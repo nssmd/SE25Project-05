@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   MessageSquare, 
   Image, 
@@ -30,6 +30,7 @@ import './Dashboard.css';
 
 const Dashboard = ({ user, onLogout }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('text_to_text');
   const [selectedModel, setSelectedModel] = useState('gpt-4');
   const [inputText, setInputText] = useState('');
@@ -70,7 +71,31 @@ const Dashboard = ({ user, onLogout }) => {
   useEffect(() => {
     // 组件加载时获取对话列表
     loadChatList();
+    
+    // 检查是否从历史搜索页面传入了chatId
+    if (location.state?.chatId && location.state?.activeFeature === 'chat') {
+      setActiveTab('text_to_text'); // 设置为聊天功能
+      // 等待对话列表加载完成后再设置当前对话
+      setTimeout(() => {
+        const targetChat = chatList.find(chat => chat.id === location.state.chatId);
+        if (targetChat) {
+          switchChat(targetChat);
+        }
+      }, 500);
+    }
   }, []);
+
+  // 监听chatList变化，处理从历史搜索页面传入的chatId
+  useEffect(() => {
+    if (location.state?.chatId && chatList.length > 0) {
+      const targetChat = chatList.find(chat => chat.id === location.state.chatId);
+      if (targetChat && !currentChat) {
+        switchChat(targetChat);
+        // 清除location state避免重复处理
+        navigate(location.pathname, { replace: true });
+      }
+    }
+  }, [chatList, location.state]);
 
   // 加载对话列表
   const loadChatList = async () => {

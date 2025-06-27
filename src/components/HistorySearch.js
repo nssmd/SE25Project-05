@@ -23,16 +23,24 @@ const HistorySearch = ({ user, onLogout }) => {
     setIsLoading(true);
     
     try {
-      const response = await historyAPI.getChats({
-        keyword: query,
+      const params = {
+        page: 0, // 后端使用0开始的分页
+        size: 20,
         timeFilter: currentFilters.dateRange,
         aiType: currentFilters.aiType,
-        isFavorite: currentFilters.isBookmarked,
-        page: 1,
-        limit: 20
-      });
+        isFavorite: currentFilters.isBookmarked
+      };
       
-      setSearchResults(response.chats);
+      // 只有当查询不为空时才添加keyword参数
+      if (query && query.trim()) {
+        params.keyword = query.trim();
+      }
+      
+      console.log('搜索参数:', params);
+      const response = await historyAPI.getChats(params);
+      console.log('搜索结果:', response);
+      
+      setSearchResults(response.chats || []);
     } catch (error) {
       console.error('搜索历史记录失败:', error);
       setSearchResults([]);
@@ -40,6 +48,11 @@ const HistorySearch = ({ user, onLogout }) => {
       setIsLoading(false);
     }
   };
+
+  // 组件加载时获取所有对话
+  useEffect(() => {
+    handleSearch(''); // 初始加载所有对话
+  }, []);
 
   // 搜索输入变化
   useEffect(() => {
@@ -69,7 +82,7 @@ const HistorySearch = ({ user, onLogout }) => {
       'text_to_video': '文生视频',
       'text_to_3d': '文生3D'
     };
-    return names[type] || '未知';
+    return names[type] || '文生文';
   };
 
   // 格式化日期
@@ -86,6 +99,30 @@ const HistorySearch = ({ user, onLogout }) => {
     } else {
       return date.toLocaleDateString('zh-CN');
     }
+  };
+
+  // 查看对话详情
+  const handleViewChat = async (chatId) => {
+    try {
+      const response = await historyAPI.getChatDetail(chatId);
+      console.log('对话详情:', response);
+      // 可以在这里显示对话详情模态框
+      alert(`查看对话 ${chatId} 的详情功能待实现`);
+    } catch (error) {
+      console.error('获取对话详情失败:', error);
+      alert('获取对话详情失败');
+    }
+  };
+
+  // 继续对话
+  const handleContinueChat = (chatId) => {
+    // 跳转到聊天页面，并设置当前对话ID
+    navigate('/dashboard', { 
+      state: { 
+        activeFeature: 'chat',
+        chatId: chatId 
+      } 
+    });
   };
 
   return (
@@ -165,10 +202,10 @@ const HistorySearch = ({ user, onLogout }) => {
               <option value="all">全部功能</option>
               <option value="text-to-text">文生文</option>
               <option value="text-to-image">文生图</option>
-              <option value="image-to-image">图生图</option>
               <option value="image-to-text">图生文</option>
-              <option value="text-to-video">文生视频</option>
+              <option value="image-to-image">图生图</option>
               <option value="text-to-3d">文生3D</option>
+              <option value="text-to-video">文生视频</option>
             </select>
           </div>
 
@@ -207,29 +244,44 @@ const HistorySearch = ({ user, onLogout }) => {
                       </span>
                       <span className="result-date">
                         <Calendar size={14} />
-                        {formatDate(item.date)}
+                        {formatDate(item.lastActivity || item.createdAt)}
                       </span>
                       <span className="result-time">
                         <Clock size={14} />
-                        {item.time}
+                        {new Date(item.lastActivity || item.createdAt).toLocaleTimeString('zh-CN', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
                       </span>
                     </div>
-                    {item.isBookmarked && (
+                    {item.isFavorite && (
                       <span className="bookmark-indicator">⭐</span>
                     )}
                   </div>
                   
                   <h3 className="result-title">{item.title}</h3>
-                  <p className="result-preview">{item.preview}</p>
+                  <p className="result-preview">
+                    {item.description || `创建于 ${formatDate(item.createdAt)}`}
+                  </p>
                   
                   <div className="result-footer">
                     <span className="message-count">
                       <MessageSquare size={14} />
-                      {item.messageCount} 条消息
+                      {item.messageCount || 0} 条消息
                     </span>
                     <div className="result-actions">
-                      <button className="action-btn">查看</button>
-                      <button className="action-btn secondary">继续对话</button>
+                      <button 
+                        className="action-btn"
+                        onClick={() => handleViewChat(item.id)}
+                      >
+                        查看
+                      </button>
+                      <button 
+                        className="action-btn secondary"
+                        onClick={() => handleContinueChat(item.id)}
+                      >
+                        继续对话
+                      </button>
                     </div>
                   </div>
                 </div>

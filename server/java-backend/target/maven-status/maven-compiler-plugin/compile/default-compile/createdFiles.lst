@@ -12,6 +12,7 @@ com\aiplatform\security\JwtAuthenticationFilter.class
 com\aiplatform\util\PasswordGenerator.class
 com\aiplatform\controller\AuthController.class
 com\aiplatform\config\CustomNamingStrategy.class
+com\aiplatform\controller\UserController.class
 com\aiplatform\entity\Message$MessageRole.class
 com\aiplatform\security\SecurityConfig.class
 com\aiplatform\dto\UserDTO$UserStatusUpdateRequest.class

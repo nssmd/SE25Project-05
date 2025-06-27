@@ -5,6 +5,7 @@ G:\sework\server\java-backend\src\main\java\com\aiplatform\config\CustomNamingSt
 G:\sework\server\java-backend\src\main\java\com\aiplatform\util\PasswordGenerator.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\repository\UserSettingsRepository.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\repository\AdminMessageRepository.java
+G:\sework\server\java-backend\src\main\java\com\aiplatform\controller\UserController.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\controller\HistoryController.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\repository\UserRepository.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\entity\AdminMessage.java

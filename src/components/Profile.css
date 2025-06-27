@@ -612,4 +612,71 @@ input:checked + .toggle-slider:before {
   .user-avatar-large.placeholder {
     font-size: 1.5rem;
   }
+}
+
+/* Password Form Styles */
+.password-form {
+  max-width: 400px;
+}
+
+.password-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input input {
+  flex: 1;
+  padding-right: 3rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: #a0aec0;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #667eea;
+}
+
+/* Security Info Styles */
+.security-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.security-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f7fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.security-item svg {
+  color: #667eea;
+  flex-shrink: 0;
+}
+
+.security-item h4 {
+  margin: 0 0 0.25rem 0;
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.9rem;
+}
+
+.security-item p {
+  margin: 0;
+  color: #718096;
+  font-size: 0.85rem;
 } 
