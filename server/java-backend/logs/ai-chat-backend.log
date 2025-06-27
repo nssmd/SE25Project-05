@@ -13935,3 +13935,6 @@ Caused by: java.sql.SQLException: Cannot change column 'id': used in a foreign k
         u1_0.email=?
 2025-06-27 16:49:50 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats?keyword=&timeFilter=all&aiType=all&isFavorite=false&page=1&limit=20
 2025-06-27 16:49:50 [http-nio-8080-exec-10] INFO  c.a.controller.HistoryController - 获取用户聊天记录: page=1, size=20
+2025-06-27 17:00:53 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-27 17:00:53 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-06-27 17:00:53 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
