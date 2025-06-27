@@ -49,9 +49,12 @@ public class Chat {
 
     // AI类型枚举 - 匹配数据库enum
     public enum AiType {
-        text_to_text("文本对话"),
-        text_to_image("文本生成图像"),
-        image_to_text("图像识别");
+        text_to_text("文生文"),
+        text_to_image("文生图"),
+        image_to_text("图生文"),
+        image_to_image("图生图"),
+        text_to_3d("文生3D"),
+        text_to_video("文生视频");
 
         private final String displayName;
 

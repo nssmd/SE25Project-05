@@ -36,6 +36,33 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
     @Query("SELECT c FROM Chat c WHERE c.userId = :userId AND c.title LIKE %:title% ORDER BY c.lastActivity DESC")
     Page<Chat> findByUserIdAndTitleContaining(@Param("userId") Long userId, @Param("title") String title, Pageable pageable);
 
+
+
+    // 获取搜索建议（不区分大小写）
+    @Query("SELECT c FROM Chat c WHERE c.userId = :userId AND LOWER(c.title) LIKE LOWER(CONCAT('%', :query, '%')) ORDER BY c.lastActivity DESC")
+    List<Chat> findTop5ByUserIdAndTitleContainingIgnoreCase(@Param("userId") Long userId, @Param("query") String query, Pageable pageable);
+    
+    default List<Chat> findTop5ByUserIdAndTitleContainingIgnoreCase(Long userId, String query) {
+        return findTop5ByUserIdAndTitleContainingIgnoreCase(userId, query, 
+            org.springframework.data.domain.PageRequest.of(0, 5));
+    }
+
+    // 通用动态查询方法 - 支持多种条件组合和时间筛选
+    @Query("SELECT c FROM Chat c WHERE c.userId = :userId " +
+           "AND (:keyword IS NULL OR c.title LIKE %:keyword%) " +
+           "AND (:aiType IS NULL OR c.aiType = :aiType) " +
+           "AND (:isFavorite IS NULL OR c.isFavorite = :isFavorite) " +
+           "AND (:timeFilter IS NULL OR c.lastActivity >= :timeFilter) " +
+           "ORDER BY c.lastActivity DESC")
+    Page<Chat> findChatsWithFilters(
+        @Param("userId") Long userId,
+        @Param("keyword") String keyword,
+        @Param("aiType") Chat.AiType aiType,
+        @Param("isFavorite") Boolean isFavorite,
+        @Param("timeFilter") LocalDateTime timeFilter,
+        Pageable pageable
+    );
+
     // 统计用户聊天数量
     int countByUserId(Long userId);
 

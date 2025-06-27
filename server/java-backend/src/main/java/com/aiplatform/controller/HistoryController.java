@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,21 +54,53 @@ public class HistoryController {
             
             Page<Chat> chatPage;
             
-            // 根据不同条件查询
-            if (keyword != null && !keyword.trim().isEmpty()) {
-                chatPage = chatRepository.findByUserIdAndTitleContaining(userId, keyword, pageable);
-            } else if (isFavorite != null && isFavorite) {
-                chatPage = chatRepository.findByUserIdAndIsFavoriteTrueOrderByLastActivityDesc(userId, pageable);
-            } else if (aiType != null && !aiType.equals("all")) {
-                try {
-                    Chat.AiType aiTypeEnum = Chat.AiType.valueOf(aiType.replace("-", "_"));
-                    chatPage = chatRepository.findByUserIdAndAiTypeOrderByLastActivityDesc(userId, aiTypeEnum, pageable);
-                } catch (IllegalArgumentException e) {
-                    chatPage = chatRepository.findByUserIdOrderByLastActivityDesc(userId, pageable);
+            // 构建查询条件
+            boolean hasKeyword = keyword != null && !keyword.trim().isEmpty();
+            boolean hasFavoriteFilter = isFavorite != null && isFavorite;
+            boolean hasAiTypeFilter = aiType != null && !aiType.equals("all");
+            boolean hasTimeFilter = timeFilter != null && !timeFilter.equals("all");
+            
+            LocalDateTime timeFilterDate = null;
+            if (hasTimeFilter) {
+                switch (timeFilter) {
+                    case "today":
+                        timeFilterDate = LocalDateTime.now().toLocalDate().atStartOfDay();
+                        break;
+                    case "week":
+                        timeFilterDate = LocalDateTime.now().minusWeeks(1);
+                        break;
+                    case "month":
+                        timeFilterDate = LocalDateTime.now().minusMonths(1);
+                        break;
+                    default:
+                        hasTimeFilter = false;
+                        break;
                 }
-            } else {
-                chatPage = chatRepository.findByUserIdOrderByLastActivityDesc(userId, pageable);
+                log.info("时间筛选: {} -> {}", timeFilter, timeFilterDate);
             }
+            
+            Chat.AiType aiTypeEnum = null;
+            if (hasAiTypeFilter) {
+                try {
+                    // 前端发送的格式：text-to-text，数据库格式：text_to_text
+                    String enumName = aiType.replace("-", "_");
+                    aiTypeEnum = Chat.AiType.valueOf(enumName);
+                    log.info("AI类型筛选: {} -> {}", aiType, aiTypeEnum);
+                } catch (IllegalArgumentException e) {
+                    log.warn("无效的AI类型: {}, 忽略AI类型筛选", aiType);
+                    hasAiTypeFilter = false;
+                }
+            }
+            
+            // 使用通用查询方法，支持所有条件组合
+            String searchKeyword = hasKeyword ? keyword.trim() : null;
+            Boolean favoriteFilter = hasFavoriteFilter ? true : null;
+            
+            log.info("查询参数: keyword={}, aiType={}, favorite={}, timeFilter={}", 
+                searchKeyword, aiTypeEnum, favoriteFilter, timeFilterDate);
+            
+            chatPage = chatRepository.findChatsWithFilters(
+                userId, searchKeyword, aiTypeEnum, favoriteFilter, timeFilterDate, pageable);
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -162,6 +195,99 @@ public class HistoryController {
         response.put("message", "聊天记录删除成功");
         
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "获取搜索建议", description = "根据查询关键词获取搜索建议")
+    @GetMapping("/search-suggestions")
+    public ResponseEntity<Map<String, Object>> getSearchSuggestions(
+            @RequestParam String query) {
+        try {
+            log.info("获取搜索建议: query={}", query);
+            
+            Long userId = getCurrentUserId();
+            
+            // 获取相关的对话标题作为建议
+            List<Chat> suggestionChats = chatRepository.findTop5ByUserIdAndTitleContainingIgnoreCase(userId, query);
+            
+            List<String> suggestions = new ArrayList<>();
+            for (Chat chat : suggestionChats) {
+                suggestions.add(chat.getTitle());
+            }
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("suggestions", suggestions);
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (BusinessException e) {
+            log.error("获取搜索建议业务异常: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(createErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("获取搜索建议系统异常: ", e);
+            return ResponseEntity.internalServerError().body(createErrorResponse("获取搜索建议失败"));
+        }
+    }
+
+    @Operation(summary = "批量操作对话", description = "对多个对话进行批量操作")
+    @PostMapping("/batch-operation")
+    public ResponseEntity<Map<String, Object>> batchOperation(
+            @RequestBody Map<String, Object> request) {
+        try {
+            log.info("批量操作对话: {}", request);
+            
+            Long userId = getCurrentUserId();
+            String operation = (String) request.get("operation");
+            @SuppressWarnings("unchecked")
+            List<Long> chatIds = (List<Long>) request.get("chatIds");
+            
+            if (operation == null || chatIds == null || chatIds.isEmpty()) {
+                throw new BusinessException("参数不完整");
+            }
+            
+            int successCount = 0;
+            for (Long chatId : chatIds) {
+                try {
+                    // 验证对话属于当前用户
+                    Chat chat = chatRepository.findByIdAndUserId(chatId, userId)
+                        .orElseThrow(() -> new BusinessException("对话不存在或无权限访问"));
+                    
+                    switch (operation) {
+                        case "delete":
+                            chatService.deleteChat(chatId, userId);
+                            break;
+                        case "favorite":
+                            chat.setIsFavorite(!chat.getIsFavorite());
+                            chatRepository.save(chat);
+                            break;
+                        case "protect":
+                            chat.setIsProtected(!chat.getIsProtected());
+                            chatRepository.save(chat);
+                            break;
+                        default:
+                            throw new BusinessException("不支持的操作: " + operation);
+                    }
+                    successCount++;
+                } catch (Exception e) {
+                    log.warn("批量操作失败 - chatId: {}, error: {}", chatId, e.getMessage());
+                }
+            }
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("successCount", successCount);
+            response.put("totalCount", chatIds.size());
+            response.put("message", String.format("成功处理 %d/%d 个对话", successCount, chatIds.size()));
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (BusinessException e) {
+            log.error("批量操作业务异常: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(createErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("批量操作系统异常: ", e);
+            return ResponseEntity.internalServerError().body(createErrorResponse("批量操作失败"));
+        }
     }
 
     @Operation(summary = "导出聊天记录", description = "导出用户的聊天记录")

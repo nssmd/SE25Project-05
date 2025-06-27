@@ -60,4 +60,8 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     // 统计聊天中助手消息数量
     @Query("SELECT COUNT(m) FROM Message m WHERE m.chatId = :chatId AND m.role = 'assistant'")
     int countAssistantMessagesByChat(@Param("chatId") Long chatId);
+
+    // 统计用户的所有消息数量
+    @Query("SELECT COUNT(m) FROM Message m INNER JOIN Chat c ON m.chatId = c.id WHERE c.userId = :userId")
+    int countByUserId(@Param("userId") Long userId);
 } 
