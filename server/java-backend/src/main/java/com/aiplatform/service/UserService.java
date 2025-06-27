@@ -330,4 +330,52 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    /**
+     * 修改用户角色
+     */
+    @Transactional
+    public UserDTO.UserResponse updateUserRole(Long userId, UserDTO.UserRoleUpdateRequest request) {
+        log.info("开始修改用户 {} 的角色为: {}", userId, request.getRole());
+        
+        // 查找目标用户
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException("用户不存在"));
+        
+        // 验证角色
+        User.UserRole newRole;
+        try {
+            newRole = User.UserRole.valueOf(request.getRole());
+        } catch (IllegalArgumentException e) {
+            throw new BusinessException("无效的角色类型: " + request.getRole());
+        }
+        
+        // 记录角色变更
+        User.UserRole oldRole = user.getRole();
+        log.info("用户 {} ({}) 角色变更: {} -> {}, 原因: {}", 
+                user.getUsername(), user.getEmail(), oldRole, newRole, request.getReason());
+        
+        // 更新角色
+        user.setRole(newRole);
+        
+        // 根据新角色设置相应的权限
+        switch (newRole) {
+            case admin:
+                user.setPermissions("ALL");
+                break;
+            case support:
+                user.setPermissions("SUPPORT");
+                break;
+            case user:
+                user.setPermissions("CHAT");
+                break;
+        }
+        
+        // 保存用户
+        user = userRepository.save(user);
+        
+        log.info("用户角色修改成功: {} -> {}", oldRole, newRole);
+        
+        return UserDTO.UserResponse.fromEntity(user);
+    }
+
 } 

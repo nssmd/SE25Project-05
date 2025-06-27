@@ -79,4 +79,20 @@ public class AdminController {
         log.info("批量更新用户权限: {}", request);
         return ResponseEntity.ok("权限更新成功");
     }
+
+    @Operation(summary = "修改用户角色", description = "修改指定用户的角色身份")
+    @PutMapping("/users/{userId}/role")
+    public ResponseEntity<UserDTO.UserResponse> updateUserRole(
+            @PathVariable Long userId,
+            @Valid @RequestBody UserDTO.UserRoleUpdateRequest request) {
+        
+        try {
+            log.info("管理员修改用户 {} 的角色为: {}, 原因: {}", userId, request.getRole(), request.getReason());
+            UserDTO.UserResponse updatedUser = userService.updateUserRole(userId, request);
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            log.error("修改用户角色失败: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
 } 

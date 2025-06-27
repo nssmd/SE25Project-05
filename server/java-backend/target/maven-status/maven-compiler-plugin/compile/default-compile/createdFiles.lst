@@ -4,6 +4,7 @@ com\aiplatform\repository\UserSettingsRepository.class
 com\aiplatform\dto\UserDTO$UserLoginRequest.class
 com\aiplatform\dto\UserDTO$UserStatistics.class
 com\aiplatform\security\JwtAuthenticationFilter.class
+com\aiplatform\util\SimplePasswordGenerator.class
 com\aiplatform\config\CustomNamingStrategy.class
 com\aiplatform\controller\UserController.class
 com\aiplatform\dto\UserDTO$UserStatusUpdateRequest.class

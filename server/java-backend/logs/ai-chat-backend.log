@@ -52757,3 +52757,3036 @@ Caused by: java.sql.SQLException: Cannot change column 'id': used in a foreign k
 2025-06-27 20:08:48 [main] DEBUG c.a.security.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
 2025-06-27 20:08:48 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
 2025-06-27 20:08:48 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@67d85d5f, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7ef7f6d5, org.springframework.security.web.context.SecurityContextHolderFilter@3f471e59, org.springframework.security.web.header.HeaderWriterFilter@19c37463, org.springframework.web.filter.CorsFilter@59ba219d, org.springframework.security.web.authentication.logout.LogoutFilter@20bc4c09, com.aiplatform.security.JwtAuthenticationFilter@3ac60eeb, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@b51afb2, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2c0604af, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5cf69333, org.springframework.security.web.session.SessionManagementFilter@c634247, org.springframework.security.web.access.ExceptionTranslationFilter@38c408c7, org.springframework.security.web.access.intercept.AuthorizationFilter@55b991e0]
+2025-06-27 20:08:49 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/api'
+2025-06-27 20:08:49 [main] INFO  c.a.AiChatBackendApplication - Started AiChatBackendApplication in 5.35 seconds (process running for 5.663)
+2025-06-27 20:08:52 [http-nio-8080-exec-2] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-06-27 20:08:52 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-06-27 20:08:52 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-06-27 20:08:52 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats
+2025-06-27 20:08:52 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats
+2025-06-27 20:08:53 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:08:53 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:08:53 [http-nio-8080-exec-3] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/api/history/chats' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2025-06-27 20:08:53 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats
+2025-06-27 20:08:53 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats
+2025-06-27 20:08:53 [http-nio-8080-exec-3] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:08:53 [http-nio-8080-exec-4] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:08:53 [http-nio-8080-exec-3] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:08:53 [http-nio-8080-exec-4] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:08:53 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:08:53 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:08:53 [http-nio-8080-exec-3] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:08:53 [http-nio-8080-exec-4] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:08:53 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:08:53 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:08:56 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing PATCH /chat/4/protect
+2025-06-27 20:08:56 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:08:56 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured PATCH /chat/4/protect
+2025-06-27 20:08:56 [http-nio-8080-exec-5] INFO  c.a.controller.ChatController - 切换保护状态: 4
+2025-06-27 20:08:56 [http-nio-8080-exec-5] DEBUG c.a.controller.ChatController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:08:56 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:08:56 [http-nio-8080-exec-5] INFO  com.aiplatform.service.ChatService - 切换保护状态: chatId=4, userId=3
+2025-06-27 20:08:56 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        c1_0.id,
+        c1_0.ai_type,
+        c1_0.created_at,
+        c1_0.is_favorite,
+        c1_0.is_protected,
+        c1_0.last_activity,
+        c1_0.message_count,
+        c1_0.title,
+        c1_0.updated_at,
+        c1_0.user_id 
+    from
+        chats c1_0 
+    where
+        c1_0.id=? 
+        and c1_0.user_id=?
+2025-06-27 20:08:56 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* update
+        for com.aiplatform.entity.Chat */update chats 
+    set
+        ai_type=?,
+        created_at=?,
+        is_favorite=?,
+        is_protected=?,
+        last_activity=?,
+        message_count=?,
+        title=?,
+        updated_at=?,
+        user_id=? 
+    where
+        id=?
+2025-06-27 20:08:56 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats
+2025-06-27 20:08:56 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:08:56 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats
+2025-06-27 20:08:56 [http-nio-8080-exec-7] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:08:56 [http-nio-8080-exec-7] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:08:56 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:08:56 [http-nio-8080-exec-7] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:08:56 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:08:58 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing PATCH /chat/4/favorite
+2025-06-27 20:08:58 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:08:58 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured PATCH /chat/4/favorite
+2025-06-27 20:08:58 [http-nio-8080-exec-9] INFO  c.a.controller.ChatController - 切换收藏状态: 4
+2025-06-27 20:08:58 [http-nio-8080-exec-9] DEBUG c.a.controller.ChatController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:08:58 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:08:58 [http-nio-8080-exec-9] INFO  com.aiplatform.service.ChatService - 切换收藏状态: chatId=4, userId=3
+2025-06-27 20:08:58 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        c1_0.id,
+        c1_0.ai_type,
+        c1_0.created_at,
+        c1_0.is_favorite,
+        c1_0.is_protected,
+        c1_0.last_activity,
+        c1_0.message_count,
+        c1_0.title,
+        c1_0.updated_at,
+        c1_0.user_id 
+    from
+        chats c1_0 
+    where
+        c1_0.id=? 
+        and c1_0.user_id=?
+2025-06-27 20:08:58 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* update
+        for com.aiplatform.entity.Chat */update chats 
+    set
+        ai_type=?,
+        created_at=?,
+        is_favorite=?,
+        is_protected=?,
+        last_activity=?,
+        message_count=?,
+        title=?,
+        updated_at=?,
+        user_id=? 
+    where
+        id=?
+2025-06-27 20:08:58 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats
+2025-06-27 20:08:58 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:08:58 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats
+2025-06-27 20:08:58 [http-nio-8080-exec-10] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:08:58 [http-nio-8080-exec-10] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:08:58 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:08:58 [http-nio-8080-exec-10] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:08:58 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:01 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:01 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:01 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:01 [http-nio-8080-exec-6] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:01 [http-nio-8080-exec-6] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:01 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:01 [http-nio-8080-exec-6] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:01 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:02 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:02 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:02 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:02 [http-nio-8080-exec-5] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:02 [http-nio-8080-exec-5] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:02 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:02 [http-nio-8080-exec-5] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:02 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:02 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:02 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:02 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:02 [http-nio-8080-exec-7] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:02 [http-nio-8080-exec-7] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:02 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:02 [http-nio-8080-exec-7] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:02 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:02 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:02 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:02 [http-nio-8080-exec-8] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:02 [http-nio-8080-exec-8] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:02 [http-nio-8080-exec-8] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:03 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats
+2025-06-27 20:09:03 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:03 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats
+2025-06-27 20:09:03 [http-nio-8080-exec-9] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:03 [http-nio-8080-exec-9] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:03 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:03 [http-nio-8080-exec-9] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:03 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:03 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats
+2025-06-27 20:09:03 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:03 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats
+2025-06-27 20:09:03 [http-nio-8080-exec-10] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:03 [http-nio-8080-exec-10] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:03 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:03 [http-nio-8080-exec-10] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:03 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:04 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /data/settings
+2025-06-27 20:09:04 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/stats
+2025-06-27 20:09:04 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /data/statistics
+2025-06-27 20:09:04 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:04 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:04 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:04 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /data/settings
+2025-06-27 20:09:04 [http-nio-8080-exec-7] INFO  c.a.controller.DataController - 获取用户设置: 2581235653@qq.com
+2025-06-27 20:09:04 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/stats
+2025-06-27 20:09:04 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /data/settings
+2025-06-27 20:09:04 [http-nio-8080-exec-9] INFO  c.a.controller.HistoryController - 获取用户统计信息
+2025-06-27 20:09:04 [http-nio-8080-exec-9] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:04 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:04 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /data/statistics
+2025-06-27 20:09:04 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:04 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:04 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /data/settings
+2025-06-27 20:09:04 [http-nio-8080-exec-10] INFO  c.a.controller.DataController - 获取用户设置: 2581235653@qq.com
+2025-06-27 20:09:04 [http-nio-8080-exec-8] INFO  c.a.controller.DataController - 获取数据统计: 用户ID=3
+2025-06-27 20:09:04 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=?
+2025-06-27 20:09:04 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=?
+2025-06-27 20:09:04 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_favorite
+2025-06-27 20:09:04 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        COUNT(m) 
+    FROM
+        Message m 
+    INNER JOIN
+        Chat c 
+            ON m.chatId = c.id 
+    WHERE
+        c.userId = :userId */ select
+            count(m1_0.id) 
+        from
+            messages m1_0 
+        join
+            chats c1_0 
+                on m1_0.chat_id=c1_0.id 
+        where
+            c1_0.user_id=?
+2025-06-27 20:09:04 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_protected
+2025-06-27 20:09:04 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_protected
+2025-06-27 20:09:04 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/stats
+2025-06-27 20:09:04 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:04 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND c.isProtected = false 
+        AND c.lastActivity < :cutoffDate */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and c1_0.is_protected=0 
+            and c1_0.last_activity<?
+2025-06-27 20:09:04 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/stats
+2025-06-27 20:09:04 [http-nio-8080-exec-1] INFO  c.a.controller.HistoryController - 获取用户统计信息
+2025-06-27 20:09:04 [http-nio-8080-exec-1] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:04 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:04 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /data/statistics
+2025-06-27 20:09:04 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:04 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=?
+2025-06-27 20:09:04 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_favorite
+2025-06-27 20:09:04 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /data/statistics
+2025-06-27 20:09:04 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:04 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_protected
+2025-06-27 20:09:04 [http-nio-8080-exec-2] INFO  c.a.controller.DataController - 获取数据统计: 用户ID=3
+2025-06-27 20:09:04 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=?
+2025-06-27 20:09:04 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        COUNT(m) 
+    FROM
+        Message m 
+    INNER JOIN
+        Chat c 
+            ON m.chatId = c.id 
+    WHERE
+        c.userId = :userId */ select
+            count(m1_0.id) 
+        from
+            messages m1_0 
+        join
+            chats c1_0 
+                on m1_0.chat_id=c1_0.id 
+        where
+            c1_0.user_id=?
+2025-06-27 20:09:04 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_protected
+2025-06-27 20:09:04 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND c.isProtected = false 
+        AND c.lastActivity < :cutoffDate */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and c1_0.is_protected=0 
+            and c1_0.last_activity<?
+2025-06-27 20:09:06 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing DELETE /data/all
+2025-06-27 20:09:06 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:06 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured DELETE /data/all
+2025-06-27 20:09:06 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:06 [http-nio-8080-exec-3] INFO  c.a.controller.DataController - 删除所有数据: 用户ID=3
+2025-06-27 20:09:06 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        c1_0.id,
+        c1_0.ai_type,
+        c1_0.created_at,
+        c1_0.is_favorite,
+        c1_0.is_protected,
+        c1_0.last_activity,
+        c1_0.message_count,
+        c1_0.title,
+        c1_0.updated_at,
+        c1_0.user_id 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+    order by
+        c1_0.last_activity desc
+2025-06-27 20:09:07 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /data/settings
+2025-06-27 20:09:07 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/stats
+2025-06-27 20:09:07 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /data/statistics
+2025-06-27 20:09:07 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:07 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:07 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:07 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /data/statistics
+2025-06-27 20:09:07 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:07 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /data/settings
+2025-06-27 20:09:07 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/stats
+2025-06-27 20:09:07 [http-nio-8080-exec-5] INFO  c.a.controller.DataController - 获取用户设置: 2581235653@qq.com
+2025-06-27 20:09:07 [http-nio-8080-exec-7] INFO  c.a.controller.HistoryController - 获取用户统计信息
+2025-06-27 20:09:07 [http-nio-8080-exec-7] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:07 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:07 [http-nio-8080-exec-6] INFO  c.a.controller.DataController - 获取数据统计: 用户ID=3
+2025-06-27 20:09:07 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=?
+2025-06-27 20:09:07 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=?
+2025-06-27 20:09:07 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        COUNT(m) 
+    FROM
+        Message m 
+    INNER JOIN
+        Chat c 
+            ON m.chatId = c.id 
+    WHERE
+        c.userId = :userId */ select
+            count(m1_0.id) 
+        from
+            messages m1_0 
+        join
+            chats c1_0 
+                on m1_0.chat_id=c1_0.id 
+        where
+            c1_0.user_id=?
+2025-06-27 20:09:07 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_favorite
+2025-06-27 20:09:07 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_protected
+2025-06-27 20:09:07 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND c.isProtected = false 
+        AND c.lastActivity < :cutoffDate */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and c1_0.is_protected=0 
+            and c1_0.last_activity<?
+2025-06-27 20:09:07 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_protected
+2025-06-27 20:09:08 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats
+2025-06-27 20:09:08 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:08 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats
+2025-06-27 20:09:08 [http-nio-8080-exec-10] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:08 [http-nio-8080-exec-10] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:08 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:08 [http-nio-8080-exec-10] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:08 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:08 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats
+2025-06-27 20:09:08 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:08 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats
+2025-06-27 20:09:08 [http-nio-8080-exec-9] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:08 [http-nio-8080-exec-9] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:08 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:08 [http-nio-8080-exec-9] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:08 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:10 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /data/settings
+2025-06-27 20:09:10 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /data/statistics
+2025-06-27 20:09:10 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/stats
+2025-06-27 20:09:10 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:10 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:10 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:10 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /data/statistics
+2025-06-27 20:09:10 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:10 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/stats
+2025-06-27 20:09:10 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /data/settings
+2025-06-27 20:09:10 [http-nio-8080-exec-2] INFO  c.a.controller.HistoryController - 获取用户统计信息
+2025-06-27 20:09:10 [http-nio-8080-exec-8] INFO  c.a.controller.DataController - 获取用户设置: 2581235653@qq.com
+2025-06-27 20:09:10 [http-nio-8080-exec-2] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:10 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:10 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /data/settings
+2025-06-27 20:09:10 [http-nio-8080-exec-1] INFO  c.a.controller.DataController - 获取数据统计: 用户ID=3
+2025-06-27 20:09:10 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:10 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=?
+2025-06-27 20:09:10 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=?
+2025-06-27 20:09:10 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        COUNT(m) 
+    FROM
+        Message m 
+    INNER JOIN
+        Chat c 
+            ON m.chatId = c.id 
+    WHERE
+        c.userId = :userId */ select
+            count(m1_0.id) 
+        from
+            messages m1_0 
+        join
+            chats c1_0 
+                on m1_0.chat_id=c1_0.id 
+        where
+            c1_0.user_id=?
+2025-06-27 20:09:10 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /data/settings
+2025-06-27 20:09:10 [http-nio-8080-exec-4] INFO  c.a.controller.DataController - 获取用户设置: 2581235653@qq.com
+2025-06-27 20:09:10 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_favorite
+2025-06-27 20:09:10 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_protected
+2025-06-27 20:09:10 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND c.isProtected = false 
+        AND c.lastActivity < :cutoffDate */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and c1_0.is_protected=0 
+            and c1_0.last_activity<?
+2025-06-27 20:09:11 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_protected
+2025-06-27 20:09:11 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /data/statistics
+2025-06-27 20:09:11 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/stats
+2025-06-27 20:09:11 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:11 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:11 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /data/statistics
+2025-06-27 20:09:11 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:11 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/stats
+2025-06-27 20:09:11 [http-nio-8080-exec-5] INFO  c.a.controller.HistoryController - 获取用户统计信息
+2025-06-27 20:09:11 [http-nio-8080-exec-5] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:11 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:11 [http-nio-8080-exec-3] INFO  c.a.controller.DataController - 获取数据统计: 用户ID=3
+2025-06-27 20:09:11 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=?
+2025-06-27 20:09:11 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        COUNT(m) 
+    FROM
+        Message m 
+    INNER JOIN
+        Chat c 
+            ON m.chatId = c.id 
+    WHERE
+        c.userId = :userId */ select
+            count(m1_0.id) 
+        from
+            messages m1_0 
+        join
+            chats c1_0 
+                on m1_0.chat_id=c1_0.id 
+        where
+            c1_0.user_id=?
+2025-06-27 20:09:11 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=?
+2025-06-27 20:09:11 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_protected
+2025-06-27 20:09:11 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_favorite
+2025-06-27 20:09:11 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND c.isProtected = false 
+        AND c.lastActivity < :cutoffDate */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and c1_0.is_protected=0 
+            and c1_0.last_activity<?
+2025-06-27 20:09:11 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(c1_0.id) 
+    from
+        chats c1_0 
+    where
+        c1_0.user_id=? 
+        and c1_0.is_protected
+2025-06-27 20:09:11 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats
+2025-06-27 20:09:11 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:11 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats
+2025-06-27 20:09:11 [http-nio-8080-exec-6] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:11 [http-nio-8080-exec-6] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:11 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:11 [http-nio-8080-exec-6] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:11 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:11 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats
+2025-06-27 20:09:11 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:11 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats
+2025-06-27 20:09:11 [http-nio-8080-exec-7] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:11 [http-nio-8080-exec-7] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:11 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:11 [http-nio-8080-exec-7] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:11 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:12 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:12 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:12 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:12 [http-nio-8080-exec-10] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:12 [http-nio-8080-exec-10] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:12 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:12 [http-nio-8080-exec-10] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:12 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:12 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:12 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:12 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:12 [http-nio-8080-exec-9] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:12 [http-nio-8080-exec-9] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:12 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:12 [http-nio-8080-exec-9] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:12 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:12 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:12 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:12 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:12 [http-nio-8080-exec-8] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:12 [http-nio-8080-exec-8] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:12 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:12 [http-nio-8080-exec-8] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:12 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:12 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:12 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:12 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:12 [http-nio-8080-exec-4] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:12 [http-nio-8080-exec-4] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:12 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:12 [http-nio-8080-exec-4] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:12 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:15 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=true
+2025-06-27 20:09:15 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:15 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=true
+2025-06-27 20:09:15 [http-nio-8080-exec-2] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:15 [http-nio-8080-exec-2] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:15 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:15 [http-nio-8080-exec-2] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=true, timeFilter=null
+2025-06-27 20:09:15 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:15 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:15 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:15 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /history/chats?page=0&size=20&timeFilter=all&aiType=all&isFavorite=false
+2025-06-27 20:09:15 [http-nio-8080-exec-3] INFO  c.a.controller.HistoryController - 获取用户对话列表: page=0, size=20, keyword=null
+2025-06-27 20:09:15 [http-nio-8080-exec-3] DEBUG c.a.controller.HistoryController - 当前认证主体: 2581235653@qq.com
+2025-06-27 20:09:15 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:15 [http-nio-8080-exec-3] INFO  c.a.controller.HistoryController - 查询参数: keyword=null, aiType=null, favorite=null, timeFilter=null
+2025-06-27 20:09:15 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        c 
+    FROM
+        Chat c 
+    WHERE
+        c.userId = :userId 
+        AND (
+            :keyword IS NULL 
+            OR c.title LIKE :keyword_1
+        ) 
+        AND (
+            :aiType IS NULL 
+            OR c.aiType = :aiType
+        ) 
+        AND (
+            :isFavorite IS NULL 
+            OR c.isFavorite = :isFavorite
+        ) 
+        AND (
+            :timeFilter IS NULL 
+            OR c.lastActivity >= :timeFilter
+        ) 
+    ORDER BY
+        c.lastActivity DESC */ select
+            c1_0.id,
+            c1_0.ai_type,
+            c1_0.created_at,
+            c1_0.is_favorite,
+            c1_0.is_protected,
+            c1_0.last_activity,
+            c1_0.message_count,
+            c1_0.title,
+            c1_0.updated_at,
+            c1_0.user_id 
+        from
+            chats c1_0 
+        where
+            c1_0.user_id=? 
+            and (
+                ? is null 
+                or c1_0.title like replace(?, '\\', '\\\\')
+            ) 
+            and (
+                ? is null 
+                or c1_0.ai_type=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.is_favorite=?
+            ) 
+            and (
+                ? is null 
+                or c1_0.last_activity>=?
+            ) 
+        order by
+            c1_0.last_activity desc 
+        limit
+            ?, ?
+2025-06-27 20:09:31 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /auth/logout
+2025-06-27 20:09:31 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:31 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured POST /auth/logout
+2025-06-27 20:09:55 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing POST /auth/login
+2025-06-27 20:09:55 [http-nio-8080-exec-10] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2025-06-27 20:09:55 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured POST /auth/login
+2025-06-27 20:09:55 [http-nio-8080-exec-10] INFO  c.a.controller.AuthController - 收到用户登录请求: admin@aiplatform.com
+2025-06-27 20:09:55 [http-nio-8080-exec-10] INFO  com.aiplatform.service.UserService - 用户登录请求: admin@aiplatform.com
+2025-06-27 20:09:55 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:55 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-27 20:09:55 [http-nio-8080-exec-10] DEBUG o.s.s.a.d.DaoAuthenticationProvider - Failed to authenticate since password does not match stored value
+2025-06-27 20:09:55 [http-nio-8080-exec-10] WARN  com.aiplatform.service.UserService - 用户登录失败: admin@aiplatform.com
+2025-06-27 20:09:55 [http-nio-8080-exec-10] ERROR c.a.controller.AuthController - 登录业务异常: 用户名或密码错误
+2025-06-27 20:17:33 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-27 20:17:33 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-06-27 20:17:33 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

@@ -9,6 +9,7 @@ G:\sework\server\java-backend\src\main\java\com\aiplatform\repository\AdminMessa
 G:\sework\server\java-backend\src\main\java\com\aiplatform\controller\UserController.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\controller\HistoryController.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\exception\GlobalExceptionHandler.java
+G:\sework\server\java-backend\src\main\java\com\aiplatform\util\SimplePasswordGenerator.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\config\CorsFilter.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\repository\UserRepository.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\entity\AdminMessage.java

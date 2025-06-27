@@ -166,4 +166,13 @@ public class UserDTO {
         private User.UserRole role;
         private String reason;
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserRoleUpdateRequest {
+        @NotBlank(message = "角色不能为空")
+        private String role; // admin, support, user
+        private String reason; // 修改原因
+    }
 } 

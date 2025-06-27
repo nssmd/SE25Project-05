@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.http.HttpMethod;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,9 +36,6 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
-                // 明确允许所有OPTIONS请求（CORS预检请求）
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                
                 // 公开访问的端点 - 注意context-path是/api，所以实际路径是/auth/register
                 .requestMatchers("/auth/register", "/auth/login").permitAll()
                 .requestMatchers("/auth/logout").permitAll()
@@ -64,11 +60,11 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // 允许的源 - 明确指定前端地址
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://127.0.0.1:3000"));
+        // 允许的源
+        configuration.setAllowedOriginPatterns(List.of("*"));
         
         // 允许的HTTP方法
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         
         // 允许的请求头
         configuration.setAllowedHeaders(Arrays.asList("*"));
@@ -78,9 +74,6 @@ public class SecurityConfig {
         
         // 暴露的响应头
         configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
-        
-        // 预检请求的缓存时间
-        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

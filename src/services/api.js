@@ -155,6 +155,9 @@ export const adminAPI = {
   // 更新用户权限
   updateUserPermissions: (userId, permissions) => api.patch(`/admin/users/${userId}/permissions`, { permissions }),
   
+  // 修改用户角色
+  updateUserRole: (userId, roleData) => api.put(`/admin/users/${userId}/role`, roleData),
+  
   // 发送消息
   sendMessage: (messageData) => api.post('/admin/messages/send', messageData),
   

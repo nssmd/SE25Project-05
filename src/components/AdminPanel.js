@@ -14,6 +14,10 @@ const AdminPanel = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [messageText, setMessageText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const [roleUpdateUser, setRoleUpdateUser] = useState(null);
+  const [newRole, setNewRole] = useState('');
+  const [roleChangeReason, setRoleChangeReason] = useState('');
 
   // 加载用户数据
   useEffect(() => {
@@ -110,6 +114,47 @@ const AdminPanel = () => {
     } catch (error) {
       console.error('发送消息失败:', error);
       alert('发送消息失败');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 打开角色修改对话框
+  const openRoleModal = (user) => {
+    setRoleUpdateUser(user);
+    setNewRole(user.role);
+    setRoleChangeReason('');
+    setShowRoleModal(true);
+  };
+
+  // 修改用户角色
+  const updateUserRole = async () => {
+    if (!roleUpdateUser || !newRole || !roleChangeReason.trim()) {
+      alert('请填写完整的角色信息和修改原因');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      
+      const updatedUser = await adminAPI.updateUserRole(roleUpdateUser.id, {
+        role: newRole,
+        reason: roleChangeReason
+      });
+      
+      // 更新本地用户列表
+      setUsers(prev => prev.map(user => 
+        user.id === roleUpdateUser.id ? updatedUser : user
+      ));
+      
+      alert(`用户 ${roleUpdateUser.username} 的角色已更新为 ${getRoleName(newRole)}`);
+      setShowRoleModal(false);
+      setRoleUpdateUser(null);
+      setNewRole('');
+      setRoleChangeReason('');
+    } catch (error) {
+      console.error('修改用户角色失败:', error);
+      alert('修改用户角色失败: ' + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -260,6 +305,14 @@ const AdminPanel = () => {
                     {user.status === 'active' ? '禁用' : '解禁'}
                   </button>
                   <button 
+                    className="action-btn role"
+                    onClick={() => openRoleModal(user)}
+                    disabled={isLoading}
+                  >
+                    <Crown size={16} />
+                    改角色
+                  </button>
+                  <button 
                     className="action-btn message"
                     onClick={() => setSelectedUser(user)}
                   >
@@ -374,6 +427,80 @@ const AdminPanel = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 修改角色弹窗 */}
+      {showRoleModal && roleUpdateUser && (
+        <div className="modal-overlay">
+          <div className="role-modal">
+            <div className="modal-header">
+              <h3>修改用户角色</h3>
+              <button 
+                className="close-btn"
+                onClick={() => setShowRoleModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-content">
+              <div className="user-info-section">
+                <div className="user-avatar">
+                  {roleUpdateUser.username.charAt(0)}
+                </div>
+                <div>
+                  <div className="user-name">{roleUpdateUser.username}</div>
+                  <div className="user-email">{roleUpdateUser.email}</div>
+                  <div className="current-role">
+                    当前角色: <span className={`role-badge ${roleUpdateUser.role}`}>
+                      {getRoleIcon(roleUpdateUser.role)}
+                      {getRoleName(roleUpdateUser.role)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>新角色</label>
+                <select 
+                  value={newRole} 
+                  onChange={(e) => setNewRole(e.target.value)}
+                  className="role-select"
+                >
+                  <option value="user">普通用户</option>
+                  <option value="support">客服</option>
+                  <option value="admin">管理员</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>修改原因 *</label>
+                <textarea
+                  placeholder="请说明修改角色的原因..."
+                  value={roleChangeReason}
+                  onChange={(e) => setRoleChangeReason(e.target.value)}
+                  rows="3"
+                  className="reason-textarea"
+                />
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button 
+                className="cancel-btn"
+                onClick={() => setShowRoleModal(false)}
+              >
+                取消
+              </button>
+              <button 
+                className="confirm-btn"
+                onClick={updateUserRole}
+                disabled={!newRole || !roleChangeReason.trim() || isLoading}
+              >
+                <Crown size={16} />
+                确认修改
+              </button>
             </div>
           </div>
         </div>
