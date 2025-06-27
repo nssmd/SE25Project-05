@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   MessageSquare, 
@@ -21,15 +21,17 @@ import {
   User,
   Crown
 } from 'lucide-react';
+import { chatAPI } from '../services/api';
 import './Dashboard.css';
 
 const Dashboard = ({ user, onLogout }) => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('text-to-text');
+  const [activeTab, setActiveTab] = useState('text_to_text');
   const [selectedModel, setSelectedModel] = useState('gpt-4');
   const [inputText, setInputText] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentChat, setCurrentChat] = useState(null);
 
   const aiModels = [
     { id: 'gpt-4', name: 'GPT-4', type: 'cloud', description: '最强大的语言模型' },
@@ -39,45 +41,70 @@ const Dashboard = ({ user, onLogout }) => {
   ];
 
   const features = [
-    { id: 'text-to-text', name: '文生文', icon: MessageSquare, description: '文本对话生成' },
-    { id: 'text-to-image', name: '文生图', icon: Image, description: '根据文本生成图像' },
-    { id: 'image-to-image', name: '图生图', icon: Image, description: '图像风格转换' },
-    { id: 'image-to-text', name: '图生文', icon: FileText, description: '图像内容描述' },
-    { id: 'text-to-video', name: '文生视频', icon: Video, description: '文本生成视频' },
-    { id: 'text-to-3d', name: '文生3D', icon: Box, description: '文本生成3D模型' },
+    { id: 'text_to_text', name: '文生文', icon: MessageSquare, description: '文本对话生成' },
+    { id: 'text_to_image', name: '文生图', icon: Image, description: '根据文本生成图像' },
+    { id: 'image_to_image', name: '图生图', icon: Image, description: '图像风格转换' },
+    { id: 'image_to_text', name: '图生文', icon: FileText, description: '图像内容描述' },
+    { id: 'text_to_video', name: '文生视频', icon: Video, description: '文本生成视频' },
+    { id: 'text_to_3d', name: '文生3D', icon: Box, description: '文本生成3D模型' },
   ];
 
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
-
-    const newMessage = {
-      id: Date.now(),
-      type: 'user',
-      content: inputText,
-      timestamp: new Date(),
-    };
-
-    setChatHistory(prev => [...prev, newMessage]);
-    setInputText('');
+    
     setIsLoading(true);
-
+    
     try {
-      // 模拟AI响应
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // 如果没有当前对话，先创建一个
+      let chatId = currentChat?.id;
+      if (!chatId) {
+        const createResponse = await chatAPI.create({
+          title: inputText.substring(0, 50) + '...',
+          aiType: activeTab
+        });
+        chatId = createResponse.chat.id;
+        setCurrentChat(createResponse.chat);
+      }
       
-      const aiResponse = {
-        id: Date.now() + 1,
-        type: 'ai',
-        content: `这是${aiModels.find(m => m.id === selectedModel)?.name}的响应：${inputText}`,
-        timestamp: new Date(),
-        model: selectedModel,
+      // 添加用户消息到界面
+      const userMessage = {
+        id: Date.now(),
+        role: 'user',
+        content: inputText,
+        createdAt: new Date()
       };
-
-      setChatHistory(prev => [...prev, aiResponse]);
+      
+      setChatHistory(prev => [...prev, userMessage]);
+      
+      // 发送消息到后端
+      const response = await chatAPI.sendMessage(chatId, {
+        content: inputText,
+        role: 'user'
+      });
+      
+      // 添加AI响应到界面
+      const aiMessage = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: response.response,
+        createdAt: new Date()
+      };
+      
+      setChatHistory(prev => [...prev, aiMessage]);
+      
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('发送消息失败:', error);
+      // 显示错误消息
+      const errorMessage = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: '抱歉，发送消息时出现错误，请稍后重试。',
+        createdAt: new Date()
+      };
+      setChatHistory(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
+      setInputText('');
     }
   };
 
@@ -115,24 +142,23 @@ const Dashboard = ({ user, onLogout }) => {
           </div>
         </div>
 
-        {activeTab === 'text-to-text' && (
+        {activeTab === 'text_to_text' && (
           <div className="chat-container">
             <div className="chat-messages">
               {chatHistory.map(message => (
-                <div key={message.id} className={`message ${message.type}`}>
+                <div key={message.id} className={`message ${message.role}`}>
                   <div className="message-content">
                     {message.content}
                   </div>
                   <div className="message-meta">
-                    {message.type === 'ai' && <span className="model-tag">{message.model}</span>}
                     <span className="timestamp">
-                      {message.timestamp.toLocaleTimeString()}
+                      {new Date(message.createdAt).toLocaleTimeString()}
                     </span>
                   </div>
                 </div>
               ))}
               {isLoading && (
-                <div className="message ai loading">
+                <div className="message assistant loading">
                   <div className="typing-indicator">
                     <span></span>
                     <span></span>
@@ -162,22 +188,19 @@ const Dashboard = ({ user, onLogout }) => {
           </div>
         )}
 
-        {activeTab !== 'text-to-text' && (
+        {activeTab !== 'text_to_text' && (
           <div className="feature-placeholder">
             <div className="placeholder-content">
               <Upload size={48} />
-              <h3>功能开发中</h3>
+              <h3>功能正在开发中</h3>
               <p>
-                {activeTab === 'text-to-image' && '上传图片或输入文本描述来生成图像'}
-                {activeTab === 'image-to-image' && '上传图片进行风格转换'}
-                {activeTab === 'image-to-text' && '上传图片获取内容描述'}
-                {activeTab === 'text-to-video' && '输入文本描述生成视频'}
-                {activeTab === 'text-to-3d' && '输入文本描述生成3D模型'}
+                {activeTab === 'text_to_image' && '文本生成图像功能即将上线'}
+                {activeTab === 'image_to_image' && '图像风格转换功能即将上线'}
+                {activeTab === 'image_to_text' && '图像内容识别功能即将上线'}
+                {activeTab === 'text_to_video' && '文本生成视频功能即将上线'}
+                {activeTab === 'text_to_3d' && '文本生成3D模型功能即将上线'}
               </p>
-              <button className="upload-button">
-                <Upload size={20} />
-                上传文件
-              </button>
+              <p>敬请期待！</p>
             </div>
           </div>
         )}
@@ -195,10 +218,10 @@ const Dashboard = ({ user, onLogout }) => {
           </div>
           <div className="user-info">
             <div className="user-avatar">
-              {user?.name?.charAt(0) || 'U'}
-            </div>
-            <div className="user-details">
-              <span className="user-name">{user?.name}</span>
+                              {(user?.username || user?.name)?.charAt(0) || 'U'}
+              </div>
+              <div className="user-details">
+                <span className="user-name">{user?.username || user?.name}</span>
               <span className="user-email">{user?.email}</span>
             </div>
           </div>

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2, Clock, Database, Settings, Save, AlertTriangle, CheckCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Trash2, Clock, Database, Settings, Save, AlertTriangle, CheckCircle, ArrowLeft } from 'lucide-react';
+import { dataAPI } from '../services/api';
 import './DataManagement.css';
 
-const DataManagement = () => {
+const DataManagement = ({ user, onLogout }) => {
+  const navigate = useNavigate();
   const [settings, setSettings] = useState({
     autoDelete: true,
     retentionDays: 30,
@@ -19,19 +22,30 @@ const DataManagement = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [confirmAction, setConfirmAction] = useState('');
+  const [confirmAction, setConfirmAction] = useState(null);
+  const [isLoadingData, setIsLoadingData] = useState(false);
 
-  // 模拟获取统计数据
+  // 加载数据
   useEffect(() => {
-    const mockStats = {
-      totalChats: 87,
-      oldChats: 23,
-      protectedChats: 5,
-      totalSize: '2.3 GB',
-      lastCleanup: '2024-01-19 10:30:00'
-    };
-    setStats(mockStats);
+    loadData();
   }, []);
+  
+  const loadData = async () => {
+    try {
+      setIsLoadingData(true);
+      const [settingsResponse, statsResponse] = await Promise.all([
+        dataAPI.getSettings(),
+        dataAPI.getStatistics()
+      ]);
+      
+      setSettings(settingsResponse);
+      setStats(statsResponse);
+    } catch (error) {
+      console.error('加载数据失败:', error);
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
 
   // 保存设置
   const handleSaveSettings = async () => {
@@ -61,51 +75,78 @@ const DataManagement = () => {
 
   // 确认操作
   const confirmOperation = async () => {
-    setIsLoading(true);
-    setShowConfirm(false);
-    
-    // 模拟API调用
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    if (confirmAction === 'cleanup') {
-      // 模拟清理过期数据
-      setStats(prev => ({
-        ...prev,
-        totalChats: prev.totalChats - prev.oldChats,
-        oldChats: 0,
-        totalSize: '1.8 GB',
-        lastCleanup: new Date().toLocaleString('zh-CN')
-      }));
-      alert('清理完成！删除了过期的对话记录。');
-    } else if (confirmAction === 'deleteAll') {
-      // 模拟删除所有数据
-      setStats(prev => ({
-        ...prev,
-        totalChats: prev.protectedChats,
-        oldChats: 0,
-        totalSize: '0.3 GB',
-        lastCleanup: new Date().toLocaleString('zh-CN')
-      }));
-      alert('所有非保护数据已删除！');
+    try {
+      setIsLoading(true);
+      setShowConfirm(false);
+      
+      if (confirmAction === 'cleanup') {
+        await dataAPI.cleanup();
+        alert('清理完成！删除了过期的对话记录。');
+        loadData(); // 重新加载数据
+      } else if (confirmAction === 'deleteAll') {
+        await dataAPI.deleteAll('CONFIRM_DELETE');
+        alert('所有非保护数据已删除！');
+        loadData(); // 重新加载数据
+      }
+    } catch (error) {
+      console.error('操作失败:', error);
+      alert('操作失败，请重试');
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   // 获取存储使用情况颜色
   const getStorageColor = () => {
-    const sizeNum = parseFloat(stats.totalSize);
+    if (!stats) return '#10b981';
+    const sizeNum = parseFloat(stats.totalSize || '0');
     if (sizeNum < 1) return '#10b981'; // 绿色
     if (sizeNum < 3) return '#f59e0b'; // 橙色
     return '#ef4444'; // 红色
   };
+  
+  if (isLoading && !stats) {
+    return (
+      <div className="data-management">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>加载中...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (!stats || !settings) {
+    return (
+      <div className="data-management">
+        <div className="error-container">
+          <p>加载数据失败，请刷新页面重试。</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="data-management">
-      <div className="dm-header">
-        <h2>数据管理</h2>
-        <p>管理您的对话数据，设置自动清理规则</p>
-      </div>
+      <header className="page-header">
+        <button 
+          className="back-button"
+          onClick={() => navigate('/dashboard')}
+        >
+          <ArrowLeft size={20} />
+          返回主界面
+        </button>
+        <div className="header-content">
+          <h1>数据管理</h1>
+          <p>管理您的对话数据，设置自动清理规则</p>
+        </div>
+        <div className="user-info">
+          <span>{user?.username || user?.name}</span>
+          <button onClick={onLogout} className="logout-btn">退出</button>
+        </div>
+      </header>
+      
+      <div className="dm-content">
 
       {/* 统计信息 */}
       <div className="stats-grid">
@@ -321,6 +362,7 @@ const DataManagement = () => {
           <p>处理中...</p>
         </div>
       )}
+      </div>
     </div>
   );
 };

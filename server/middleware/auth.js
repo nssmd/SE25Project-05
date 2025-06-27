@@ -47,7 +47,7 @@ const logAction = async (userId, action, details = {}, ipAddress = null, userAge
   try {
     await query(`
       INSERT INTO system_logs (user_id, action, details, ip_address, user_agent)
-      VALUES ($1, $2, $3, $4, $5)
+      VALUES (?, ?, ?, ?, ?)
     `, [userId, action, JSON.stringify(details), ipAddress, userAgent]);
   } catch (error) {
     console.error('Failed to log action:', error);
@@ -60,7 +60,7 @@ const checkPermission = async (userId, permission) => {
     const result = await query(`
       SELECT permissions 
       FROM users 
-      WHERE id = $1 AND status = 'active'
+      WHERE id = ? AND status = 'active'
     `, [userId]);
 
     if (result.rows.length === 0) {
@@ -68,7 +68,8 @@ const checkPermission = async (userId, permission) => {
     }
 
     const permissions = result.rows[0].permissions;
-    return permissions[permission] === true;
+    const parsedPermissions = typeof permissions === 'string' ? JSON.parse(permissions) : permissions;
+    return parsedPermissions[permission] === true;
   } catch (error) {
     console.error('Failed to check permission:', error);
     return false;

@@ -1,183 +1,344 @@
-const { query } = require('./config/database');
+const { query, generateCreateTableSQL, entityMapping } = require('./config/database');
+require('dotenv').config();
 
-// 数据库表创建脚本
-const createTables = async () => {
+// 数据库初始化
+async function initializeDatabase() {
+  console.log('🚀 开始初始化数据库...');
+  
   try {
-    console.log('🔧 Starting database setup...');
-
-    // 1. 用户表
-    await query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        username VARCHAR(100),
-        role VARCHAR(20) DEFAULT 'user' CHECK (role IN ('admin', 'support', 'user')),
-        status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'banned', 'suspended')),
-        permissions JSONB DEFAULT '{}',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        last_login TIMESTAMP
-      )
-    `);
-
-    // 2. 对话表
-    await query(`
-      CREATE TABLE IF NOT EXISTS chats (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        title VARCHAR(500) NOT NULL,
-        ai_type VARCHAR(50) DEFAULT 'text_to_text',
-        is_favorite BOOLEAN DEFAULT false,
-        is_protected BOOLEAN DEFAULT false,
-        visibility VARCHAR(20) DEFAULT 'private' CHECK (visibility IN ('public', 'private')),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    // 3. 消息表
-    await query(`
-      CREATE TABLE IF NOT EXISTS messages (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        chat_id UUID NOT NULL REFERENCES chats(id) ON DELETE CASCADE,
-        role VARCHAR(20) NOT NULL CHECK (role IN ('user', 'assistant', 'system')),
-        content TEXT NOT NULL,
-        metadata JSONB DEFAULT '{}',
-        attachments JSONB DEFAULT '[]',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    // 4. 用户设置表
-    await query(`
-      CREATE TABLE IF NOT EXISTS user_settings (
-        user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
-        auto_cleanup_enabled BOOLEAN DEFAULT false,
-        retention_days INTEGER DEFAULT 30,
-        max_chats INTEGER DEFAULT 100,
-        protected_chats INTEGER DEFAULT 10,
-        cleanup_frequency VARCHAR(20) DEFAULT 'daily',
-        notifications JSONB DEFAULT '{}',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    // 5. 管理员消息表
-    await query(`
-      CREATE TABLE IF NOT EXISTS admin_messages (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        sender_id UUID NOT NULL REFERENCES users(id),
-        recipient_id UUID REFERENCES users(id),
-        message_type VARCHAR(20) DEFAULT 'personal' CHECK (message_type IN ('broadcast', 'personal')),
-        title VARCHAR(200),
-        content TEXT NOT NULL,
-        status VARCHAR(20) DEFAULT 'sent' CHECK (status IN ('sent', 'read', 'deleted')),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    // 6. 系统日志表
-    await query(`
-      CREATE TABLE IF NOT EXISTS system_logs (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        user_id UUID REFERENCES users(id),
-        action VARCHAR(100) NOT NULL,
-        details JSONB DEFAULT '{}',
-        ip_address INET,
-        user_agent TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    // 创建索引以提高查询性能
-    await query(`CREATE INDEX IF NOT EXISTS idx_chats_user_id ON chats(user_id)`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_chats_created_at ON chats(created_at DESC)`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_messages_chat_id ON messages(chat_id)`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_messages_created_at ON messages(created_at DESC)`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_users_role ON users(role)`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_admin_messages_recipient ON admin_messages(recipient_id)`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_system_logs_user_id ON system_logs(user_id)`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_system_logs_created_at ON system_logs(created_at DESC)`);
-
-    // 创建更新时间触发器函数
-    await query(`
-      CREATE OR REPLACE FUNCTION update_updated_at_column()
-      RETURNS TRIGGER AS $$
-      BEGIN
-        NEW.updated_at = CURRENT_TIMESTAMP;
-        RETURN NEW;
-      END;
-      $$ language 'plpgsql'
-    `);
-
-    // 为需要的表添加更新时间触发器
-    await query(`
-      DROP TRIGGER IF EXISTS update_users_updated_at ON users;
-      CREATE TRIGGER update_users_updated_at
-        BEFORE UPDATE ON users
-        FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()
-    `);
-
-    await query(`
-      DROP TRIGGER IF EXISTS update_chats_updated_at ON chats;
-      CREATE TRIGGER update_chats_updated_at
-        BEFORE UPDATE ON chats
-        FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()
-    `);
-
-    await query(`
-      DROP TRIGGER IF EXISTS update_user_settings_updated_at ON user_settings;
-      CREATE TRIGGER update_user_settings_updated_at
-        BEFORE UPDATE ON user_settings
-        FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()
-    `);
-
-    // 插入默认管理员用户（如果不存在）
-    const bcrypt = require('bcryptjs');
-    const adminPassword = await bcrypt.hash('admin123', 10);
+    // 创建所有表
+    const entities = Object.keys(entityMapping);
     
-    await query(`
-      INSERT INTO users (email, password, username, role, permissions)
-      VALUES ('admin@example.com', $1, 'Administrator', 'admin', 
-        '{"text_to_text": true, "text_to_image": true, "image_to_text": true, "voice_to_text": true, "text_to_voice": true, "file_analysis": true}'::jsonb)
-      ON CONFLICT (email) DO NOTHING
-    `, [adminPassword]);
-
-    // 插入默认客服用户
-    const supportPassword = await bcrypt.hash('support123', 10);
+    for (const entityName of entities) {
+      console.log(`📋 创建表: ${entityName}`);
+      const createSQL = generateCreateTableSQL(entityName);
+      await query(createSQL);
+      console.log(`✅ 表 ${entityName} 创建成功`);
+    }
     
-    await query(`
-      INSERT INTO users (email, password, username, role, permissions)
-      VALUES ('support@example.com', $1, 'Customer Support', 'support',
-        '{"text_to_text": true, "text_to_image": false, "image_to_text": true, "voice_to_text": true, "text_to_voice": true, "file_analysis": true}'::jsonb)
-      ON CONFLICT (email) DO NOTHING
-    `, [supportPassword]);
-
-    console.log('✅ Database setup completed successfully!');
-    console.log('📋 Default accounts created:');
-    console.log('   - Admin: admin@example.com / admin123');
-    console.log('   - Support: support@example.com / support123');
-
+    // 创建外键约束
+    await createForeignKeys();
+    
+    // 插入初始数据
+    await insertInitialData();
+    
+    console.log('🎉 数据库初始化完成！');
+    
   } catch (error) {
-    console.error('❌ Database setup failed:', error);
+    console.error('❌ 数据库初始化失败:', error);
     throw error;
   }
-};
-
-// 运行数据库初始化
-if (require.main === module) {
-  createTables()
-    .then(() => {
-      console.log('🎉 Database initialization completed!');
-      process.exit(0);
-    })
-    .catch((error) => {
-      console.error('💥 Database initialization failed:', error);
-      process.exit(1);
-    });
 }
 
-module.exports = { createTables }; 
+// 创建外键约束
+async function createForeignKeys() {
+  console.log('🔗 创建外键约束...');
+  
+  const foreignKeys = [
+    // chats表的外键
+    {
+      table: 'chats',
+      constraint: 'fk_chats_user_id',
+      sql: 'ALTER TABLE chats ADD CONSTRAINT fk_chats_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE'
+    },
+    
+    // messages表的外键
+    {
+      table: 'messages',
+      constraint: 'fk_messages_chat_id',
+      sql: 'ALTER TABLE messages ADD CONSTRAINT fk_messages_chat_id FOREIGN KEY (chat_id) REFERENCES chats(id) ON DELETE CASCADE'
+    },
+    {
+      table: 'messages',
+      constraint: 'fk_messages_user_id',
+      sql: 'ALTER TABLE messages ADD CONSTRAINT fk_messages_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE'
+    },
+    {
+      table: 'messages',
+      constraint: 'fk_messages_parent_id',
+      sql: 'ALTER TABLE messages ADD CONSTRAINT fk_messages_parent_id FOREIGN KEY (parent_id) REFERENCES messages(id) ON DELETE SET NULL'
+    },
+    
+    // user_settings表的外键
+    {
+      table: 'user_settings',
+      constraint: 'fk_user_settings_user_id',
+      sql: 'ALTER TABLE user_settings ADD CONSTRAINT fk_user_settings_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE'
+    },
+    
+    // admin_messages表的外键
+    {
+      table: 'admin_messages',
+      constraint: 'fk_admin_messages_sender_id',
+      sql: 'ALTER TABLE admin_messages ADD CONSTRAINT fk_admin_messages_sender_id FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE'
+    },
+    {
+      table: 'admin_messages',
+      constraint: 'fk_admin_messages_recipient_id',
+      sql: 'ALTER TABLE admin_messages ADD CONSTRAINT fk_admin_messages_recipient_id FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE'
+    }
+  ];
+  
+  for (const fk of foreignKeys) {
+    try {
+      await query(fk.sql);
+      console.log(`✅ 外键约束 ${fk.constraint} 创建成功`);
+    } catch (error) {
+      if (error.code === 'ER_DUP_KEYNAME') {
+        console.log(`⚠️  外键约束 ${fk.constraint} 已存在，跳过`);
+      } else {
+        console.error(`❌ 创建外键约束 ${fk.constraint} 失败:`, error.message);
+      }
+    }
+  }
+}
+
+// 插入初始数据
+async function insertInitialData() {
+  console.log('📝 插入初始数据...');
+  
+  try {
+    // 检查是否已有管理员用户
+    const adminCheck = await query('SELECT COUNT(*) as count FROM users WHERE role = "admin"');
+    
+    if (adminCheck.rows[0].count === 0) {
+      console.log('👑 创建默认管理员账户...');
+      
+      const bcrypt = require('bcryptjs');
+      const hashedPassword = await bcrypt.hash('admin123', 12);
+      
+      // 创建管理员用户
+      await query(`
+        INSERT INTO users (
+          username, email, password, real_name, role, status, 
+          email_verified, preferences, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+      `, [
+        'admin',
+        'admin@example.com',
+        hashedPassword,
+        '系统管理员',
+        'admin',
+        'active',
+        true,
+        JSON.stringify({
+          theme: 'light',
+          language: 'zh-CN',
+          notifications: {
+            email: true,
+            push: true,
+            desktop: true,
+            sound: true
+          }
+        })
+      ]);
+      
+      console.log('✅ 管理员账户创建成功 (admin@example.com / admin123)');
+    } else {
+      console.log('⚠️  管理员账户已存在，跳过创建');
+    }
+    
+    // 检查是否已有客服用户
+    const csCheck = await query('SELECT COUNT(*) as count FROM users WHERE role = "customer_service"');
+    
+    if (csCheck.rows[0].count === 0) {
+      console.log('🎧 创建默认客服账户...');
+      
+      const bcrypt = require('bcryptjs');
+      const hashedPassword = await bcrypt.hash('support123', 12);
+      
+      // 创建客服用户
+      await query(`
+        INSERT INTO users (
+          username, email, password, real_name, role, status, 
+          email_verified, preferences, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+      `, [
+        'support',
+        'support@example.com',
+        hashedPassword,
+        '客服代表',
+        'customer_service',
+        'active',
+        true,
+        JSON.stringify({
+          theme: 'light',
+          language: 'zh-CN',
+          notifications: {
+            email: true,
+            push: true,
+            desktop: true,
+            sound: true
+          }
+        })
+      ]);
+      
+      console.log('✅ 客服账户创建成功 (support@example.com / support123)');
+    } else {
+      console.log('⚠️  客服账户已存在，跳过创建');
+    }
+    
+    // 检查是否已有普通用户
+    const userCheck = await query('SELECT COUNT(*) as count FROM users WHERE role = "user"');
+    
+    if (userCheck.rows[0].count === 0) {
+      console.log('👤 创建默认普通用户账户...');
+      
+      const bcrypt = require('bcryptjs');
+      const hashedPassword = await bcrypt.hash('user123', 12);
+      
+      // 创建普通用户
+      await query(`
+        INSERT INTO users (
+          username, email, password, real_name, role, status, 
+          email_verified, preferences, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+      `, [
+        'testuser',
+        'user@example.com',
+        hashedPassword,
+        '测试用户',
+        'user',
+        'active',
+        true,
+        JSON.stringify({
+          theme: 'light',
+          language: 'zh-CN',
+          notifications: {
+            email: true,
+            push: false,
+            desktop: false,
+            sound: true
+          }
+        })
+      ]);
+      
+      console.log('✅ 普通用户账户创建成功 (user@example.com / user123)');
+    } else {
+      console.log('⚠️  普通用户账户已存在，跳过创建');
+    }
+    
+    console.log('📊 初始数据插入完成');
+    
+  } catch (error) {
+    console.error('❌ 插入初始数据失败:', error);
+    throw error;
+  }
+}
+
+// 创建索引
+async function createIndexes() {
+  console.log('🔍 创建数据库索引...');
+  
+  const indexes = [
+    // users表索引
+    'CREATE INDEX idx_users_email ON users(email)',
+    'CREATE INDEX idx_users_username ON users(username)',
+    'CREATE INDEX idx_users_role ON users(role)',
+    'CREATE INDEX idx_users_status ON users(status)',
+    'CREATE INDEX idx_users_created_at ON users(created_at)',
+    
+    // chats表索引
+    'CREATE INDEX idx_chats_user_id ON chats(user_id)',
+    'CREATE INDEX idx_chats_type ON chats(type)',
+    'CREATE INDEX idx_chats_status ON chats(status)',
+    'CREATE INDEX idx_chats_created_at ON chats(created_at)',
+    'CREATE INDEX idx_chats_is_favorite ON chats(is_favorite)',
+    'CREATE INDEX idx_chats_is_protected ON chats(is_protected)',
+    
+    // messages表索引
+    'CREATE INDEX idx_messages_chat_id ON messages(chat_id)',
+    'CREATE INDEX idx_messages_user_id ON messages(user_id)',
+    'CREATE INDEX idx_messages_role ON messages(role)',
+    'CREATE INDEX idx_messages_created_at ON messages(created_at)',
+    'CREATE INDEX idx_messages_parent_id ON messages(parent_id)',
+    
+    // user_settings表索引
+    'CREATE INDEX idx_user_settings_user_id ON user_settings(user_id)',
+    
+    // admin_messages表索引
+    'CREATE INDEX idx_admin_messages_sender_id ON admin_messages(sender_id)',
+    'CREATE INDEX idx_admin_messages_recipient_id ON admin_messages(recipient_id)',
+    'CREATE INDEX idx_admin_messages_type ON admin_messages(message_type)',
+    'CREATE INDEX idx_admin_messages_created_at ON admin_messages(created_at)',
+    'CREATE INDEX idx_admin_messages_is_read ON admin_messages(is_read)'
+  ];
+  
+  for (const indexSQL of indexes) {
+    try {
+      await query(indexSQL);
+      console.log(`✅ 索引创建成功: ${indexSQL.match(/idx_\w+/)[0]}`);
+    } catch (error) {
+      if (error.code === 'ER_DUP_KEYNAME') {
+        console.log(`⚠️  索引已存在，跳过: ${indexSQL.match(/idx_\w+/)[0]}`);
+      } else {
+        console.error(`❌ 创建索引失败:`, error.message);
+      }
+    }
+  }
+}
+
+// 显示数据库信息
+async function showDatabaseInfo() {
+  console.log('\n📊 数据库信息:');
+  
+  try {
+    // 显示所有表
+    const tables = await query('SHOW TABLES');
+    console.log('📋 数据表:');
+    tables.rows.forEach(table => {
+      const tableName = Object.values(table)[0];
+      console.log(`  - ${tableName}`);
+    });
+    
+    // 显示用户统计
+    const userStats = await query(`
+      SELECT 
+        role,
+        COUNT(*) as count
+      FROM users 
+      GROUP BY role
+    `);
+    
+    console.log('\n👥 用户统计:');
+    userStats.rows.forEach(stat => {
+      console.log(`  - ${stat.role}: ${stat.count} 人`);
+    });
+    
+  } catch (error) {
+    console.error('❌ 获取数据库信息失败:', error);
+  }
+}
+
+// 主函数
+async function main() {
+  try {
+    await initializeDatabase();
+    await createIndexes();
+    await showDatabaseInfo();
+    
+    console.log('\n🎉 数据库设置完成！');
+    console.log('\n📝 默认账户信息:');
+    console.log('管理员: admin@example.com / admin123');
+    console.log('客服: support@example.com / support123');
+    console.log('用户: user@example.com / user123');
+    
+    process.exit(0);
+  } catch (error) {
+    console.error('❌ 数据库设置失败:', error);
+    process.exit(1);
+  }
+}
+
+// 如果直接运行此文件
+if (require.main === module) {
+  main();
+}
+
+module.exports = {
+  initializeDatabase,
+  createForeignKeys,
+  insertInitialData,
+  createIndexes,
+  showDatabaseInfo
+}; 

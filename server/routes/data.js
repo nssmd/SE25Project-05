@@ -1,11 +1,12 @@
 const express = require('express');
 const { query, transaction } = require('../config/database');
-const { authenticateToken, logAction } = require('../middleware/auth');
+const { authenticateToken, logAction, rateLimit } = require('../middleware/auth');
 
 const router = express.Router();
 
-// 应用认证
+// 应用认证和速率限制
 router.use(authenticateToken);
+router.use(rateLimit(60000, 10)); // 每分钟最多10个请求
 
 // 获取用户设置
 router.get('/settings', async (req, res) => {
@@ -13,13 +14,13 @@ router.get('/settings', async (req, res) => {
     const userId = req.user.userId;
 
     const result = await query(`
-      SELECT * FROM user_settings WHERE user_id = $1
+      SELECT * FROM user_settings WHERE user_id = ?
     `, [userId]);
 
     if (result.rows.length === 0) {
       // 如果没有设置记录，创建默认设置
       await query(`
-        INSERT INTO user_settings (user_id) VALUES ($1)
+        INSERT INTO user_settings (user_id) VALUES (?)
       `, [userId]);
 
       return res.json({
@@ -77,28 +78,35 @@ router.put('/settings', async (req, res) => {
     const result = await query(`
       UPDATE user_settings 
       SET 
-        auto_cleanup_enabled = COALESCE($2, auto_cleanup_enabled),
-        retention_days = COALESCE($3, retention_days),
-        max_chats = COALESCE($4, max_chats),
-        protected_chats = COALESCE($5, protected_chats),
-        cleanup_frequency = COALESCE($6, cleanup_frequency),
-        notifications = COALESCE($7, notifications),
-        updated_at = CURRENT_TIMESTAMP
-      WHERE user_id = $1
-      RETURNING *
+        auto_cleanup_enabled = COALESCE(?, auto_cleanup_enabled),
+        retention_days = COALESCE(?, retention_days),
+        max_chats = COALESCE(?, max_chats),
+        protected_chats = COALESCE(?, protected_chats),
+        cleanup_frequency = COALESCE(?, cleanup_frequency),
+        notifications = COALESCE(?, notifications),
+        updated_at = NOW()
+      WHERE user_id = ?
     `, [
-      userId,
       autoCleanupEnabled,
       retentionDays,
       maxChats,
       protectedChats,
       cleanupFrequency,
-      notifications ? JSON.stringify(notifications) : null
+      notifications ? JSON.stringify(notifications) : null,
+      userId
     ]);
 
-    if (result.rows.length === 0) {
+    // MySQL使用affectedRows检查是否更新成功
+    if (result.affectedRows === 0) {
       return res.status(404).json({ error: 'Settings not found' });
     }
+    
+    // 重新获取更新后的设置
+    const updatedSettingsResult = await query(`
+      SELECT * FROM user_settings WHERE user_id = ?
+    `, [userId]);
+    
+    const updatedSettings = updatedSettingsResult.rows[0];
 
     // 记录操作日志
     await logAction(userId, 'SETTINGS_UPDATED', {
@@ -108,18 +116,14 @@ router.put('/settings', async (req, res) => {
       protectedChats,
       cleanupFrequency
     }, req.ip, req.get('User-Agent'));
-
-    const settings = result.rows[0];
     res.json({
       message: 'Settings updated successfully',
-      settings: {
-        autoCleanupEnabled: settings.auto_cleanup_enabled,
-        retentionDays: settings.retention_days,
-        maxChats: settings.max_chats,
-        protectedChats: settings.protected_chats,
-        cleanupFrequency: settings.cleanup_frequency,
-        notifications: settings.notifications
-      }
+      autoCleanupEnabled: updatedSettings.auto_cleanup_enabled,
+      retentionDays: updatedSettings.retention_days,
+      maxChats: updatedSettings.max_chats,
+      protectedChats: updatedSettings.protected_chats,
+      cleanupFrequency: updatedSettings.cleanup_frequency,
+      notifications: updatedSettings.notifications
     });
 
   } catch (error) {
@@ -137,7 +141,7 @@ router.get('/statistics', async (req, res) => {
     const settingsResult = await query(`
       SELECT retention_days, max_chats, protected_chats
       FROM user_settings 
-      WHERE user_id = $1
+      WHERE user_id = ?
     `, [userId]);
 
     const settings = settingsResult.rows[0] || {
@@ -150,23 +154,23 @@ router.get('/statistics', async (req, res) => {
     const totalChatsResult = await query(`
       SELECT COUNT(*) as total
       FROM chats
-      WHERE user_id = $1
+      WHERE user_id = ?
     `, [userId]);
 
     // 过期对话数（根据保留天数计算）
     const expiredChatsResult = await query(`
       SELECT COUNT(*) as total
       FROM chats
-      WHERE user_id = $1 
+      WHERE user_id = ? 
         AND is_protected = false
-        AND created_at < CURRENT_DATE - INTERVAL '${settings.retention_days} days'
-    `, [userId]);
+        AND created_at < DATE_SUB(CURDATE(), INTERVAL ? DAY)
+    `, [userId, settings.retention_days]);
 
     // 保护对话数
     const protectedChatsResult = await query(`
       SELECT COUNT(*) as total
       FROM chats
-      WHERE user_id = $1 AND is_protected = true
+      WHERE user_id = ? AND is_protected = true
     `, [userId]);
 
     // 存储占用（估算）
@@ -177,7 +181,7 @@ router.get('/statistics', async (req, res) => {
         COALESCE(SUM(LENGTH(m.content)), 0) as total_content_size
       FROM chats c
       LEFT JOIN messages m ON c.id = m.chat_id
-      WHERE c.user_id = $1
+      WHERE c.user_id = ?
     `, [userId]);
 
     const storage = storageResult.rows[0];
@@ -189,8 +193,8 @@ router.get('/statistics', async (req, res) => {
         DATE(created_at) as date,
         COUNT(*) as count
       FROM chats
-      WHERE user_id = $1 
-        AND created_at >= CURRENT_DATE - INTERVAL '7 days'
+      WHERE user_id = ? 
+        AND created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
       GROUP BY DATE(created_at)
       ORDER BY date
     `, [userId]);

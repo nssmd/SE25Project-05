@@ -27,13 +27,13 @@ router.post('/create', async (req, res) => {
     const chatCountResult = await query(`
       SELECT COUNT(*) as count 
       FROM chats 
-      WHERE user_id = $1 AND is_protected = false
+      WHERE user_id = ? AND is_protected = false
     `, [userId]);
 
     const userSettingsResult = await query(`
       SELECT max_chats 
       FROM user_settings 
-      WHERE user_id = $1
+      WHERE user_id = ?
     `, [userId]);
 
     const maxChats = userSettingsResult.rows[0]?.max_chats || 100;
@@ -47,11 +47,15 @@ router.post('/create', async (req, res) => {
 
     const result = await query(`
       INSERT INTO chats (user_id, title, ai_type)
-      VALUES ($1, $2, $3)
-      RETURNING *
+      VALUES (?, ?, ?)
     `, [userId, title || 'New Chat', aiType]);
 
-    const chat = result.rows[0];
+    // 获取创建的对话信息
+    const chatResult = await query(`
+      SELECT * FROM chats WHERE id = ?
+    `, [result.insertId]);
+    
+    const chat = chatResult.rows[0];
 
     // 记录操作日志
     await logAction(userId, 'CHAT_CREATED', { 
@@ -93,7 +97,7 @@ router.post('/:chatId/message', async (req, res) => {
     const chatResult = await query(`
       SELECT ai_type 
       FROM chats 
-      WHERE id = $1 AND user_id = $2
+      WHERE id = ? AND user_id = ?
     `, [chatId, userId]);
 
     if (chatResult.rows.length === 0) {
@@ -114,8 +118,7 @@ router.post('/:chatId/message', async (req, res) => {
       // 保存用户消息
       const userMessageResult = await client.query(`
         INSERT INTO messages (chat_id, role, content)
-        VALUES ($1, $2, $3)
-        RETURNING *
+        VALUES (?, ?, ?)
       `, [chatId, role, content]);
 
       // 模拟AI响应（实际项目中这里会调用AI API）
@@ -130,14 +133,14 @@ router.post('/:chatId/message', async (req, res) => {
         case 'image_to_text':
           aiResponse = `图像分析结果：这是一张包含${content}相关内容的图片，我可以看到...`;
           break;
-        case 'voice_to_text':
-          aiResponse = `语音转文字结果：${content}`;
-          break;
-        case 'text_to_voice':
+        case 'text_to_audio':
           aiResponse = `语音合成完成。音频文件URL: /api/generated-audio/${uuidv4()}.mp3`;
           break;
-        case 'file_analysis':
-          aiResponse = `文件分析完成。文件内容摘要：${content.substring(0, 100)}...`;
+        case 'audio_to_text':
+          aiResponse = `语音转文字结果：${content}`;
+          break;
+        case 'multimodal':
+          aiResponse = `多模态分析完成。综合处理结果：${content.substring(0, 100)}...`;
           break;
         default:
           aiResponse = `收到消息：${content}`;
@@ -146,20 +149,19 @@ router.post('/:chatId/message', async (req, res) => {
       // 保存AI响应
       const aiMessageResult = await client.query(`
         INSERT INTO messages (chat_id, role, content, metadata)
-        VALUES ($1, 'assistant', $2, $3)
-        RETURNING *
+        VALUES (?, 'assistant', ?, ?)
       `, [chatId, aiResponse, JSON.stringify({ aiType, processedAt: new Date() })]);
 
-      // 更新对话的更新时间
+      // 更新对话的更新时间和消息计数
       await client.query(`
         UPDATE chats 
-        SET updated_at = CURRENT_TIMESTAMP 
-        WHERE id = $1
+        SET updated_at = NOW(), last_activity = NOW(), message_count = message_count + 2
+        WHERE id = ?
       `, [chatId]);
 
       return {
-        userMessage: userMessageResult.rows[0],
-        aiMessage: aiMessageResult.rows[0]
+        userMessage: userMessageResult.insertId,
+        aiMessage: aiMessageResult.insertId
       };
     });
 
@@ -192,50 +194,190 @@ router.get('/:chatId/messages', async (req, res) => {
     const chatResult = await query(`
       SELECT title 
       FROM chats 
-      WHERE id = $1 AND user_id = $2
+      WHERE id = ? AND user_id = ?
     `, [chatId, userId]);
 
     if (chatResult.rows.length === 0) {
       return res.status(404).json({ error: 'Chat not found or access denied' });
     }
 
-    const offset = (page - 1) * limit;
+    const offset = (parseInt(page) - 1) * parseInt(limit);
 
-    const result = await query(`
+    // 获取消息
+    const messagesResult = await query(`
       SELECT id, role, content, metadata, created_at
       FROM messages
-      WHERE chat_id = $1
+      WHERE chat_id = ?
       ORDER BY created_at ASC
-      LIMIT $2 OFFSET $3
-    `, [chatId, limit, offset]);
+      LIMIT ? OFFSET ?
+    `, [chatId, parseInt(limit), offset]);
 
-    const totalResult = await query(`
+    // 获取总消息数
+    const countResult = await query(`
       SELECT COUNT(*) as total
       FROM messages
-      WHERE chat_id = $1
+      WHERE chat_id = ?
     `, [chatId]);
 
-    const total = parseInt(totalResult.rows[0].total);
+    const total = parseInt(countResult.rows[0].total);
+    const totalPages = Math.ceil(total / parseInt(limit));
+
+    const messages = messagesResult.rows.map(msg => ({
+      id: msg.id,
+      role: msg.role,
+      content: msg.content,
+      metadata: typeof msg.metadata === 'string' ? JSON.parse(msg.metadata || '{}') : msg.metadata,
+      createdAt: msg.created_at
+    }));
 
     res.json({
-      messages: result.rows.map(msg => ({
-        id: msg.id,
-        role: msg.role,
-        content: msg.content,
-        metadata: msg.metadata,
-        createdAt: msg.created_at
-      })),
+      messages,
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
         total,
-        totalPages: Math.ceil(total / limit)
+        totalPages,
+        hasNext: parseInt(page) < totalPages,
+        hasPrev: parseInt(page) > 1
       }
     });
 
   } catch (error) {
     console.error('Get messages error:', error);
     res.status(500).json({ error: 'Failed to get messages' });
+  }
+});
+
+// 获取用户的所有对话
+router.get('/list', async (req, res) => {
+  try {
+    const { page = 1, limit = 20, aiType, search } = req.query;
+    const userId = req.user.userId;
+
+    let whereClause = 'WHERE user_id = ?';
+    let params = [userId];
+
+    if (aiType) {
+      whereClause += ' AND ai_type = ?';
+      params.push(aiType);
+    }
+
+    if (search) {
+      whereClause += ' AND title LIKE ?';
+      params.push(`%${search}%`);
+    }
+
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+
+    const chatsResult = await query(`
+      SELECT id, title, ai_type, is_favorite, is_protected, message_count, 
+             last_activity, created_at, updated_at
+      FROM chats
+      ${whereClause}
+      ORDER BY last_activity DESC
+      LIMIT ? OFFSET ?
+    `, [...params, parseInt(limit), offset]);
+
+    // 获取总数
+    const countResult = await query(`
+      SELECT COUNT(*) as total
+      FROM chats
+      ${whereClause}
+    `, params);
+
+    const total = parseInt(countResult.rows[0].total);
+    const totalPages = Math.ceil(total / parseInt(limit));
+
+    const chats = chatsResult.rows.map(chat => ({
+      id: chat.id,
+      title: chat.title,
+      aiType: chat.ai_type,
+      isFavorite: chat.is_favorite,
+      isProtected: chat.is_protected,
+      messageCount: chat.message_count,
+      lastActivity: chat.last_activity,
+      createdAt: chat.created_at,
+      updatedAt: chat.updated_at
+    }));
+
+    res.json({
+      chats,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        totalPages,
+        hasNext: parseInt(page) < totalPages,
+        hasPrev: parseInt(page) > 1
+      }
+    });
+
+  } catch (error) {
+    console.error('Get chats error:', error);
+    res.status(500).json({ error: 'Failed to get chats' });
+  }
+});
+
+// 更新对话（标题、收藏、保护状态）
+router.put('/:chatId', async (req, res) => {
+  try {
+    const { chatId } = req.params;
+    const { title, isFavorite, isProtected } = req.body;
+    const userId = req.user.userId;
+
+    // 验证对话归属
+    const chatResult = await query(`
+      SELECT id 
+      FROM chats 
+      WHERE id = ? AND user_id = ?
+    `, [chatId, userId]);
+
+    if (chatResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Chat not found or access denied' });
+    }
+
+    let updateFields = [];
+    let params = [];
+
+    if (title !== undefined) {
+      updateFields.push('title = ?');
+      params.push(title);
+    }
+
+    if (isFavorite !== undefined) {
+      updateFields.push('is_favorite = ?');
+      params.push(isFavorite);
+    }
+
+    if (isProtected !== undefined) {
+      updateFields.push('is_protected = ?');
+      params.push(isProtected);
+    }
+
+    if (updateFields.length === 0) {
+      return res.status(400).json({ error: 'No fields to update' });
+    }
+
+    updateFields.push('updated_at = NOW()');
+    params.push(chatId);
+
+    await query(`
+      UPDATE chats 
+      SET ${updateFields.join(', ')}
+      WHERE id = ?
+    `, params);
+
+    // 记录操作日志
+    await logAction(userId, 'CHAT_UPDATED', { 
+      chatId, 
+      updates: { title, isFavorite, isProtected }
+    }, req.ip, req.get('User-Agent'));
+
+    res.json({ message: 'Chat updated successfully' });
+
+  } catch (error) {
+    console.error('Update chat error:', error);
+    res.status(500).json({ error: 'Failed to update chat' });
   }
 });
 
@@ -247,9 +389,9 @@ router.delete('/:chatId', async (req, res) => {
 
     // 验证对话归属
     const chatResult = await query(`
-      SELECT title, is_protected 
+      SELECT is_protected 
       FROM chats 
-      WHERE id = $1 AND user_id = $2
+      WHERE id = ? AND user_id = ?
     `, [chatId, userId]);
 
     if (chatResult.rows.length === 0) {
@@ -264,165 +406,20 @@ router.delete('/:chatId', async (req, res) => {
 
     await transaction(async (client) => {
       // 删除消息
-      await client.query('DELETE FROM messages WHERE chat_id = $1', [chatId]);
+      await client.query('DELETE FROM messages WHERE chat_id = ?', [chatId]);
+      
       // 删除对话
-      await client.query('DELETE FROM chats WHERE id = $1', [chatId]);
+      await client.query('DELETE FROM chats WHERE id = ?', [chatId]);
     });
 
     // 记录操作日志
-    await logAction(userId, 'CHAT_DELETED', { 
-      chatId, 
-      title: chat.title 
-    }, req.ip, req.get('User-Agent'));
+    await logAction(userId, 'CHAT_DELETED', { chatId }, req.ip, req.get('User-Agent'));
 
     res.json({ message: 'Chat deleted successfully' });
 
   } catch (error) {
     console.error('Delete chat error:', error);
     res.status(500).json({ error: 'Failed to delete chat' });
-  }
-});
-
-// 更新对话标题
-router.patch('/:chatId/title', async (req, res) => {
-  try {
-    const { chatId } = req.params;
-    const { title } = req.body;
-    const userId = req.user.userId;
-
-    if (!title) {
-      return res.status(400).json({ error: 'Title is required' });
-    }
-
-    const result = await query(`
-      UPDATE chats 
-      SET title = $1, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $2 AND user_id = $3
-      RETURNING title
-    `, [title, chatId, userId]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Chat not found or access denied' });
-    }
-
-    // 记录操作日志
-    await logAction(userId, 'CHAT_TITLE_UPDATED', { 
-      chatId, 
-      newTitle: title 
-    }, req.ip, req.get('User-Agent'));
-
-    res.json({ 
-      message: 'Chat title updated successfully',
-      title: result.rows[0].title
-    });
-
-  } catch (error) {
-    console.error('Update chat title error:', error);
-    res.status(500).json({ error: 'Failed to update chat title' });
-  }
-});
-
-// 切换收藏状态
-router.patch('/:chatId/favorite', async (req, res) => {
-  try {
-    const { chatId } = req.params;
-    const userId = req.user.userId;
-
-    const result = await query(`
-      UPDATE chats 
-      SET is_favorite = NOT is_favorite, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $1 AND user_id = $2
-      RETURNING is_favorite
-    `, [chatId, userId]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Chat not found or access denied' });
-    }
-
-    const isFavorite = result.rows[0].is_favorite;
-
-    // 记录操作日志
-    await logAction(userId, 'CHAT_FAVORITE_TOGGLED', { 
-      chatId, 
-      isFavorite 
-    }, req.ip, req.get('User-Agent'));
-
-    res.json({ 
-      message: 'Favorite status updated successfully',
-      isFavorite
-    });
-
-  } catch (error) {
-    console.error('Toggle favorite error:', error);
-    res.status(500).json({ error: 'Failed to toggle favorite status' });
-  }
-});
-
-// 切换保护状态
-router.patch('/:chatId/protect', async (req, res) => {
-  try {
-    const { chatId } = req.params;
-    const userId = req.user.userId;
-
-    // 检查保护对话数量限制
-    const protectedCountResult = await query(`
-      SELECT COUNT(*) as count 
-      FROM chats 
-      WHERE user_id = $1 AND is_protected = true
-    `, [userId]);
-
-    const userSettingsResult = await query(`
-      SELECT protected_chats 
-      FROM user_settings 
-      WHERE user_id = $1
-    `, [userId]);
-
-    const maxProtected = userSettingsResult.rows[0]?.protected_chats || 10;
-    const currentProtected = parseInt(protectedCountResult.rows[0].count);
-
-    // 检查当前对话状态
-    const chatResult = await query(`
-      SELECT is_protected 
-      FROM chats 
-      WHERE id = $1 AND user_id = $2
-    `, [chatId, userId]);
-
-    if (chatResult.rows.length === 0) {
-      return res.status(404).json({ error: 'Chat not found or access denied' });
-    }
-
-    const currentlyProtected = chatResult.rows[0].is_protected;
-
-    // 如果要设置为保护状态，检查数量限制
-    if (!currentlyProtected && currentProtected >= maxProtected) {
-      return res.status(429).json({ 
-        error: 'Maximum protected chat limit reached.' 
-      });
-    }
-
-    const result = await query(`
-      UPDATE chats 
-      SET is_protected = NOT is_protected, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $1 AND user_id = $2
-      RETURNING is_protected
-    `, [chatId, userId]);
-
-    const isProtected = result.rows[0].is_protected;
-
-    // 记录操作日志
-    await logAction(userId, 'CHAT_PROTECTION_TOGGLED', { 
-      chatId, 
-      isProtected 
-    }, req.ip, req.get('User-Agent'));
-
-    res.json({ 
-      message: 'Protection status updated successfully',
-      isProtected
-    });
-
-  } catch (error) {
-    console.error('Toggle protection error:', error);
-    res.status(500).json({ error: 'Failed to toggle protection status' });
   }
 });
 

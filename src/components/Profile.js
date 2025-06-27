@@ -3,9 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
   User, 
-  Mail, 
-  Phone, 
-  Calendar, 
   Settings, 
   Bell, 
   Shield, 
@@ -16,6 +13,7 @@ import {
   Save,
   X
 } from 'lucide-react';
+import { userAPI } from '../services/api';
 import './Profile.css';
 
 const Profile = ({ user, onLogout, onUpdateUser }) => {
@@ -23,7 +21,7 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: user?.name || '',
+    name: user?.username || user?.name || '',
     email: user?.email || '',
     phone: user?.phone || '',
     bio: user?.bio || '',
@@ -46,10 +44,20 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
     }));
   };
 
-  const handleSave = () => {
-    // 模拟保存用户信息
-    onUpdateUser(formData);
-    setIsEditing(false);
+  const handleSave = async () => {
+    try {
+      // 使用真实的API保存用户信息
+      const response = await userAPI.updateProfile(formData);
+      
+      if (response.user) {
+        onUpdateUser(response.user);
+        setIsEditing(false);
+        alert('个人信息更新成功');
+      }
+    } catch (error) {
+      console.error('更新个人信息失败:', error);
+      alert('更新个人信息失败，请重试');
+    }
   };
 
   const handleAvatarUpload = (e) => {

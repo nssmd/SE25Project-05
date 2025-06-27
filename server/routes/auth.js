@@ -1,5 +1,5 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { query } = require('../config/database');
 const { authenticateToken, logAction } = require('../middleware/auth');
@@ -17,7 +17,7 @@ router.post('/register', async (req, res) => {
     }
 
     // 检查用户是否已存在
-    const existingUser = await query('SELECT id FROM users WHERE email = $1', [email]);
+    const existingUser = await query('SELECT id FROM users WHERE email = ?', [email]);
     if (existingUser.rows.length > 0) {
       return res.status(409).json({ error: 'User already exists' });
     }
@@ -31,9 +31,9 @@ router.post('/register', async (req, res) => {
       text_to_text: true,
       text_to_image: false,
       image_to_text: false,
-      voice_to_text: false,
-      text_to_voice: false,
-      file_analysis: false
+      text_to_audio: false,
+      audio_to_text: false,
+      multimodal: false
     };
 
     if (email.startsWith('admin@')) {
@@ -42,9 +42,9 @@ router.post('/register', async (req, res) => {
         text_to_text: true,
         text_to_image: true,
         image_to_text: true,
-        voice_to_text: true,
-        text_to_voice: true,
-        file_analysis: true
+        text_to_audio: true,
+        audio_to_text: true,
+        multimodal: true
       };
     } else if (email.startsWith('support@')) {
       role = 'support';
@@ -52,25 +52,26 @@ router.post('/register', async (req, res) => {
         text_to_text: true,
         text_to_image: false,
         image_to_text: true,
-        voice_to_text: true,
-        text_to_voice: true,
-        file_analysis: true
+        text_to_audio: false,
+        audio_to_text: false,
+        multimodal: true
       };
     }
 
     // 创建用户
     const result = await query(`
       INSERT INTO users (email, password, username, role, permissions)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING id, email, username, role, permissions, created_at
+      VALUES (?, ?, ?, ?, ?)
     `, [email, hashedPassword, username || email.split('@')[0], role, JSON.stringify(permissions)]);
 
-    const user = result.rows[0];
+    // 获取创建的用户信息
+    const userResult = await query('SELECT id, email, username, role, permissions, created_at FROM users WHERE id = ?', [result.insertId]);
+    const user = userResult.rows[0];
 
     // 创建用户设置
     await query(`
       INSERT INTO user_settings (user_id)
-      VALUES ($1)
+      VALUES (?)
     `, [user.id]);
 
     // 记录操作日志
@@ -83,7 +84,7 @@ router.post('/register', async (req, res) => {
         email: user.email,
         username: user.username,
         role: user.role,
-        permissions: user.permissions
+        permissions: typeof user.permissions === 'string' ? JSON.parse(user.permissions) : user.permissions
       }
     });
 
@@ -106,7 +107,7 @@ router.post('/login', async (req, res) => {
     const result = await query(`
       SELECT id, email, password, username, role, status, permissions
       FROM users 
-      WHERE email = $1
+      WHERE email = ?
     `, [email]);
 
     if (result.rows.length === 0) {
@@ -127,7 +128,7 @@ router.post('/login', async (req, res) => {
     }
 
     // 更新最后登录时间
-    await query('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = $1', [user.id]);
+    await query('UPDATE users SET last_login = NOW() WHERE id = ?', [user.id]);
 
     // 生成JWT token
     const token = jwt.sign(
@@ -151,7 +152,7 @@ router.post('/login', async (req, res) => {
         email: user.email,
         username: user.username,
         role: user.role,
-        permissions: user.permissions
+        permissions: typeof user.permissions === 'string' ? JSON.parse(user.permissions) : user.permissions
       }
     });
 
@@ -167,7 +168,7 @@ router.get('/verify', authenticateToken, async (req, res) => {
     const result = await query(`
       SELECT id, email, username, role, permissions, status
       FROM users 
-      WHERE id = $1
+      WHERE id = ?
     `, [req.user.userId]);
 
     if (result.rows.length === 0) {
@@ -186,7 +187,7 @@ router.get('/verify', authenticateToken, async (req, res) => {
         email: user.email,
         username: user.username,
         role: user.role,
-        permissions: user.permissions
+        permissions: typeof user.permissions === 'string' ? JSON.parse(user.permissions) : user.permissions
       }
     });
 
@@ -209,39 +210,42 @@ router.post('/logout', authenticateToken, async (req, res) => {
   }
 });
 
-// 修改密码
-router.post('/change-password', authenticateToken, async (req, res) => {
+// 密码重置请求（演示版本，实际应该发送邮件）
+router.post('/forgot-password', async (req, res) => {
   try {
-    const { currentPassword, newPassword } = req.body;
+    const { email } = req.body;
 
-    if (!currentPassword || !newPassword) {
-      return res.status(400).json({ error: 'Current password and new password are required' });
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' });
     }
 
-    // 获取当前密码
-    const result = await query('SELECT password FROM users WHERE id = $1', [req.user.userId]);
+    // 检查用户是否存在
+    const result = await query('SELECT id, email FROM users WHERE email = ?', [email]);
+    
+    if (result.rows.length === 0) {
+      // 为了安全，即使用户不存在也返回成功消息
+      return res.json({ message: 'If the email exists, a reset link has been sent' });
+    }
+
     const user = result.rows[0];
 
-    // 验证当前密码
-    const isValidPassword = await bcrypt.compare(currentPassword, user.password);
-    if (!isValidPassword) {
-      return res.status(401).json({ error: 'Current password is incorrect' });
-    }
-
-    // 加密新密码
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-
-    // 更新密码
-    await query('UPDATE users SET password = $1 WHERE id = $2', [hashedNewPassword, req.user.userId]);
-
     // 记录操作日志
-    await logAction(req.user.userId, 'PASSWORD_CHANGED', {}, req.ip, req.get('User-Agent'));
+    await logAction(user.id, 'PASSWORD_RESET_REQUESTED', { email }, req.ip, req.get('User-Agent'));
 
-    res.json({ message: 'Password changed successfully' });
+    // 在实际应用中，这里应该：
+    // 1. 生成重置token
+    // 2. 保存到数据库或缓存
+    // 3. 发送重置邮件
+    
+    res.json({ 
+      message: 'If the email exists, a reset link has been sent',
+      // 演示模式下返回提示
+      demo: 'In demo mode - password reset would be sent to email'
+    });
 
   } catch (error) {
-    console.error('Password change error:', error);
-    res.status(500).json({ error: 'Password change failed' });
+    console.error('Password reset error:', error);
+    res.status(500).json({ error: 'Password reset failed' });
   }
 });
 

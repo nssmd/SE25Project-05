@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Upload, 
@@ -16,6 +16,7 @@ import {
   Pause,
   RotateCcw
 } from 'lucide-react';
+import { dataAPI } from '../services/api';
 import './DataFinetuning.css';
 
 const DataFinetuning = ({ user, onLogout }) => {
@@ -30,35 +31,8 @@ const DataFinetuning = ({ user, onLogout }) => {
     modelName: '',
     description: ''
   });
-  const [trainingJobs, setTrainingJobs] = useState([
-    {
-      id: 1,
-      name: '客服对话模型',
-      status: 'completed',
-      progress: 100,
-      startTime: '2024-01-15 10:30',
-      duration: '2h 15m',
-      modelType: 'text-generation'
-    },
-    {
-      id: 2,
-      name: '图像分类模型',
-      status: 'training',
-      progress: 65,
-      startTime: '2024-01-16 14:20',
-      duration: '1h 22m',
-      modelType: 'image-classification'
-    },
-    {
-      id: 3,
-      name: '文本分类模型',
-      status: 'failed',
-      progress: 30,
-      startTime: '2024-01-16 09:15',
-      duration: '45m',
-      modelType: 'text-classification'
-    }
-  ]);
+  const [trainingJobs, setTrainingJobs] = useState([]);
+  const [isLoadingJobs, setIsLoadingJobs] = useState(true);
 
   const modelTypes = [
     { id: 'text-generation', name: '文本生成', description: '适用于对话、文章生成等任务' },
@@ -98,6 +72,13 @@ const DataFinetuning = ({ user, onLogout }) => {
            trainingConfig.learningRate > 0 && 
            trainingConfig.batchSize > 0;
   };
+  
+  // 加载训练任务（目前功能未开发）
+  useEffect(() => {
+    // 由于后端没有数据微调API，显示功能开发中
+    setIsLoadingJobs(false);
+    setTrainingJobs([]);
+  }, []);
 
   const startTraining = () => {
     if (!validateConfig()) {
@@ -488,7 +469,7 @@ const DataFinetuning = ({ user, onLogout }) => {
           <p>上传您的数据，训练专属的AI模型</p>
         </div>
         <div className="user-info">
-          <span>{user?.name}</span>
+          <span>{user?.username || user?.name}</span>
           <button onClick={onLogout} className="logout-btn">退出</button>
         </div>
       </header>

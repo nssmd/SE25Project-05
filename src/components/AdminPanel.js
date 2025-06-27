@@ -4,6 +4,7 @@ import {
   CheckCircle, XCircle, Search, Eye, MessageCircle,
   UserCheck, UserX, AlertTriangle, Crown
 } from 'lucide-react';
+import { adminAPI } from '../services/api';
 import './AdminPanel.css';
 
 const AdminPanel = () => {
@@ -14,63 +15,26 @@ const AdminPanel = () => {
   const [messageText, setMessageText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // 模拟用户数据
+  // 加载用户数据
   useEffect(() => {
-    const mockUsers = [
-      {
-        id: '1',
-        email: 'user1@example.com',
-        username: '张三',
-        role: 'user',
-        status: 'active',
-        lastLogin: '2024-01-20 14:30',
-        chatCount: 45,
-        permissions: {
-          textToText: true,
-          textToImage: true,
-          imageToImage: false,
-          imageToText: true,
-          textToVideo: false,
-          textTo3d: false
-        }
-      },
-      {
-        id: '2',
-        email: 'user2@example.com',
-        username: '李四',
-        role: 'user',
-        status: 'banned',
-        lastLogin: '2024-01-19 09:15',
-        chatCount: 23,
-        permissions: {
-          textToText: false,
-          textToImage: false,
-          imageToImage: false,
-          imageToText: false,
-          textToVideo: false,
-          textTo3d: false
-        }
-      },
-      {
-        id: '3',
-        email: 'support@example.com',
-        username: '客服小王',
-        role: 'support',
-        status: 'active',
-        lastLogin: '2024-01-20 16:45',
-        chatCount: 156,
-        permissions: {
-          textToText: true,
-          textToImage: true,
-          imageToImage: true,
-          imageToText: true,
-          textToVideo: true,
-          textTo3d: true
-        }
-      }
-    ];
-    setUsers(mockUsers);
+    loadUsers();
   }, []);
+
+  const loadUsers = async () => {
+    try {
+      setIsLoading(true);
+      const response = await adminAPI.getUsers({
+        search: searchQuery,
+        page: 1,
+        limit: 50
+      });
+      setUsers(response.users);
+    } catch (error) {
+      console.error('加载用户数据失败:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };;
 
   // 过滤用户
   const filteredUsers = users.filter(user => 
@@ -80,47 +44,75 @@ const AdminPanel = () => {
 
   // 切换用户状态
   const toggleUserStatus = async (userId) => {
-    setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    setUsers(prev => prev.map(user => 
-      user.id === userId 
-        ? { ...user, status: user.status === 'active' ? 'banned' : 'active' }
-        : user
-    ));
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const user = users.find(u => u.id === userId);
+      const newStatus = user.status === 'active' ? 'banned' : 'active';
+      
+      await adminAPI.updateUserStatus(userId, newStatus);
+      
+      setUsers(prev => prev.map(user => 
+        user.id === userId 
+          ? { ...user, status: newStatus }
+          : user
+      ));
+    } catch (error) {
+      console.error('更新用户状态失败:', error);
+      alert('更新用户状态失败');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // 切换用户权限
   const togglePermission = async (userId, permission) => {
-    setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    setUsers(prev => prev.map(user => 
-      user.id === userId 
-        ? { 
-            ...user, 
-            permissions: {
-              ...user.permissions,
-              [permission]: !user.permissions[permission]
-            }
-          }
-        : user
-    ));
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const user = users.find(u => u.id === userId);
+      const newPermissions = {
+        ...user.permissions,
+        [permission]: !user.permissions[permission]
+      };
+      
+      await adminAPI.updateUserPermissions(userId, newPermissions);
+      
+      setUsers(prev => prev.map(user => 
+        user.id === userId 
+          ? { ...user, permissions: newPermissions }
+          : user
+      ));
+    } catch (error) {
+      console.error('更新用户权限失败:', error);
+      alert('更新用户权限失败');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // 发送消息给用户
   const sendMessageToUser = async () => {
     if (!selectedUser || !messageText.trim()) return;
     
-    setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    alert(`消息已发送给 ${selectedUser.username}`);
-    setMessageText('');
-    setSelectedUser(null);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      
+      await adminAPI.sendMessage({
+        recipientId: selectedUser.id,
+        messageType: 'direct',
+        title: '管理员消息',
+        content: messageText,
+        priority: 'normal'
+      });
+      
+      alert(`消息已发送给 ${selectedUser.username}`);
+      setMessageText('');
+      setSelectedUser(null);
+    } catch (error) {
+      console.error('发送消息失败:', error);
+      alert('发送消息失败');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // 获取角色显示名称
@@ -150,15 +142,24 @@ const AdminPanel = () => {
   // 获取权限名称
   const getPermissionName = (key) => {
     const names = {
-      textToText: '文生文',
-      textToImage: '文生图',
-      imageToImage: '图生图',
-      imageToText: '图生文',
-      textToVideo: '文生视频',
-      textTo3d: '文生3D'
+      text_to_text: '文生文',
+      text_to_image: '文生图',
+      image_to_image: '图生图',
+      image_to_text: '图生文',
+      text_to_video: '文生视频',
+      text_to_3d: '文生3D'
     };
     return names[key] || key;
   };
+  
+  // 搜索变化时重新加载数据
+  useEffect(() => {
+    const delayedSearch = setTimeout(() => {
+      loadUsers();
+    }, 500);
+    
+    return () => clearTimeout(delayedSearch);
+  }, [searchQuery]);
 
   return (
     <div className="admin-panel">

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -12,6 +12,7 @@ const api = axios.create({
 // 请求拦截器 - 自动添加token
 api.interceptors.request.use(
   (config) => {
+    console.log('API Request:', config.method?.toUpperCase(), config.baseURL + config.url, config.data);
     const token = localStorage.getItem('authToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -29,6 +30,8 @@ api.interceptors.response.use(
     return response.data;
   },
   (error) => {
+    console.error('API Error:', error.response?.data);
+    
     if (error.response?.status === 401) {
       // Token过期或无效，清除本地存储并跳转到登录页
       localStorage.removeItem('authToken');
@@ -37,7 +40,7 @@ api.interceptors.response.use(
     }
     
     // 返回更友好的错误信息
-    const message = error.response?.data?.error || error.message || '网络错误';
+    const message = error.response?.data?.message || error.response?.data?.error || error.message || '网络错误';
     return Promise.reject(new Error(message));
   }
 );

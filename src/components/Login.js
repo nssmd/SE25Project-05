@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import userService from '../services/UserService';
 import './Auth.css';
 
 const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
+    rememberMe: false
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
     // 清除错误提示
     if (errors[name]) {
@@ -54,54 +56,19 @@ const Login = ({ onLogin }) => {
     setIsLoading(true);
     
     try {
-      // 尝试使用真实API，如果不可用则回退到模拟模式
-      try {
-        const { authAPI, apiUtils } = await import('../services/api');
-        
-        const response = await authAPI.login({
-          email: formData.email,
-          password: formData.password
-        });
-        
-        // 保存token和用户信息
-        apiUtils.setAuthToken(response.token);
-        apiUtils.setCurrentUser(response.user);
-        
-        onLogin(response.user);
-      } catch (apiError) {
-        console.warn('API不可用，使用演示模式:', apiError.message);
-        
-        // 回退到演示模式
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // 根据邮箱模拟不同角色
-        let role = 'user';
-        let name = '普通用户';
-        
-        if (formData.email.includes('admin')) {
-          role = 'admin';
-          name = '管理员';
-        } else if (formData.email.includes('support')) {
-          role = 'support';
-          name = '客服';
-        }
-        
-        // 模拟成功登录
-        const userData = {
-          id: 1,
-          name: name,
-          email: formData.email,
-          role: role,
-          avatar: null
-        };
-        
-        // 模拟保存到localStorage
-        localStorage.setItem('user', JSON.stringify(userData));
-        
-        onLogin(userData);
+      // 使用真实的UserService
+      const response = await userService.login(formData);
+      
+      // 登录成功
+      if (response.user) {
+        onLogin(response.user, response.token);
+      } else {
+        throw new Error(response.error || '登录失败');
       }
+      
     } catch (error) {
-      setErrors({ submit: '登录失败，请重试' });
+      console.error('登录失败:', error.message);
+      setErrors({ submit: error.message || '登录失败，请检查用户名和密码' });
     } finally {
       setIsLoading(false);
     }
@@ -128,8 +95,6 @@ const Login = ({ onLogin }) => {
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
             <label htmlFor="email">邮箱</label>
-            <div className="input-wrapper">
-              <Mail className="input-icon" />
               <input
                 type="email"
                 id="email"
@@ -139,14 +104,12 @@ const Login = ({ onLogin }) => {
                 placeholder="输入您的邮箱"
                 className={errors.email ? 'error' : ''}
               />
-            </div>
             {errors.email && <span className="error-text">{errors.email}</span>}
           </div>
 
           <div className="form-group">
             <label htmlFor="password">密码</label>
             <div className="input-wrapper">
-              <Lock className="input-icon" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
@@ -167,6 +130,19 @@ const Login = ({ onLogin }) => {
             {errors.password && <span className="error-text">{errors.password}</span>}
           </div>
 
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                name="rememberMe"
+                checked={formData.rememberMe}
+                onChange={handleInputChange}
+              />
+              <span className="checkmark"></span>
+              记住我
+            </label>
+          </div>
+
           {errors.submit && <div className="error-text">{errors.submit}</div>}
 
           <button 
@@ -179,22 +155,6 @@ const Login = ({ onLogin }) => {
         </form>
 
         <div className="auth-footer">
-          <div className="demo-accounts">
-            <h4>演示账户：</h4>
-            <div className="demo-list">
-              <div className="demo-item">
-                <strong>普通用户：</strong> user@example.com
-              </div>
-              <div className="demo-item">
-                <strong>客服：</strong> support@example.com
-              </div>
-              <div className="demo-item">
-                <strong>管理员：</strong> admin@example.com
-              </div>
-            </div>
-            <p className="demo-note">密码：任意6位字符</p>
-          </div>
-          
           <p>
             还没有账户？{' '}
             <Link to="/register" className="auth-link">

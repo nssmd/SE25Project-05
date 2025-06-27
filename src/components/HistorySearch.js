@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Calendar, Clock, MessageSquare, Filter, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Search, Calendar, Clock, MessageSquare, Filter, X, ArrowLeft } from 'lucide-react';
+import { historyAPI } from '../services/api';
 import './HistorySearch.css';
 
-const HistorySearch = () => {
+const HistorySearch = ({ user, onLogout }) => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -13,111 +16,29 @@ const HistorySearch = () => {
   });
   const [showFilters, setShowFilters] = useState(false);
 
-  // 模拟历史对话数据
-  const mockHistory = [
-    {
-      id: '1',
-      title: '如何优化React性能',
-      preview: '我想了解React应用的性能优化方法...',
-      aiType: 'text-to-text',
-      date: '2024-01-20',
-      time: '14:30',
-      messageCount: 12,
-      isBookmarked: true
-    },
-    {
-      id: '2',
-      title: '生成AI头像',
-      preview: '帮我生成一个专业的商务头像...',
-      aiType: 'text-to-image',
-      date: '2024-01-19',
-      time: '09:15',
-      messageCount: 8,
-      isBookmarked: false
-    },
-    {
-      id: '3',
-      title: '数据分析代码',
-      preview: '写一个Python数据分析脚本...',
-      aiType: 'text-to-text',
-      date: '2024-01-18',
-      time: '16:45',
-      messageCount: 15,
-      isBookmarked: true
-    },
-    {
-      id: '4',
-      title: '图像风格转换',
-      preview: '把这张照片转换成油画风格...',
-      aiType: 'image-to-image',
-      date: '2024-01-17',
-      time: '11:20',
-      messageCount: 6,
-      isBookmarked: false
-    },
-    {
-      id: '5',
-      title: '视频脚本创作',
-      preview: '帮我写一个科技产品介绍视频的脚本...',
-      aiType: 'text-to-video',
-      date: '2024-01-16',
-      time: '13:10',
-      messageCount: 20,
-      isBookmarked: true
-    }
-  ];
+  // 移除模拟数据，使用真实API
 
   // 搜索功能
-  const handleSearch = (query, currentFilters = filters) => {
+  const handleSearch = async (query, currentFilters = filters) => {
     setIsLoading(true);
     
-    // 模拟API调用延迟
-    setTimeout(() => {
-      let results = mockHistory;
-
-      // 关键字搜索
-      if (query.trim()) {
-        results = results.filter(item => 
-          item.title.toLowerCase().includes(query.toLowerCase()) ||
-          item.preview.toLowerCase().includes(query.toLowerCase())
-        );
-      }
-
-      // 日期过滤
-      if (currentFilters.dateRange !== 'all') {
-        const now = new Date();
-        const filterDate = new Date();
-        
-        switch (currentFilters.dateRange) {
-          case 'today':
-            filterDate.setHours(0, 0, 0, 0);
-            break;
-          case 'week':
-            filterDate.setDate(now.getDate() - 7);
-            break;
-          case 'month':
-            filterDate.setMonth(now.getMonth() - 1);
-            break;
-          default:
-            break;
-        }
-        
-        results = results.filter(item => new Date(item.date) >= filterDate);
-      }
-
-      // AI类型过滤
-      if (currentFilters.aiType !== 'all') {
-        results = results.filter(item => item.aiType === currentFilters.aiType);
-      }
-
-      // 书签过滤
-      if (currentFilters.isBookmarked) {
-        results = results.filter(item => item.isBookmarked);
-      }
-
-      setSearchResults(results);
+    try {
+      const response = await historyAPI.getChats({
+        keyword: query,
+        timeFilter: currentFilters.dateRange,
+        aiType: currentFilters.aiType,
+        isFavorite: currentFilters.isBookmarked,
+        page: 1,
+        limit: 20
+      });
+      
+      setSearchResults(response.chats);
+    } catch (error) {
+      console.error('搜索历史记录失败:', error);
+      setSearchResults([]);
+    } finally {
       setIsLoading(false);
-    }, 300);
+    }
   };
 
   // 搜索输入变化
@@ -128,12 +49,12 @@ const HistorySearch = () => {
   // 获取AI类型图标
   const getAiTypeIcon = (type) => {
     const icons = {
-      'text-to-text': '💬',
-      'text-to-image': '🎨',
-      'image-to-image': '🖼️',
-      'image-to-text': '📝',
-      'text-to-video': '🎥',
-      'text-to-3d': '🎲'
+      'text_to_text': '💬',
+      'text_to_image': '🎨',
+      'image_to_image': '🖼️',
+      'image_to_text': '📝',
+      'text_to_video': '🎥',
+      'text_to_3d': '🎲'
     };
     return icons[type] || '💬';
   };
@@ -141,12 +62,12 @@ const HistorySearch = () => {
   // 获取AI类型名称
   const getAiTypeName = (type) => {
     const names = {
-      'text-to-text': '文生文',
-      'text-to-image': '文生图',
-      'image-to-image': '图生图',
-      'image-to-text': '图生文',
-      'text-to-video': '文生视频',
-      'text-to-3d': '文生3D'
+      'text_to_text': '文生文',
+      'text_to_image': '文生图',
+      'image_to_image': '图生图',
+      'image_to_text': '图生文',
+      'text_to_video': '文生视频',
+      'text_to_3d': '文生3D'
     };
     return names[type] || '未知';
   };
@@ -169,10 +90,25 @@ const HistorySearch = () => {
 
   return (
     <div className="history-search">
-      <div className="search-header">
-        <h2>历史记录搜索</h2>
-        <p>搜索您的对话历史，快速找到需要的内容</p>
-      </div>
+      <header className="page-header">
+        <button 
+          className="back-button"
+          onClick={() => navigate('/dashboard')}
+        >
+          <ArrowLeft size={20} />
+          返回主界面
+        </button>
+        <div className="header-content">
+          <h1>历史记录搜索</h1>
+          <p>搜索您的对话历史，快速找到需要的内容</p>
+        </div>
+        <div className="user-info">
+          <span>{user?.username || user?.name}</span>
+          <button onClick={onLogout} className="logout-btn">退出</button>
+        </div>
+      </header>
+      
+      <div className="search-content">
 
       {/* 搜索栏 */}
       <div className="search-container">
@@ -307,6 +243,7 @@ const HistorySearch = () => {
             <p>尝试调整搜索关键词或筛选条件</p>
           </div>
         )}
+      </div>
       </div>
     </div>
   );

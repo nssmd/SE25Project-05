@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import userService from '../services/UserService';
 import './Auth.css';
 
 const Register = ({ onRegister }) => {
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -33,10 +34,10 @@ const Register = ({ onRegister }) => {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.name) {
-      newErrors.name = '请输入姓名';
-    } else if (formData.name.length < 2) {
-      newErrors.name = '姓名至少2个字符';
+    if (!formData.username) {
+      newErrors.username = '请输入用户名';
+    } else if (formData.username.length < 3) {
+      newErrors.username = '用户名至少3个字符';
     }
     
     if (!formData.email) {
@@ -69,20 +70,24 @@ const Register = ({ onRegister }) => {
     setIsLoading(true);
     
     try {
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // 模拟成功注册
-      const userData = {
-        id: Date.now(),
-        name: formData.name,
+      // 使用真实的UserService
+      const response = await userService.register({
         email: formData.email,
-        avatar: null
-      };
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+        username: formData.username
+      });
       
-      onRegister(userData);
+      // 注册成功
+      if (response.user) {
+        onRegister(response.user, response.token);
+      } else {
+        throw new Error(response.error || '注册失败');
+      }
+      
     } catch (error) {
-      setErrors({ submit: '注册失败，请重试' });
+      console.error('注册失败:', error.message);
+      setErrors({ submit: error.message || '注册失败，请重试' });
     } finally {
       setIsLoading(false);
     }
@@ -108,43 +113,36 @@ const Register = ({ onRegister }) => {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="name">姓名</label>
-            <div className="input-wrapper">
-              <User className="input-icon" />
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="输入您的姓名"
-                className={errors.name ? 'error' : ''}
-              />
-            </div>
-            {errors.name && <span className="error-text">{errors.name}</span>}
+            <label htmlFor="username">用户名</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleInputChange}
+              placeholder="输入您的用户名"
+              className={errors.username ? 'error' : ''}
+            />
+            {errors.username && <span className="error-text">{errors.username}</span>}
           </div>
 
           <div className="form-group">
             <label htmlFor="email">邮箱</label>
-            <div className="input-wrapper">
-              <Mail className="input-icon" />
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="输入您的邮箱"
-                className={errors.email ? 'error' : ''}
-              />
-            </div>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="输入您的邮箱"
+              className={errors.email ? 'error' : ''}
+            />
             {errors.email && <span className="error-text">{errors.email}</span>}
           </div>
 
           <div className="form-group">
             <label htmlFor="password">密码</label>
             <div className="input-wrapper">
-              <Lock className="input-icon" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
@@ -168,7 +166,6 @@ const Register = ({ onRegister }) => {
           <div className="form-group">
             <label htmlFor="confirmPassword">确认密码</label>
             <div className="input-wrapper">
-              <Lock className="input-icon" />
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
                 id="confirmPassword"
