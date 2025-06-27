@@ -292,6 +292,20 @@
   background: #7c3aed;
 }
 
+.no-users-message {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.no-users-message p {
+  margin: 0.5rem 0;
+}
+
 /* Permissions Grid */
 .permissions-grid {
   display: grid;

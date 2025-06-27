@@ -10,20 +10,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "管理员管理", description = "管理员相关接口")
-@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     private final UserService userService;
 
     @Operation(summary = "获取用户列表", description = "分页获取用户列表")
     @GetMapping("/users")
+    @PreAuthorize("hasRole('admin')")
     public ResponseEntity<Page<UserDTO.UserResponse>> getUsers(
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,
@@ -31,25 +36,52 @@ public class AdminController {
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection) {
         
-        UserDTO.UserSearchRequest request = new UserDTO.UserSearchRequest();
-        request.setKeyword(keyword);
-        request.setPage(page);
-        request.setSize(size);
-        request.setSortBy(sortBy);
-        request.setSortDirection(sortDirection);
-        
-        Page<UserDTO.UserResponse> users = userService.searchUsers(request);
-        return ResponseEntity.ok(users);
+        try {
+            log.info("=== AdminController.getUsers 开始 ===");
+            log.info("管理员获取用户列表请求: keyword={}, page={}, size={}", keyword, page, size);
+            
+            // 检查当前用户权限
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            log.info("当前请求用户: name={}, authenticated={}, authorities={}", 
+                    auth.getName(), auth.isAuthenticated(), auth.getAuthorities());
+            
+            UserDTO.UserSearchRequest request = new UserDTO.UserSearchRequest();
+            request.setKeyword(keyword);
+            request.setPage(page);
+            request.setSize(size);
+            request.setSortBy(sortBy);
+            request.setSortDirection(sortDirection);
+            
+            log.info("调用 UserService.searchUsers...");
+            Page<UserDTO.UserResponse> users = userService.searchUsers(request);
+            log.info("用户列表查询成功: 总数={}, 当前页数量={}", users.getTotalElements(), users.getNumberOfElements());
+            
+            log.info("=== AdminController.getUsers 结束 ===");
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            log.error("获取用户列表失败: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     @Operation(summary = "更新用户状态", description = "更新指定用户的状态")
-    @PutMapping("/users/{userId}/status")
+    @PatchMapping("/users/{userId}/status")
     public ResponseEntity<String> updateUserStatus(
             @PathVariable Long userId,
             @Valid @RequestBody UserDTO.UserStatusUpdateRequest request) {
         
-        userService.updateUserStatus(userId, request);
-        return ResponseEntity.ok("用户状态更新成功");
+        try {
+            log.info("=== AdminController.updateUserStatus 开始 ===");
+            log.info("更新用户状态: userId={}, newStatus={}", userId, request.getStatus());
+            
+            userService.updateUserStatus(userId, request);
+            log.info("用户状态更新成功");
+            
+            return ResponseEntity.ok("用户状态更新成功");
+        } catch (Exception e) {
+            log.error("更新用户状态失败: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().body("更新失败: " + e.getMessage());
+        }
     }
 
     @Operation(summary = "获取用户统计信息", description = "获取系统用户的统计数据")
@@ -93,6 +125,30 @@ public class AdminController {
         } catch (Exception e) {
             log.error("修改用户角色失败: {}", e.getMessage());
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @Operation(summary = "测试接口", description = "测试管理员权限和数据库连接")
+    @GetMapping("/test")
+    public ResponseEntity<Map<String, Object>> test() {
+        try {
+            log.info("管理员测试接口被调用");
+            
+            // 简单统计用户数
+            UserDTO.UserStatistics stats = userService.getUserStatistics();
+            
+            Map<String, Object> result = new HashMap<>();
+            result.put("message", "管理员权限正常");
+            result.put("totalUsers", stats.getTotalUsers());
+            result.put("activeUsers", stats.getActiveUsers());
+            result.put("timestamp", java.time.LocalDateTime.now());
+            
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            log.error("测试接口失败: {}", e.getMessage(), e);
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.internalServerError().body(error);
         }
     }
 } 

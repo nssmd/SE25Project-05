@@ -260,6 +260,15 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public Page<UserDTO.UserResponse> searchUsers(UserDTO.UserSearchRequest request) {
+        log.info("=== UserService.searchUsers 开始 ===");
+        log.info("请求参数: keyword={}, page={}, size={}, sortBy={}, sortDirection={}", 
+                request.getKeyword(), request.getPage(), request.getSize(), 
+                request.getSortBy(), request.getSortDirection());
+        
+        // 检查当前用户权限
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        log.info("当前认证用户: name={}, authorities={}", auth.getName(), auth.getAuthorities());
+        
         Sort sort = Sort.by(
             "desc".equalsIgnoreCase(request.getSortDirection()) ? 
             Sort.Direction.DESC : Sort.Direction.ASC,
@@ -270,12 +279,26 @@ public class UserService {
         Page<User> users;
         
         if (request.getKeyword() != null && !request.getKeyword().trim().isEmpty()) {
+            log.info("根据关键字搜索用户: {}", request.getKeyword());
             users = userRepository.searchUsers(request.getKeyword(), pageable);
         } else {
+            log.info("查询所有用户");
             users = userRepository.findAll(pageable);
         }
         
-        return users.map(UserDTO.UserResponse::fromEntity);
+        log.info("查询结果: 总数={}, 当前页数量={}", users.getTotalElements(), users.getNumberOfElements());
+        
+        if (users.hasContent()) {
+            users.getContent().forEach(user -> {
+                log.info("用户: id={}, email={}, username={}, role={}, status={}", 
+                        user.getId(), user.getEmail(), user.getUsername(), 
+                        user.getRole(), user.getStatus());
+            });
+        }
+        
+        Page<UserDTO.UserResponse> result = users.map(UserDTO.UserResponse::fromEntity);
+        log.info("=== UserService.searchUsers 结束 ===");
+        return result;
     }
 
     /**

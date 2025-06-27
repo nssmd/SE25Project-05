@@ -27,18 +27,25 @@ const AdminPanel = () => {
   const loadUsers = async () => {
     try {
       setIsLoading(true);
+      console.log('开始加载用户数据...');
       const response = await adminAPI.getUsers({
-        search: searchQuery,
-        page: 1,
-        limit: 50
+        keyword: searchQuery,
+        page: 0,
+        size: 50
       });
-      setUsers(response.users);
+      console.log('用户数据响应:', response);
+      
+      // 后端返回的是Spring Page对象，用户数据在content字段中
+      const userList = response.content || [];
+      setUsers(userList);
+      console.log('设置用户列表:', userList);
     } catch (error) {
       console.error('加载用户数据失败:', error);
+      alert('加载用户数据失败: ' + error.message);
     } finally {
       setIsLoading(false);
     }
-  };;
+  };
 
   // 过滤用户
   const filteredUsers = users.filter(user => 
@@ -263,6 +270,15 @@ const AdminPanel = () => {
               <div>对话数</div>
               <div>操作</div>
             </div>
+            
+            {/* 调试信息 */}
+            {users.length === 0 && !isLoading && (
+              <div className="no-users-message">
+                <p>暂无用户数据</p>
+                <p>用户总数: {users.length}</p>
+                <p>过滤后用户数: {filteredUsers.length}</p>
+              </div>
+            )}
             
             {filteredUsers.map(user => (
               <div key={user.id} className="table-row">

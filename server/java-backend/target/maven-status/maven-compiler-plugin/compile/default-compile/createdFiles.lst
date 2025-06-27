@@ -7,6 +7,7 @@ com\aiplatform\security\JwtAuthenticationFilter.class
 com\aiplatform\util\SimplePasswordGenerator.class
 com\aiplatform\config\CustomNamingStrategy.class
 com\aiplatform\controller\UserController.class
+com\aiplatform\service\UserService$1.class
 com\aiplatform\dto\UserDTO$UserStatusUpdateRequest.class
 com\aiplatform\service\ChatService.class
 com\aiplatform\AiChatBackendApplication.class
@@ -31,6 +32,7 @@ com\aiplatform\util\PasswordGenerator.class
 com\aiplatform\controller\AuthController.class
 com\aiplatform\entity\Message$MessageRole.class
 com\aiplatform\security\SecurityConfig.class
+com\aiplatform\dto\UserDTO$UserRoleUpdateRequest.class
 com\aiplatform\repository\SystemLogRepository.class
 com\aiplatform\controller\HistoryController.class
 com\aiplatform\entity\SystemLog.class
