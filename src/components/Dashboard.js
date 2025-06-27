@@ -19,7 +19,11 @@ import {
   Database,
   Shield,
   User,
-  Crown
+  Crown,
+  Trash2,
+  Star,
+  Lock,
+  MoreVertical
 } from 'lucide-react';
 import { chatAPI } from '../services/api';
 import './Dashboard.css';
@@ -32,6 +36,9 @@ const Dashboard = ({ user, onLogout }) => {
   const [chatHistory, setChatHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentChat, setCurrentChat] = useState(null);
+  const [chatList, setChatList] = useState([]);
+  const [isLoadingChats, setIsLoadingChats] = useState(false);
+  const [showChatList, setShowChatList] = useState(true);
 
   const aiModels = [
     { id: 'gpt-4', name: 'GPT-4', type: 'cloud', description: '最强大的语言模型' },
@@ -49,6 +56,126 @@ const Dashboard = ({ user, onLogout }) => {
     { id: 'text_to_3d', name: '文生3D', icon: Box, description: '文本生成3D模型' },
   ];
 
+  useEffect(() => {
+    // 组件加载时获取对话列表
+    loadChatList();
+  }, []);
+
+  // 加载对话列表
+  const loadChatList = async () => {
+    setIsLoadingChats(true);
+    try {
+      const response = await fetch('/history/chats', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setChatList(data.chats || []);
+      }
+    } catch (error) {
+      console.error('加载对话列表失败:', error);
+    } finally {
+      setIsLoadingChats(false);
+    }
+  };
+
+  // 创建新对话
+  const createNewChat = async () => {
+    try {
+      const newChat = {
+        id: null,
+        title: '新对话',
+        aiType: activeTab,
+        messageCount: 0,
+        lastActivity: new Date()
+      };
+      
+      setCurrentChat(newChat);
+      setChatHistory([]);
+      
+      // 重新加载对话列表
+      await loadChatList();
+    } catch (error) {
+      console.error('创建新对话失败:', error);
+    }
+  };
+
+  // 切换对话
+  const switchChat = async (chat) => {
+    if (currentChat?.id === chat.id) return;
+    
+    try {
+      setCurrentChat(chat);
+      setChatHistory([]);
+      setIsLoading(true);
+      
+      // 获取对话的消息历史
+      if (chat.id) {
+        const response = await fetch(`/history/chats/${chat.id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setChatHistory(data.messages || []);
+        }
+      }
+    } catch (error) {
+      console.error('切换对话失败:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 删除对话
+  const deleteChat = async (chatId) => {
+    if (!window.confirm('确定要删除这个对话吗？此操作不可撤销。')) {
+      return;
+    }
+    
+    try {
+      const response = await chatAPI.delete(chatId);
+      if (response.success) {
+        // 如果删除的是当前对话，切换到新对话
+        if (currentChat?.id === chatId) {
+          setCurrentChat(null);
+          setChatHistory([]);
+        }
+        
+        // 重新加载对话列表
+        await loadChatList();
+      }
+    } catch (error) {
+      console.error('删除对话失败:', error);
+    }
+  };
+
+  // 格式化时间
+  const formatTime = (timestamp) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffHours = diffMs / (1000 * 60 * 60);
+    const diffDays = diffHours / 24;
+    
+    if (diffHours < 1) {
+      return '刚刚';
+    } else if (diffHours < 24) {
+      return `${Math.floor(diffHours)}小时前`;
+    } else if (diffDays < 7) {
+      return `${Math.floor(diffDays)}天前`;
+    } else {
+      return date.toLocaleDateString();
+    }
+  };
+
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
     
@@ -59,11 +186,13 @@ const Dashboard = ({ user, onLogout }) => {
       let chatId = currentChat?.id;
       if (!chatId) {
         const createResponse = await chatAPI.create({
-          title: inputText.substring(0, 50) + '...',
+          title: inputText.substring(0, 50) + (inputText.length > 50 ? '...' : ''),
           aiType: activeTab
         });
         chatId = createResponse.chat.id;
         setCurrentChat(createResponse.chat);
+        // 重新加载对话列表
+        await loadChatList();
       }
       
       // 添加用户消息到界面
@@ -91,6 +220,9 @@ const Dashboard = ({ user, onLogout }) => {
       };
       
       setChatHistory(prev => [...prev, aiMessage]);
+      
+      // 更新对话列表中的最后活动时间
+      await loadChatList();
       
     } catch (error) {
       console.error('发送消息失败:', error);
@@ -143,47 +275,144 @@ const Dashboard = ({ user, onLogout }) => {
         </div>
 
         {activeTab === 'text_to_text' && (
-          <div className="chat-container">
-            <div className="chat-messages">
-              {chatHistory.map(message => (
-                <div key={message.id} className={`message ${message.role}`}>
-                  <div className="message-content">
-                    {message.content}
-                  </div>
-                  <div className="message-meta">
-                    <span className="timestamp">
-                      {new Date(message.createdAt).toLocaleTimeString()}
-                    </span>
-                  </div>
+          <div className="chat-layout">
+            {/* 对话列表侧边栏 */}
+            {showChatList && (
+              <div className="chat-list-sidebar">
+                <div className="chat-list-header">
+                  <h3>对话历史</h3>
+                  <button 
+                    className="new-chat-btn"
+                    onClick={createNewChat}
+                    title="新建对话"
+                  >
+                    <Plus size={16} />
+                  </button>
                 </div>
-              ))}
-              {isLoading && (
-                <div className="message assistant loading">
-                  <div className="typing-indicator">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </div>
+                
+                <div className="chat-list">
+                  {isLoadingChats ? (
+                    <div className="loading-chats">加载中...</div>
+                  ) : chatList.length === 0 ? (
+                    <div className="empty-chats">
+                      <MessageSquare size={24} />
+                      <p>还没有对话记录</p>
+                      <button onClick={createNewChat} className="start-chat-btn">
+                        开始对话
+                      </button>
+                    </div>
+                  ) : (
+                    chatList.map(chat => (
+                      <div 
+                        key={chat.id}
+                        className={`chat-item ${currentChat?.id === chat.id ? 'active' : ''}`}
+                        onClick={() => switchChat(chat)}
+                      >
+                        <div className="chat-item-content">
+                          <div className="chat-title">
+                            {chat.title || '新对话'}
+                          </div>
+                          <div className="chat-meta">
+                            <span className="message-count">
+                              {chat.messageCount || 0} 条消息
+                            </span>
+                            <span className="last-activity">
+                              {formatTime(chat.lastActivity)}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className="chat-actions">
+                          {chat.isFavorite && <Star size={12} className="favorite-icon" />}
+                          {chat.isProtected && <Lock size={12} className="protected-icon" />}
+                          <button 
+                            className="delete-chat-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteChat(chat.id);
+                            }}
+                            title="删除对话"
+                          >
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
             
-            <div className="chat-input">
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder="输入您的问题..."
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                disabled={isLoading}
-              />
-              <button 
-                onClick={handleSendMessage}
-                disabled={isLoading || !inputText.trim()}
-                className="send-button"
-              >
-                <Send size={20} />
-              </button>
+            {/* 对话区域 */}
+            <div className="chat-container">
+              <div className="chat-header">
+                <button 
+                  className="toggle-chat-list"
+                  onClick={() => setShowChatList(!showChatList)}
+                  title={showChatList ? '隐藏对话列表' : '显示对话列表'}
+                >
+                  <History size={16} />
+                </button>
+                <div className="current-chat-info">
+                  <h4>{currentChat?.title || '新对话'}</h4>
+                  {currentChat?.messageCount > 0 && (
+                    <span className="chat-message-count">
+                      {currentChat.messageCount} 条消息
+                    </span>
+                  )}
+                </div>
+              </div>
+              
+              <div className="chat-messages">
+                {chatHistory.length === 0 && !isLoading && (
+                  <div className="empty-chat">
+                    <MessageSquare size={48} />
+                    <h3>开始新的对话</h3>
+                    <p>在下方输入框中输入您的问题，开始与AI对话</p>
+                  </div>
+                )}
+                
+                {chatHistory.map(message => (
+                  <div key={message.id} className={`message ${message.role}`}>
+                    <div className="message-content">
+                      {message.content}
+                    </div>
+                    <div className="message-meta">
+                      <span className="timestamp">
+                        {new Date(message.createdAt).toLocaleTimeString()}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+                
+                {isLoading && (
+                  <div className="message assistant loading">
+                    <div className="typing-indicator">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="chat-input">
+                <input
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  placeholder="输入您的问题..."
+                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                  disabled={isLoading}
+                />
+                <button 
+                  onClick={handleSendMessage}
+                  disabled={isLoading || !inputText.trim()}
+                  className="send-button"
+                >
+                  <Send size={20} />
+                </button>
+              </div>
             </div>
           </div>
         )}

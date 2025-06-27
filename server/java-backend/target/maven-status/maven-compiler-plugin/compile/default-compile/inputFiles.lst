@@ -12,6 +12,7 @@ G:\sework\server\java-backend\src\main\java\com\aiplatform\repository\SystemLogR
 G:\sework\server\java-backend\src\main\java\com\aiplatform\controller\DataController.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\dto\UserDTO.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\controller\AdminController.java
+G:\sework\server\java-backend\src\main\java\com\aiplatform\service\ChatService.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\repository\MessageRepository.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\security\JwtAuthenticationFilter.java
 G:\sework\server\java-backend\src\main\java\com\aiplatform\repository\ChatRepository.java

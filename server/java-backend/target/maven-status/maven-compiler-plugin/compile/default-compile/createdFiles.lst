@@ -18,6 +18,7 @@ com\aiplatform\dto\UserDTO$UserStatusUpdateRequest.class
 com\aiplatform\repository\SystemLogRepository.class
 com\aiplatform\controller\HistoryController.class
 com\aiplatform\entity\SystemLog.class
+com\aiplatform\service\ChatService.class
 com\aiplatform\AiChatBackendApplication.class
 com\aiplatform\entity\BaseEntity.class
 com\aiplatform\security\JwtTokenProvider.class
