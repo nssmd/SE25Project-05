@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -12,6 +12,7 @@ const api = axios.create({
 // 请求拦截器 - 自动添加token
 api.interceptors.request.use(
   (config) => {
+    console.log('API Request:', config.method?.toUpperCase(), config.baseURL + config.url, config.data);
     const token = localStorage.getItem('authToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -29,6 +30,8 @@ api.interceptors.response.use(
     return response.data;
   },
   (error) => {
+    console.error('API Error:', error.response?.data);
+    
     if (error.response?.status === 401) {
       // Token过期或无效，清除本地存储并跳转到登录页
       localStorage.removeItem('authToken');
@@ -37,7 +40,7 @@ api.interceptors.response.use(
     }
     
     // 返回更友好的错误信息
-    const message = error.response?.data?.error || error.message || '网络错误';
+    const message = error.response?.data?.message || error.response?.data?.error || error.message || '网络错误';
     return Promise.reject(new Error(message));
   }
 );
@@ -139,6 +142,15 @@ export const userAPI = {
   
   // 获取活动日志
   getActivityLogs: (params = {}) => api.get('/user/activity-logs', { params }),
+  
+  // 消息相关
+  getMessages: () => api.get('/user/messages'),
+  markMessageAsRead: (messageId) => api.patch(`/user/messages/${messageId}/read`),
+  deleteMessage: (messageId) => api.delete(`/user/messages/${messageId}`),
+  
+  // 客服对话
+  getSupportChat: () => api.get('/user/support/chat'),
+  sendToSupport: (messageData) => api.post('/user/support/message', messageData),
 };
 
 // 管理员相关API
@@ -152,8 +164,11 @@ export const adminAPI = {
   // 更新用户权限
   updateUserPermissions: (userId, permissions) => api.patch(`/admin/users/${userId}/permissions`, { permissions }),
   
-  // 发送消息
-  sendMessage: (messageData) => api.post('/admin/messages/send', messageData),
+  // 修改用户角色
+  updateUserRole: (userId, roleData) => api.put(`/admin/users/${userId}/role`, roleData),
+  
+  // 发送消息给指定用户
+  sendMessage: (userId, messageData) => api.post(`/admin/users/${userId}/message`, messageData),
   
   // 获取发送的消息历史
   getSentMessages: (params = {}) => api.get('/admin/messages/sent', { params }),
