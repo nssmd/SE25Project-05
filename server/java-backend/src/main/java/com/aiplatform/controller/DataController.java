@@ -3,9 +3,11 @@ package com.aiplatform.controller;
 import com.aiplatform.entity.Chat;
 import com.aiplatform.entity.Message;
 import com.aiplatform.entity.User;
+import com.aiplatform.entity.UserSettings;
 import com.aiplatform.repository.ChatRepository;
 import com.aiplatform.repository.MessageRepository;
 import com.aiplatform.repository.UserRepository;
+import com.aiplatform.repository.UserSettingsRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/data")
@@ -32,47 +35,105 @@ public class DataController {
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final UserSettingsRepository userSettingsRepository;
 
     @Operation(summary = "获取用户设置", description = "获取用户数据管理设置")
     @GetMapping("/settings")
     public ResponseEntity<Map<String, Object>> getSettings() {
         try {
             String email = getCurrentUserEmail();
-            log.info("获取用户设置: {}", email);
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("用户不存在"));
             
-            // 返回默认设置（可以后续扩展为从数据库读取用户自定义设置）
+            Long userId = user.getId();
+            log.info("获取用户设置: 用户ID={}", userId);
+            
+            // 从数据库获取用户设置
+            Optional<UserSettings> userSettingsOpt = userSettingsRepository.findByUserId(userId);
+            
             Map<String, Object> settings = new HashMap<>();
-            settings.put("autoDelete", true);
-            settings.put("retentionDays", 30);
-            settings.put("maxChatCount", 100);
-            settings.put("protectedChats", 10);
-            settings.put("deleteInterval", "daily");
+            if (userSettingsOpt.isPresent()) {
+                UserSettings userSettings = userSettingsOpt.get();
+                settings.put("autoDelete", userSettings.getAutoCleanupEnabled());
+                settings.put("retentionDays", userSettings.getRetentionDays());
+                settings.put("maxChatCount", userSettings.getMaxChats());
+                settings.put("protectedChats", userSettings.getProtectedLimit());
+            } else {
+                // 如果没有设置记录，创建默认设置
+                UserSettings defaultSettings = new UserSettings();
+                defaultSettings.setUserId(userId);
+                defaultSettings.setAutoCleanupEnabled(false);
+                defaultSettings.setRetentionDays(30);
+                defaultSettings.setMaxChats(100);
+                defaultSettings.setProtectedLimit(10);
+                defaultSettings.setCleanupFrequency(UserSettings.CleanupFrequency.weekly);
+                
+                UserSettings savedSettings = userSettingsRepository.save(defaultSettings);
+                
+                settings.put("autoDelete", savedSettings.getAutoCleanupEnabled());
+                settings.put("retentionDays", savedSettings.getRetentionDays());
+                settings.put("maxChatCount", savedSettings.getMaxChats());
+                settings.put("protectedChats", savedSettings.getProtectedLimit());
+            }
             
+            log.info("返回用户设置: {}", settings);
             return ResponseEntity.ok(settings);
         } catch (Exception e) {
             log.error("获取设置失败", e);
-            return ResponseEntity.status(500).body(Map.of("error", "获取设置失败"));
+            return ResponseEntity.status(500).body(Map.of("error", "获取设置失败: " + e.getMessage()));
         }
     }
 
     @Operation(summary = "更新用户设置", description = "更新用户数据管理设置")
     @PutMapping("/settings")
-    public ResponseEntity<Map<String, Object>> updateSettings(@RequestBody Map<String, Object> settings) {
+    public ResponseEntity<Map<String, Object>> updateSettings(@RequestBody Map<String, Object> settingsRequest) {
         try {
             String email = getCurrentUserEmail();
-            log.info("更新用户设置: {} - {}", email, settings);
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("用户不存在"));
             
-            // TODO: 保存设置到数据库或配置文件
-            // 目前只是记录日志，后续可以扩展
+            Long userId = user.getId();
+            log.info("更新用户设置: 用户ID={}, 设置={}", userId, settingsRequest);
+            
+            // 查找或创建用户设置
+            UserSettings userSettings = userSettingsRepository.findByUserId(userId)
+                    .orElse(new UserSettings());
+            
+            // 如果是新创建的，设置用户ID
+            if (userSettings.getUserId() == null) {
+                userSettings.setUserId(userId);
+            }
+            
+            // 更新设置字段
+            if (settingsRequest.containsKey("autoDelete")) {
+                userSettings.setAutoCleanupEnabled((Boolean) settingsRequest.get("autoDelete"));
+            }
+            if (settingsRequest.containsKey("retentionDays")) {
+                userSettings.setRetentionDays(((Number) settingsRequest.get("retentionDays")).intValue());
+            }
+            if (settingsRequest.containsKey("maxChatCount")) {
+                userSettings.setMaxChats(((Number) settingsRequest.get("maxChatCount")).intValue());
+            }
+            if (settingsRequest.containsKey("protectedChats")) {
+                userSettings.setProtectedLimit(((Number) settingsRequest.get("protectedChats")).intValue());
+            }
+            
+            // 保存到数据库
+            UserSettings savedSettings = userSettingsRepository.save(userSettings);
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "设置更新成功");
+            response.put("autoDelete", savedSettings.getAutoCleanupEnabled());
+            response.put("retentionDays", savedSettings.getRetentionDays());
+            response.put("maxChatCount", savedSettings.getMaxChats());
+            response.put("protectedChats", savedSettings.getProtectedLimit());
             
+            log.info("用户设置更新成功: {}", response);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error("更新设置失败", e);
-            return ResponseEntity.status(500).body(Map.of("error", "更新设置失败"));
+            return ResponseEntity.status(500).body(Map.of("error", "更新设置失败: " + e.getMessage()));
         }
     }
 

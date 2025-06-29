@@ -142,6 +142,15 @@ export const userAPI = {
   
   // 获取活动日志
   getActivityLogs: (params = {}) => api.get('/user/activity-logs', { params }),
+  
+  // 消息相关
+  getMessages: () => api.get('/user/messages'),
+  markMessageAsRead: (messageId) => api.patch(`/user/messages/${messageId}/read`),
+  deleteMessage: (messageId) => api.delete(`/user/messages/${messageId}`),
+  
+  // 客服对话
+  getSupportChat: () => api.get('/user/support/chat'),
+  sendToSupport: (messageData) => api.post('/user/support/message', messageData),
 };
 
 // 管理员相关API
@@ -158,8 +167,8 @@ export const adminAPI = {
   // 修改用户角色
   updateUserRole: (userId, roleData) => api.put(`/admin/users/${userId}/role`, roleData),
   
-  // 发送消息
-  sendMessage: (messageData) => api.post('/admin/messages/send', messageData),
+  // 发送消息给指定用户
+  sendMessage: (userId, messageData) => api.post(`/admin/users/${userId}/message`, messageData),
   
   // 获取发送的消息历史
   getSentMessages: (params = {}) => api.get('/admin/messages/sent', { params }),

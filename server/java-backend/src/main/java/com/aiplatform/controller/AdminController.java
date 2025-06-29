@@ -1,7 +1,12 @@
 package com.aiplatform.controller;
 
 import com.aiplatform.dto.UserDTO;
+import com.aiplatform.entity.AdminMessage;
+import com.aiplatform.entity.User;
+import com.aiplatform.repository.AdminMessageRepository;
+import com.aiplatform.repository.UserRepository;
 import com.aiplatform.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin")
@@ -25,6 +31,9 @@ import java.util.Map;
 public class AdminController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
+    private final AdminMessageRepository adminMessageRepository;
+    private final ObjectMapper objectMapper;
 
     @Operation(summary = "获取用户列表", description = "分页获取用户列表")
     @GetMapping("/users")
@@ -95,11 +104,87 @@ public class AdminController {
     @PostMapping("/users/{userId}/message")
     public ResponseEntity<String> sendMessageToUser(
             @PathVariable Long userId,
-            @RequestBody String message) {
+            @RequestBody Map<String, Object> request) {
         
-        // 这里可以实现发送系统消息的逻辑
-        log.info("向用户 {} 发送系统消息: {}", userId, message);
-        return ResponseEntity.ok("消息发送成功");
+        try {
+            log.info("管理员向用户 {} 发送消息", userId);
+            
+            String content = (String) request.get("content");
+            String title = (String) request.get("title");
+            
+            if (content == null || content.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("消息内容不能为空");
+            }
+            
+            // 验证目标用户存在
+            Optional<User> targetUser = userRepository.findById(userId);
+            if (!targetUser.isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            // 获取当前管理员用户
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String adminEmail = auth.getName();
+            Optional<User> adminUser = userRepository.findByEmail(adminEmail);
+            
+            if (!adminUser.isPresent()) {
+                return ResponseEntity.status(403).body("管理员用户不存在");
+            }
+            
+            // 创建管理员消息
+            AdminMessage adminMessage = new AdminMessage();
+            adminMessage.setFromUserId(adminUser.get().getId());
+            adminMessage.setToUserId(userId);
+            adminMessage.setMessageType(AdminMessage.MessageType.PRIVATE);
+            adminMessage.setSubject(title);
+            adminMessage.setContent(content);
+            adminMessage.setIsRead(false);
+            
+            adminMessageRepository.save(adminMessage);
+            
+            log.info("消息发送成功: 从用户 {} 发送到用户 {}", adminUser.get().getId(), userId);
+            return ResponseEntity.ok("消息发送成功");
+            
+        } catch (Exception e) {
+            log.error("发送消息失败: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body("发送消息失败");
+        }
+    }
+
+    @Operation(summary = "更新用户权限", description = "更新指定用户的权限")
+    @PatchMapping("/users/{userId}/permissions")
+    public ResponseEntity<String> updateUserPermissions(
+            @PathVariable Long userId,
+            @RequestBody Map<String, Boolean> permissions) {
+        
+        try {
+            log.info("管理员更新用户 {} 的权限: {}", userId, permissions);
+            
+            if (permissions == null || permissions.isEmpty()) {
+                return ResponseEntity.badRequest().body("权限数据不能为空");
+            }
+            
+            // 验证用户存在
+            Optional<User> userOpt = userRepository.findById(userId);
+            if (!userOpt.isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            User user = userOpt.get();
+            
+            // 将权限转换为JSON字符串保存
+            String permissionsJson = objectToJson(permissions);
+            user.setPermissions(permissionsJson);
+            
+            userRepository.save(user);
+            
+            log.info("用户 {} 权限更新成功: {}", userId, permissionsJson);
+            return ResponseEntity.ok("权限更新成功");
+            
+        } catch (Exception e) {
+            log.error("更新用户权限失败: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body("更新权限失败: " + e.getMessage());
+        }
     }
 
     @Operation(summary = "批量更新用户权限", description = "批量更新多个用户的权限")
@@ -149,6 +234,18 @@ public class AdminController {
             Map<String, Object> error = new HashMap<>();
             error.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(error);
+        }
+    }
+    
+    /**
+     * 将对象转换为JSON字符串
+     */
+    private String objectToJson(Object obj) {
+        try {
+            return objectMapper.writeValueAsString(obj);
+        } catch (Exception e) {
+            log.error("转换对象到JSON失败: {}", e.getMessage());
+            return "{}";
         }
     }
 } 

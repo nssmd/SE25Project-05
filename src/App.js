@@ -9,6 +9,7 @@ import CustomerService from './components/CustomerService';
 import HistorySearch from './components/HistorySearch';
 import DataManagement from './components/DataManagement';
 import AdminPanel from './components/AdminPanel';
+import MessageCenter from './components/MessageCenter';
 import userService from './services/UserService';
 import './App.css';
 
@@ -156,6 +157,15 @@ function App() {
             element={
               isAuthenticated ? 
               <DataManagement user={user} onLogout={handleLogout} /> : 
+              <Navigate to="/login" replace />
+            } 
+          />
+          
+          <Route 
+            path="/messages" 
+            element={
+              isAuthenticated ? 
+              <MessageCenter user={user} onLogout={handleLogout} /> : 
               <Navigate to="/login" replace />
             } 
           />

@@ -26,7 +26,7 @@ public class AdminMessage {
     @Column(name = "to_user_id")
     private Long toUserId;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = MessageTypeConverter.class)
     @Column(name = "message_type", nullable = false)
     private MessageType messageType = MessageType.PRIVATE;
 
@@ -42,10 +42,11 @@ public class AdminMessage {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    // 消息类型枚举 - 匹配数据库enum('private','broadcast')
+    // 消息类型枚举 - 匹配数据库enum('private','broadcast','support')
     public enum MessageType {
         PRIVATE("私信", "private"),
-        BROADCAST("广播", "broadcast");
+        BROADCAST("广播", "broadcast"),
+        SUPPORT("客服", "support");
 
         private final String displayName;
         private final String databaseValue;

@@ -23,7 +23,9 @@ import {
   Trash2,
   Star,
   Lock,
-  MoreVertical
+  MoreVertical,
+  Mail,
+  Bell
 } from 'lucide-react';
 import { chatAPI } from '../services/api';
 import './Dashboard.css';
@@ -678,6 +680,13 @@ const Dashboard = ({ user, onLogout }) => {
             >
               <User className="nav-icon" />
               <span>个人中心</span>
+            </button>
+            <button 
+              className="nav-item"
+              onClick={() => navigate('/messages')}
+            >
+              <Mail className="nav-icon" />
+              <span>消息中心</span>
             </button>
             {/* 管理员专用功能 */}
             {user?.role === 'admin' && (

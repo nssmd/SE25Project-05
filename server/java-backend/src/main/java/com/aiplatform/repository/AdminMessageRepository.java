@@ -38,4 +38,15 @@ public interface AdminMessageRepository extends JpaRepository<AdminMessage, Long
 
     // 删除用户相关的所有消息
     void deleteByFromUserIdOrToUserId(Long fromUserId, Long toUserId);
+    
+    // 根据接收者ID和消息类型查询（用于客服对话）
+    List<AdminMessage> findByToUserIdAndMessageTypeOrderByCreatedAtAsc(Long toUserId, AdminMessage.MessageType messageType);
+    
+    // 查询所有发送给指定用户的消息
+    @Query("SELECT m FROM AdminMessage m WHERE m.toUserId = :userId ORDER BY m.createdAt DESC")
+    Page<AdminMessage> findByRecipientIdOrderByCreatedAtDesc(@Param("userId") Long userId, Pageable pageable);
+    
+    // 查询指定用户和消息类型的对话
+    @Query("SELECT m FROM AdminMessage m WHERE m.toUserId = :userId AND m.messageType = :messageType ORDER BY m.createdAt ASC")
+    List<AdminMessage> findByRecipientIdAndMessageTypeOrderByCreatedAtAsc(@Param("userId") Long userId, @Param("messageType") AdminMessage.MessageType messageType);
 } 

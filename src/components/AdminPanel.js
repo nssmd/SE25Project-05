@@ -18,10 +18,13 @@ const AdminPanel = () => {
   const [roleUpdateUser, setRoleUpdateUser] = useState(null);
   const [newRole, setNewRole] = useState('');
   const [roleChangeReason, setRoleChangeReason] = useState('');
+  const [broadcastMessage, setBroadcastMessage] = useState('');
+  const [sentMessages, setSentMessages] = useState([]);
 
   // 加载用户数据
   useEffect(() => {
     loadUsers();
+    loadSentMessages();
   }, []);
 
   const loadUsers = async () => {
@@ -42,6 +45,49 @@ const AdminPanel = () => {
     } catch (error) {
       console.error('加载用户数据失败:', error);
       alert('加载用户数据失败: ' + error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 加载已发送消息
+  const loadSentMessages = async () => {
+    try {
+      const messages = await adminAPI.getSentMessages();
+      setSentMessages(messages.content || messages || []);
+    } catch (error) {
+      console.error('加载消息失败:', error);
+    }
+  };
+
+  // 发送广播消息
+  const sendBroadcastMessage = async () => {
+    if (!broadcastMessage.trim()) {
+      alert('请输入广播消息内容');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      
+      // 发送广播消息给所有用户
+      const activeUsers = users.filter(u => u.status === 'active');
+      const promises = activeUsers.map(user => 
+        adminAPI.sendMessage(user.id, {
+          title: '系统广播',
+          content: broadcastMessage
+        })
+      );
+      
+      await Promise.all(promises);
+      
+      alert(`广播消息已发送给 ${activeUsers.length} 个活跃用户`);
+      setBroadcastMessage('');
+      loadSentMessages();
+      
+    } catch (error) {
+      console.error('发送广播失败:', error);
+      alert('发送广播失败: ' + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -80,21 +126,27 @@ const AdminPanel = () => {
     try {
       setIsLoading(true);
       const user = users.find(u => u.id === userId);
+      const currentPermissions = getStandardPermissions(user);
       const newPermissions = {
-        ...user.permissions,
-        [permission]: !user.permissions[permission]
+        ...currentPermissions,
+        [permission]: !currentPermissions[permission]
       };
+      
+      console.log('更新权限:', userId, permission, '当前权限:', currentPermissions, '新权限:', newPermissions);
       
       await adminAPI.updateUserPermissions(userId, newPermissions);
       
+      // 更新本地状态，将权限保存为JSON字符串格式（与后端一致）
       setUsers(prev => prev.map(user => 
         user.id === userId 
-          ? { ...user, permissions: newPermissions }
+          ? { ...user, permissions: JSON.stringify(newPermissions) }
           : user
       ));
+      
+      console.log('权限更新成功');
     } catch (error) {
       console.error('更新用户权限失败:', error);
-      alert('更新用户权限失败');
+      alert('更新用户权限失败: ' + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -107,12 +159,9 @@ const AdminPanel = () => {
     try {
       setIsLoading(true);
       
-      await adminAPI.sendMessage({
-        recipientId: selectedUser.id,
-        messageType: 'direct',
+      await adminAPI.sendMessage(selectedUser.id, {
         title: '管理员消息',
-        content: messageText,
-        priority: 'normal'
+        content: messageText
       });
       
       alert(`消息已发送给 ${selectedUser.username}`);
@@ -120,7 +169,7 @@ const AdminPanel = () => {
       setSelectedUser(null);
     } catch (error) {
       console.error('发送消息失败:', error);
-      alert('发送消息失败');
+      alert('发送消息失败: ' + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -199,9 +248,68 @@ const AdminPanel = () => {
       image_to_image: '图生图',
       image_to_text: '图生文',
       text_to_video: '文生视频',
-      text_to_3d: '文生3D'
+      text_to_3d: '文生3D',
+      chat: '基础聊天',
+      file_upload: '文件上传',
+      data_export: '数据导出'
     };
     return names[key] || key;
+  };
+
+  // 获取标准权限列表（处理后端返回的权限数据）
+  const getStandardPermissions = (user) => {
+    // 如果permissions是对象且不为null，直接返回
+    if (typeof user.permissions === 'object' && user.permissions !== null) {
+      return user.permissions;
+    }
+
+    // 如果permissions是JSON字符串，尝试解析
+    if (typeof user.permissions === 'string' && user.permissions.trim().startsWith('{')) {
+      try {
+        return JSON.parse(user.permissions);
+      } catch (e) {
+        console.warn('无法解析用户权限JSON:', user.permissions);
+      }
+    }
+
+    // 如果permissions是其他字符串格式或解析失败，根据角色返回标准权限
+    const rolePermissions = {
+      admin: {
+        text_to_text: true,
+        text_to_image: true,
+        image_to_image: true,
+        image_to_text: true,
+        text_to_video: true,
+        text_to_3d: true,
+        chat: true,
+        file_upload: true,
+        data_export: true
+      },
+      support: {
+        text_to_text: true,
+        text_to_image: false,
+        image_to_image: false,
+        image_to_text: true,
+        text_to_video: false,
+        text_to_3d: false,
+        chat: true,
+        file_upload: true,
+        data_export: false
+      },
+      user: {
+        text_to_text: true,
+        text_to_image: false,
+        image_to_image: false,
+        image_to_text: false,
+        text_to_video: false,
+        text_to_3d: false,
+        chat: true,
+        file_upload: false,
+        data_export: false
+      }
+    };
+
+    return rolePermissions[user.role] || rolePermissions.user;
   };
   
   // 搜索变化时重新加载数据
@@ -369,7 +477,7 @@ const AdminPanel = () => {
                 </div>
 
                 <div className="permissions-list">
-                  {Object.entries(user.permissions).map(([key, enabled]) => (
+                  {Object.entries(getStandardPermissions(user)).map(([key, enabled]) => (
                     <div key={key} className="permission-item">
                       <span className="permission-name">
                         {getPermissionName(key)}
@@ -404,11 +512,17 @@ const AdminPanel = () => {
               <h4>广播消息</h4>
               <textarea
                 placeholder="输入要发送给所有用户的消息..."
+                value={broadcastMessage}
+                onChange={(e) => setBroadcastMessage(e.target.value)}
                 rows="4"
               />
-              <button className="broadcast-btn">
+              <button 
+                className="broadcast-btn"
+                onClick={sendBroadcastMessage}
+                disabled={!broadcastMessage.trim() || isLoading}
+              >
                 <MessageSquare size={16} />
-                发送广播
+                {isLoading ? '发送中...' : '发送广播'}
               </button>
             </div>
 

@@ -305,14 +305,29 @@ public class UserService {
      * 更新用户状态（管理员功能）
      */
     public void updateUserStatus(Long userId, UserDTO.UserStatusUpdateRequest request) {
+        log.info("=== UserService.updateUserStatus 开始 ===");
+        log.info("请求参数: userId={}, status={}", userId, request.getStatus());
+        
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException("用户不存在"));
         
-        User.UserStatus newStatus = User.UserStatus.valueOf(request.getStatus().toUpperCase());
+        log.info("找到用户: id={}, email={}, 当前状态={}", user.getId(), user.getEmail(), user.getStatus());
+        
+        // 枚举值应该用小写，所以用toLowerCase()而不是toUpperCase()
+        User.UserStatus newStatus;
+        try {
+            newStatus = User.UserStatus.valueOf(request.getStatus().toLowerCase());
+        } catch (IllegalArgumentException e) {
+            log.error("无效的状态值: {}", request.getStatus());
+            throw new BusinessException("无效的状态值: " + request.getStatus());
+        }
+        
+        log.info("状态转换: {} -> {}", user.getStatus(), newStatus);
         user.setStatus(newStatus);
         
-        userRepository.save(user);
-        log.info("用户状态更新: 用户ID={}, 新状态={}, 原因={}", userId, newStatus, request.getReason());
+        user = userRepository.save(user);
+        log.info("用户状态更新成功: 用户ID={}, 新状态={}, 原因={}", userId, newStatus, request.getReason());
+        log.info("=== UserService.updateUserStatus 结束 ===");
     }
 
     /**
