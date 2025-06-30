@@ -13619,3 +13619,224 @@ Caused by: java.sql.SQLException: Cannot change column 'id': used in a foreign k
 2025-06-30 13:41:52 [http-nio-8080-exec-2] INFO  com.aiplatform.service.UserService - === UserService.searchUsers 结束 ===
 2025-06-30 13:41:52 [http-nio-8080-exec-2] INFO  c.a.controller.AdminController - 用户列表查询成功: 总数=6, 当前页数量=6
 2025-06-30 13:41:52 [http-nio-8080-exec-2] INFO  c.a.controller.AdminController - === AdminController.getUsers 结束 ===
+2025-06-30 13:42:52 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /admin/users/9/permissions
+2025-06-30 13:42:52 [http-nio-8080-exec-10] INFO  c.a.s.CustomUserDetailsService - === CustomUserDetailsService.loadUserByUsername ===
+2025-06-30 13:42:52 [http-nio-8080-exec-10] INFO  c.a.s.CustomUserDetailsService - 加载用户: 2581235653@qq.com
+2025-06-30 13:42:52 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-30 13:42:52 [http-nio-8080-exec-10] INFO  c.a.s.CustomUserDetailsService - 找到用户: id=3, email=2581235653@qq.com, username=wzm11111, role=admin, status=active
+2025-06-30 13:42:52 [http-nio-8080-exec-10] INFO  c.a.s.CustomUserDetailsService - 用户权限: ROLE_admin
+2025-06-30 13:42:52 [http-nio-8080-exec-10] INFO  c.a.s.CustomUserDetailsService - 用户详情构建完成: authorities=[ROLE_admin]
+2025-06-30 13:42:52 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /admin/users/9/permissions
+2025-06-30 13:42:52 [http-nio-8080-exec-10] INFO  c.a.controller.AdminController - 管理员更新用户 9 的权限: {text_to_text=true, text_to_image=true, image_to_image=false, image_to_text=true, text_to_video=false, text_to_3d=false, chat=true, file_upload=true, data_export=false}
+2025-06-30 13:42:52 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-06-30 13:42:52 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    /* update
+        for com.aiplatform.entity.User */update users 
+    set
+        email=?,
+        last_login=?,
+        password=?,
+        permissions=?,
+        role=?,
+        status=?,
+        updated_at=?,
+        username=? 
+    where
+        id=?
+2025-06-30 13:42:52 [http-nio-8080-exec-10] INFO  c.a.controller.AdminController - 用户 9 权限更新成功: {"text_to_text":true,"text_to_image":true,"image_to_image":false,"image_to_text":true,"text_to_video":false,"text_to_3d":false,"chat":true,"file_upload":true,"data_export":false}
+2025-06-30 13:42:53 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /admin/users/9/permissions
+2025-06-30 13:42:53 [http-nio-8080-exec-9] INFO  c.a.s.CustomUserDetailsService - === CustomUserDetailsService.loadUserByUsername ===
+2025-06-30 13:42:53 [http-nio-8080-exec-9] INFO  c.a.s.CustomUserDetailsService - 加载用户: 2581235653@qq.com
+2025-06-30 13:42:53 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-30 13:42:53 [http-nio-8080-exec-9] INFO  c.a.s.CustomUserDetailsService - 找到用户: id=3, email=2581235653@qq.com, username=wzm11111, role=admin, status=active
+2025-06-30 13:42:53 [http-nio-8080-exec-9] INFO  c.a.s.CustomUserDetailsService - 用户权限: ROLE_admin
+2025-06-30 13:42:53 [http-nio-8080-exec-9] INFO  c.a.s.CustomUserDetailsService - 用户详情构建完成: authorities=[ROLE_admin]
+2025-06-30 13:42:53 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /admin/users/9/permissions
+2025-06-30 13:42:53 [http-nio-8080-exec-9] INFO  c.a.controller.AdminController - 管理员更新用户 9 的权限: {text_to_text=true, text_to_image=true, image_to_image=true, image_to_text=true, text_to_video=false, text_to_3d=false, chat=true, file_upload=true, data_export=false}
+2025-06-30 13:42:53 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-06-30 13:42:53 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* update
+        for com.aiplatform.entity.User */update users 
+    set
+        email=?,
+        last_login=?,
+        password=?,
+        permissions=?,
+        role=?,
+        status=?,
+        updated_at=?,
+        username=? 
+    where
+        id=?
+2025-06-30 13:42:53 [http-nio-8080-exec-9] INFO  c.a.controller.AdminController - 用户 9 权限更新成功: {"text_to_text":true,"text_to_image":true,"image_to_image":true,"image_to_text":true,"text_to_video":false,"text_to_3d":false,"chat":true,"file_upload":true,"data_export":false}
+2025-06-30 13:42:54 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /admin/users/9/permissions
+2025-06-30 13:42:54 [http-nio-8080-exec-5] INFO  c.a.s.CustomUserDetailsService - === CustomUserDetailsService.loadUserByUsername ===
+2025-06-30 13:42:54 [http-nio-8080-exec-5] INFO  c.a.s.CustomUserDetailsService - 加载用户: 2581235653@qq.com
+2025-06-30 13:42:54 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-30 13:42:54 [http-nio-8080-exec-5] INFO  c.a.s.CustomUserDetailsService - 找到用户: id=3, email=2581235653@qq.com, username=wzm11111, role=admin, status=active
+2025-06-30 13:42:54 [http-nio-8080-exec-5] INFO  c.a.s.CustomUserDetailsService - 用户权限: ROLE_admin
+2025-06-30 13:42:54 [http-nio-8080-exec-5] INFO  c.a.s.CustomUserDetailsService - 用户详情构建完成: authorities=[ROLE_admin]
+2025-06-30 13:42:54 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /admin/users/9/permissions
+2025-06-30 13:42:54 [http-nio-8080-exec-5] INFO  c.a.controller.AdminController - 管理员更新用户 9 的权限: {text_to_text=true, text_to_image=true, image_to_image=false, image_to_text=true, text_to_video=false, text_to_3d=false, chat=true, file_upload=true, data_export=false}
+2025-06-30 13:42:54 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-06-30 13:42:54 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* update
+        for com.aiplatform.entity.User */update users 
+    set
+        email=?,
+        last_login=?,
+        password=?,
+        permissions=?,
+        role=?,
+        status=?,
+        updated_at=?,
+        username=? 
+    where
+        id=?
+2025-06-30 13:42:54 [http-nio-8080-exec-5] INFO  c.a.controller.AdminController - 用户 9 权限更新成功: {"text_to_text":true,"text_to_image":true,"image_to_image":false,"image_to_text":true,"text_to_video":false,"text_to_3d":false,"chat":true,"file_upload":true,"data_export":false}
+2025-06-30 13:42:54 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /admin/users/9/permissions
+2025-06-30 13:42:54 [http-nio-8080-exec-7] INFO  c.a.s.CustomUserDetailsService - === CustomUserDetailsService.loadUserByUsername ===
+2025-06-30 13:42:54 [http-nio-8080-exec-7] INFO  c.a.s.CustomUserDetailsService - 加载用户: 2581235653@qq.com
+2025-06-30 13:42:54 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2025-06-30 13:42:54 [http-nio-8080-exec-7] INFO  c.a.s.CustomUserDetailsService - 找到用户: id=3, email=2581235653@qq.com, username=wzm11111, role=admin, status=active
+2025-06-30 13:42:54 [http-nio-8080-exec-7] INFO  c.a.s.CustomUserDetailsService - 用户权限: ROLE_admin
+2025-06-30 13:42:54 [http-nio-8080-exec-7] INFO  c.a.s.CustomUserDetailsService - 用户详情构建完成: authorities=[ROLE_admin]
+2025-06-30 13:42:54 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /admin/users/9/permissions
+2025-06-30 13:42:54 [http-nio-8080-exec-7] INFO  c.a.controller.AdminController - 管理员更新用户 9 的权限: {text_to_text=true, text_to_image=false, image_to_image=false, image_to_text=true, text_to_video=false, text_to_3d=false, chat=true, file_upload=true, data_export=false}
+2025-06-30 13:42:54 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.last_login,
+        u1_0.password,
+        u1_0.permissions,
+        u1_0.role,
+        u1_0.status,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-06-30 13:42:54 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* update
+        for com.aiplatform.entity.User */update users 
+    set
+        email=?,
+        last_login=?,
+        password=?,
+        permissions=?,
+        role=?,
+        status=?,
+        updated_at=?,
+        username=? 
+    where
+        id=?
+2025-06-30 13:42:54 [http-nio-8080-exec-7] INFO  c.a.controller.AdminController - 用户 9 权限更新成功: {"text_to_text":true,"text_to_image":false,"image_to_image":false,"image_to_text":true,"text_to_video":false,"text_to_3d":false,"chat":true,"file_upload":true,"data_export":false}
+2025-06-30 13:51:48 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=8m26s751ms82µs700ns).
