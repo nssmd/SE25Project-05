@@ -75,7 +75,7 @@ const MessageCenter = ({ user, onLogout }) => {
   useEffect(() => {
     if (user?.role === 'user' || user?.role === 'admin') {
       if (selectedSupport) {
-        loadSupportChat();
+    loadSupportChat();
       } else {
         // 没有选择客服时，清空对话记录
         setSupportChat([]);
@@ -425,7 +425,7 @@ const MessageCenter = ({ user, onLogout }) => {
             <MessageSquare size={28} />
           </div>
           <div className="header-text">
-            <h1>消息中心</h1>
+          <h1>消息中心</h1>
             <p>查看系统消息{(user?.role === 'user' || user?.role === 'admin') ? '和客服对话' : user?.role === 'support' ? '和客服工作台' : ''}</p>
           </div>
         </div>
@@ -449,11 +449,11 @@ const MessageCenter = ({ user, onLogout }) => {
           
           {/* 普通用户和管理员都能看到客服对话 */}
           {(user?.role === 'user' || user?.role === 'admin') && (
-            <button 
-              className={`tab-btn ${activeTab === 'support' ? 'active' : ''}`}
-              onClick={() => setActiveTab('support')}
-            >
-              <MessageSquare size={20} />
+          <button 
+            className={`tab-btn ${activeTab === 'support' ? 'active' : ''}`}
+            onClick={() => setActiveTab('support')}
+          >
+            <MessageSquare size={20} />
               <span>客服对话</span>
             </button>
           )}
@@ -466,7 +466,7 @@ const MessageCenter = ({ user, onLogout }) => {
             >
               <Headphones size={20} />
               <span>客服工作台</span>
-            </button>
+          </button>
           )}
         </div>
 
@@ -490,9 +490,9 @@ const MessageCenter = ({ user, onLogout }) => {
                 {messages.map(message => {
                   const senderInfo = getSenderInfo(message);
                   return (
-                    <div 
-                      key={message.id} 
-                      className={`message-item ${!message.isRead ? 'unread' : ''}`}
+                  <div 
+                    key={message.id} 
+                    className={`message-item ${!message.isRead ? 'unread' : ''}`}
                     >
                       <div className="message-avatar">
                         <div className={`avatar ${senderInfo.role}`}>
@@ -515,16 +515,16 @@ const MessageCenter = ({ user, onLogout }) => {
                       </div>
 
                       <div className="message-main">
-                        <div className="message-header">
-                          <h4 className="message-title">
-                            {message.subject || '系统通知'}
-                          </h4>
-                          <div className="message-meta">
-                            <span className="message-time">
+                    <div className="message-header">
+                      <h4 className="message-title">
+                        {message.subject || '系统通知'}
+                      </h4>
+                      <div className="message-meta">
+                        <span className="message-time">
                               <Clock size={14} />
-                              {formatTime(message.createdAt)}
-                            </span>
-                            <span className={`message-status ${message.isRead ? 'read' : 'unread'}`}>
+                          {formatTime(message.createdAt)}
+                        </span>
+                        <span className={`message-status ${message.isRead ? 'read' : 'unread'}`}>
                               {message.isRead ? (
                                 <>
                                   <CheckCircle size={14} />
@@ -536,35 +536,35 @@ const MessageCenter = ({ user, onLogout }) => {
                                   未读
                                 </>
                               )}
-                            </span>
-                          </div>
-                        </div>
+                        </span>
+                      </div>
+                    </div>
                         
-                        <div className="message-content">
-                          {message.content}
-                        </div>
+                    <div className="message-content">
+                      {message.content}
+                    </div>
                         
-                        <div className="message-actions">
-                          {!message.isRead && (
-                            <button 
-                              className="action-btn mark-read"
+                    <div className="message-actions">
+                      {!message.isRead && (
+                        <button 
+                          className="action-btn mark-read"
                               onClick={() => markAsRead(message.id)}
                               title="标记为已读"
-                            >
-                              <CheckCircle size={14} />
-                              标记已读
-                            </button>
-                          )}
-                          <button 
-                            className="action-btn delete"
+                        >
+                          <CheckCircle size={14} />
+                          标记已读
+                        </button>
+                      )}
+                      <button 
+                        className="action-btn delete"
                             onClick={() => deleteMessage(message.id)}
                             title="删除此消息"
-                          >
-                            <Trash2 size={14} />
-                            删除
-                          </button>
-                        </div>
-                      </div>
+                      >
+                        <Trash2 size={14} />
+                        删除
+                      </button>
+                    </div>
+                  </div>
                     </div>
                   );
                 })}
@@ -714,8 +714,8 @@ const MessageCenter = ({ user, onLogout }) => {
                             </div>
                           ))}
                         </div>
-                      )}
-                    </div>
+                )}
+              </div>
 
                     {/* 输入区域 */}
                     <div 
@@ -740,18 +740,18 @@ const MessageCenter = ({ user, onLogout }) => {
                           transition: 'all 0.2s ease'
                         }}
                       >
-                        <textarea
-                          value={newMessage}
-                          onChange={(e) => setNewMessage(e.target.value)}
+                <textarea
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
                           placeholder={`向 ${selectedSupport.username} 发送消息...`}
                           rows="1"
-                          disabled={isLoading}
-                          onKeyPress={(e) => {
-                            if (e.key === 'Enter' && !e.shiftKey) {
-                              e.preventDefault();
-                              sendToSupport();
-                            }
-                          }}
+                  disabled={isLoading}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      sendToSupport();
+                    }
+                  }}
                           style={{
                             flex: 1,
                             border: 'none',
@@ -770,11 +770,11 @@ const MessageCenter = ({ user, onLogout }) => {
                             e.target.style.height = 'auto';
                             e.target.style.height = Math.min(e.target.scrollHeight, 80) + 'px';
                           }}
-                        />
-                        <button 
+                />
+                <button 
                           className="send-button"
-                          onClick={sendToSupport}
-                          disabled={!newMessage.trim() || isLoading}
+                  onClick={sendToSupport}
+                  disabled={!newMessage.trim() || isLoading}
                           style={{
                             backgroundColor: newMessage.trim() ? '#10b981' : '#d1d5db',
                             color: 'white',
@@ -1194,9 +1194,9 @@ const MessageCenter = ({ user, onLogout }) => {
                               }}
                             ></div>
                           ) : (
-                            <Send size={18} />
+                  <Send size={18} />
                           )}
-                        </button>
+                </button>
                       </div>
                     </div>
                   </>
