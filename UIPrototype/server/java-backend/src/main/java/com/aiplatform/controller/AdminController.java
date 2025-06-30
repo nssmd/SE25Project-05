@@ -155,7 +155,7 @@ public class AdminController {
     }
 
     @Operation(summary = "更新用户权限", description = "更新指定用户的权限")
-    @PatchMapping("/users/{userId}/permissions")
+    @PutMapping("/users/{userId}/permissions")
     public ResponseEntity<String> updateUserPermissions(
             @PathVariable Long userId,
             @RequestBody Map<String, Boolean> permissions) {

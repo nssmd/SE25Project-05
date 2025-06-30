@@ -36,6 +36,8 @@ const MessageCenter = ({ user, onLogout }) => {
   const [selectedSupport, setSelectedSupport] = useState(null);
 
   const [notification, setNotification] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [showCustomerList, setShowCustomerList] = useState(true);
   
   // 如果是客服账户，加载客户对话列表
   const [customerChats, setCustomerChats] = useState([]);
@@ -70,6 +72,21 @@ const MessageCenter = ({ user, onLogout }) => {
       console.warn('MessageCenter - 未知的用户角色:', user.role);
     }
   }, [user]);
+
+  // 监听窗口大小变化
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      // 如果切换到桌面端，重置显示状态
+      if (!mobile) {
+        setShowCustomerList(true);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // 当选择的客服改变时，重新加载对话
   useEffect(() => {
@@ -845,19 +862,22 @@ const MessageCenter = ({ user, onLogout }) => {
                 gap: '16px',
                 backgroundColor: '#f8fafc',
                 borderRadius: '12px',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                flexDirection: isMobile ? 'column' : 'row'
               }}
             >
               <div 
                 className="desk-sidebar"
                 style={{
-                  width: '300px',
+                  width: isMobile ? '100%' : '300px',
+                  height: isMobile ? (showCustomerList ? '100%' : '0') : '100%',
                   backgroundColor: '#ffffff',
                   borderRadius: '12px',
-                  padding: '16px',
-                  display: 'flex',
+                  padding: showCustomerList || !isMobile ? '16px' : '0',
+                  display: isMobile && !showCustomerList ? 'none' : 'flex',
                   flexDirection: 'column',
-                  height: '100%'
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease'
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -920,7 +940,13 @@ const MessageCenter = ({ user, onLogout }) => {
                       <div 
                         key={chat.id}
                         className={`customer-item ${selectedCustomer?.id === chat.id ? 'selected' : ''}`}
-                        onClick={() => setSelectedCustomer(chat)}
+                        onClick={() => {
+                          setSelectedCustomer(chat);
+                          // 在手机端选择客户后隐藏客户列表
+                          if (isMobile) {
+                            setShowCustomerList(false);
+                          }
+                        }}
                         style={{
                           padding: '12px',
                           borderRadius: '8px',
@@ -973,7 +999,8 @@ const MessageCenter = ({ user, onLogout }) => {
                 className="desk-main"
                 style={{
                   flex: 1,
-                  display: 'flex',
+                  width: isMobile ? '100%' : 'auto',
+                  display: isMobile && showCustomerList ? 'none' : 'flex',
                   flexDirection: 'column',
                   height: '100%',
                   backgroundColor: '#ffffff',
@@ -995,6 +1022,22 @@ const MessageCenter = ({ user, onLogout }) => {
                         flexShrink: 0
                       }}
                     >
+                      {isMobile && (
+                        <button
+                          onClick={() => setShowCustomerList(true)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: '4px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            color: '#3b82f6'
+                          }}
+                        >
+                          <ArrowLeft size={20} />
+                        </button>
+                      )}
                       <UserCircle size={24} style={{ color: '#3b82f6' }} />
                       <span style={{ fontWeight: '600', fontSize: '16px', color: '#374151' }}>
                         与 {selectedCustomer.customerName} 的对话
@@ -1220,8 +1263,29 @@ const MessageCenter = ({ user, onLogout }) => {
                     <Users size={64} style={{ marginBottom: '24px', opacity: 0.4 }} />
                     <h3 style={{ margin: '0 0 12px 0', fontSize: '18px', color: '#374151' }}>选择客户开始对话</h3>
                     <p style={{ margin: '0 0 20px 0', fontSize: '14px' }}>
-                      从左侧客户列表中选择一个客户来查看对话历史或发送消息
+                      {isMobile ? '请选择一个客户来查看对话历史或发送消息' : '从左侧客户列表中选择一个客户来查看对话历史或发送消息'}
                     </p>
+                    {isMobile && (
+                      <button
+                        onClick={() => setShowCustomerList(true)}
+                        style={{
+                          backgroundColor: '#3b82f6',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          padding: '12px 24px',
+                          fontSize: '14px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          margin: '16px auto 0'
+                        }}
+                      >
+                        <Users size={16} />
+                        查看客户列表
+                      </button>
+                    )}
                     {customerChats.length === 0 && (
                       <div style={{ 
                         backgroundColor: '#e0f2fe', 

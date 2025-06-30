@@ -102,7 +102,23 @@ const AdminPanel = () => {
       console.log('权限更新成功');
     } catch (error) {
       console.error('更新用户权限失败:', error);
-      alert('更新用户权限失败: ' + error.message);
+      
+      let errorMessage = '更新用户权限失败';
+      if (error.response) {
+        const errorData = error.response.data;
+        if (typeof errorData === 'object' && errorData.error) {
+          errorMessage = errorData.error;
+          if (errorData.invalidKeys) {
+            errorMessage += `\n无效的权限字段: ${errorData.invalidKeys.join(', ')}`;
+          }
+        } else if (typeof errorData === 'string') {
+          errorMessage = errorData;
+        }
+      } else if (error.message) {
+        errorMessage += ': ' + error.message;
+      }
+      
+      alert(errorMessage);
     } finally {
       setIsLoading(false);
     }

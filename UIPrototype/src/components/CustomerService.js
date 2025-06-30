@@ -32,6 +32,7 @@ const CustomerService = ({ isOpen, onClose }) => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [notification, setNotification] = useState('');
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const messagesEndRef = useRef(null);
 
   const faqs = [
@@ -96,6 +97,15 @@ const CustomerService = ({ isOpen, onClose }) => {
     scrollToBottom();
   }, [chatMessages]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -123,6 +133,13 @@ const CustomerService = ({ isOpen, onClose }) => {
       };
       setChatMessages(prev => [...prev, botReply]);
     }, 1000);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
   };
 
   const getBotReply = (userMessage) => {
@@ -278,9 +295,21 @@ const CustomerService = ({ isOpen, onClose }) => {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="输入您的问题..."
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                    onKeyPress={handleKeyPress}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                    {...(isMobile && {
+                      inputMode: 'text',
+                      enterKeyHint: 'send'
+                    })}
                   />
-                  <button onClick={handleSendMessage} className="send-btn">
+                  <button 
+                    onClick={handleSendMessage} 
+                    className="send-btn"
+                    disabled={!message.trim()}
+                  >
                     <Send size={16} />
                   </button>
                 </div>

@@ -186,18 +186,26 @@ router.put('/users/:userId/status', requireAdmin, async (req, res) => {
 router.put('/users/:userId/permissions', requireAdmin, async (req, res) => {
   try {
     const { userId } = req.params;
-    const { permissions } = req.body;
+    const permissions = req.body;
 
     if (!permissions || typeof permissions !== 'object') {
       return res.status(400).json({ error: 'Invalid permissions' });
     }
 
     // 验证权限字段
-    const validPermissions = ['text_to_text', 'text_to_image', 'image_to_text', 'text_to_audio', 'audio_to_text', 'multimodal'];
+    const validPermissions = [
+      'text_to_text', 'text_to_image', 'image_to_image', 'image_to_text', 
+      'text_to_video', 'text_to_3d', 'chat', 'file_upload', 'data_export',
+      'text_to_audio', 'audio_to_text', 'multimodal'  // 保留原有字段兼容性
+    ];
     const permissionKeys = Object.keys(permissions);
     
     if (!permissionKeys.every(key => validPermissions.includes(key))) {
-      return res.status(400).json({ error: 'Invalid permission keys' });
+      return res.status(400).json({ 
+        error: 'Invalid permission keys', 
+        invalidKeys: permissionKeys.filter(key => !validPermissions.includes(key)),
+        validKeys: validPermissions
+      });
     }
 
     await query(`

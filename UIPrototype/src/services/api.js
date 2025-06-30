@@ -236,7 +236,7 @@ export const adminAPI = {
   updateUserStatus: (userId, status) => api.patch(`/admin/users/${userId}/status`, { status }),
   
   // 更新用户权限
-  updateUserPermissions: (userId, permissions) => api.patch(`/admin/users/${userId}/permissions`, { permissions }),
+  updateUserPermissions: (userId, permissions) => api.put(`/admin/users/${userId}/permissions`, permissions),
   
   // 修改用户角色
   updateUserRole: (userId, roleData) => api.put(`/admin/users/${userId}/role`, roleData),
