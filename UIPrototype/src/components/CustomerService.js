@@ -11,7 +11,10 @@ import {
   Minimize2,
   Maximize2,
   HelpCircle,
-  Search
+  Search,
+  Trash2,
+  Copy,
+  MoreHorizontal
 } from 'lucide-react';
 import './CustomerService.css';
 
@@ -28,6 +31,7 @@ const CustomerService = ({ isOpen, onClose }) => {
   ]);
   const [isMinimized, setIsMinimized] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [notification, setNotification] = useState('');
   const messagesEndRef = useRef(null);
 
   const faqs = [
@@ -141,6 +145,27 @@ const CustomerService = ({ isOpen, onClose }) => {
     setMessage(reply);
   };
 
+  const showNotification = (message) => {
+    setNotification(message);
+    setTimeout(() => setNotification(''), 3000);
+  };
+
+  const deleteMessage = (messageId) => {
+    if (window.confirm('确定要删除这条消息吗？')) {
+      setChatMessages(prev => prev.filter(msg => msg.id !== messageId));
+      showNotification('消息已删除');
+    }
+  };
+
+  const copyMessage = (content) => {
+    navigator.clipboard.writeText(content).then(() => {
+      showNotification('消息已复制到剪贴板');
+    }).catch(err => {
+      console.error('复制失败:', err);
+      showNotification('复制失败，请重试');
+    });
+  };
+
   const filteredFaqs = faqs.filter(faq => 
     faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
     faq.answer.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -153,6 +178,11 @@ const CustomerService = ({ isOpen, onClose }) => {
 
   return (
     <div className={`customer-service ${isMinimized ? 'minimized' : ''}`}>
+      {notification && (
+        <div className="notification">
+          {notification}
+        </div>
+      )}
       <div className="cs-header">
         <div className="cs-title">
           <MessageCircle size={20} />
@@ -207,6 +237,22 @@ const CustomerService = ({ isOpen, onClose }) => {
                         <div className="message-text">{msg.content}</div>
                         <div className="message-time">
                           {msg.timestamp.toLocaleTimeString()}
+                        </div>
+                        <div className="message-actions">
+                          <button 
+                            className="action-btn copy"
+                            onClick={() => copyMessage(msg.content)}
+                            title="复制消息"
+                          >
+                            <Copy size={12} />
+                          </button>
+                          <button 
+                            className="action-btn delete"
+                            onClick={() => deleteMessage(msg.id)}
+                            title="删除消息"
+                          >
+                            <Trash2 size={12} />
+                          </button>
                         </div>
                       </div>
                     </div>

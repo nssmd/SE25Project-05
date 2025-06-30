@@ -11,7 +11,9 @@ import DataManagement from './components/DataManagement';
 import AdminPanel from './components/AdminPanel';
 import MessageCenter from './components/MessageCenter';
 import userService from './services/UserService';
+import { authAPI } from './services/api';
 import './App.css';
+import './mobile.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -19,13 +21,17 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // 检查本地存储中的用户信息和token
+    // 检查本地存储中的用户信息和token，并验证token有效性
     const checkAuthStatus = async () => {
       const token = localStorage.getItem('authToken');
       const savedUser = localStorage.getItem('user');
       
       if (token && savedUser) {
         try {
+          // 验证token是否仍然有效（通过获取当前用户信息）
+          await authAPI.verify();
+          
+          // Token有效，解析用户信息
           const userData = JSON.parse(savedUser);
           // 如果没有角色信息，默认设置为普通用户
           if (!userData.role) {
@@ -34,10 +40,17 @@ function App() {
           setUser(userData);
           setIsAuthenticated(true);
         } catch (error) {
-          console.error('解析用户信息失败:', error);
-          // 清除无效的数据
+          console.warn('Token验证失败或已过期:', error.message);
+          // Token无效或过期，清除本地存储
           localStorage.removeItem('user');
           localStorage.removeItem('authToken');
+          setUser(null);
+          setIsAuthenticated(false);
+          
+          // 如果是在非登录页面，显示友好提示
+          if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+            showTokenExpiredMessage();
+          }
         }
       }
       setIsLoading(false);
@@ -45,6 +58,58 @@ function App() {
 
     checkAuthStatus();
   }, []);
+
+  // 显示token过期提示
+  const showTokenExpiredMessage = () => {
+    const notification = document.createElement('div');
+    notification.innerHTML = `
+      <div style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #ffa726;
+        color: white;
+        padding: 16px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 9999;
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: 14px;
+        max-width: 320px;
+        animation: slideIn 0.3s ease-out;
+      ">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 18px;">🔐</span>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 4px;">会话已过期</div>
+            <div style="opacity: 0.9; font-size: 13px;">请重新登录以继续使用</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // 添加CSS动画
+    if (!document.querySelector('#slideInAnimation')) {
+      const style = document.createElement('style');
+      style.id = 'slideInAnimation';
+      style.textContent = `
+        @keyframes slideIn {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    document.body.appendChild(notification);
+    
+    // 5秒后自动移除提示
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.remove();
+      }
+    }, 5000);
+  };
 
   const handleLogin = (userData, token) => {
     // 如果没有角色信息，默认设置为普通用户

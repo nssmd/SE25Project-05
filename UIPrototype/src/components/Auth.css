@@ -340,17 +340,135 @@
   text-decoration: underline;
 }
 
-@media (max-width: 480px) {
-  .auth-card {
-    margin: 1rem;
-    padding: 2rem;
+@media (max-width: 768px) {
+  .auth-container {
+    padding: 1rem;
   }
-  
+
+  .auth-card {
+    padding: 2rem 1.5rem;
+    margin: 0;
+    border-radius: 16px;
+    max-width: 100%;
+  }
+
   .auth-header h1 {
     font-size: 1.75rem;
   }
-  
+
   .logo span {
     font-size: 1.25rem;
+  }
+
+  .logo-icon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .auth-header p {
+    font-size: 0.9rem;
+  }
+
+  .form-group label {
+    font-size: 0.85rem;
+  }
+
+  .form-group input:not(.input-wrapper input),
+  .input-wrapper input {
+    padding: 0.875rem;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+
+  .input-wrapper input {
+    padding: 0.875rem 3rem 0.875rem 0.875rem;
+  }
+
+  .password-toggle {
+    right: 0.875rem;
+  }
+
+  .auth-button {
+    padding: 0.875rem;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+
+  .demo-accounts {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+
+  .demo-accounts h4 {
+    font-size: 0.9rem;
+  }
+
+  .demo-item {
+    font-size: 0.8rem;
+  }
+
+  .auth-footer p {
+    font-size: 0.85rem;
+  }
+
+  .auth-link {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.5rem 1rem;
+    margin: 0;
+  }
+
+  .auth-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .logo span {
+    font-size: 1.125rem;
+  }
+
+  .logo-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .auth-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .auth-form {
+    gap: 1.25rem;
+  }
+
+  .form-group input:not(.input-wrapper input),
+  .input-wrapper input {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .input-wrapper input {
+    padding: 0.75rem 2.75rem 0.75rem 0.75rem;
+  }
+
+  .password-toggle {
+    right: 0.75rem;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .auth-button {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .demo-accounts {
+    padding: 0.875rem;
+  }
+
+  .demo-item {
+    font-size: 0.75rem;
   }
 } 

@@ -44,6 +44,7 @@ const Dashboard = ({ user, onLogout }) => {
   const [showChatList, setShowChatList] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
   const [contextMenu, setContextMenu] = useState({ show: false, x: 0, y: 0, chatId: null });
+  const [showSidebar, setShowSidebar] = useState(false);
   const messagesEndRef = React.useRef(null);
 
   // 滚动到消息底部
@@ -586,6 +587,13 @@ const Dashboard = ({ user, onLogout }) => {
 
   return (
     <div className="dashboard">
+      {/* 移动端侧边栏遮罩 */}
+      {showSidebar && (
+        <div 
+          className="sidebar-overlay"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
       {/* 右键上下文菜单 */}
       {contextMenu.show && (
         <div 
@@ -619,7 +627,7 @@ const Dashboard = ({ user, onLogout }) => {
           </div>
         </div>
       )}
-      <aside className="sidebar">
+      <aside className={`sidebar ${showSidebar ? 'open' : ''}`}>
         <div className="sidebar-header">
           <div className="logo">
             <Brain className="logo-icon" />
@@ -712,6 +720,12 @@ const Dashboard = ({ user, onLogout }) => {
       <main className="main-content">
         <header className={`main-header ${showHeader ? 'visible' : 'hidden'}`}>
           <div className="header-left">
+            <button 
+              className="mobile-menu-btn"
+              onClick={() => setShowSidebar(!showSidebar)}
+            >
+              <MessageSquare size={20} />
+            </button>
             <h1>AI工作台</h1>
             <p>选择下方功能开始您的AI之旅</p>
           </div>

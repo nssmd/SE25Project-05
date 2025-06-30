@@ -9,12 +9,14 @@ com\aiplatform\config\CustomNamingStrategy.class
 com\aiplatform\controller\UserController.class
 com\aiplatform\service\UserService$1.class
 com\aiplatform\dto\UserDTO$UserStatusUpdateRequest.class
+com\aiplatform\repository\SupportChatRepository.class
 com\aiplatform\service\ChatService.class
 com\aiplatform\AiChatBackendApplication.class
 com\aiplatform\entity\Message.class
 com\aiplatform\dto\UserDTO$BatchPermissionUpdateRequest.class
 com\aiplatform\entity\User$UserRole.class
 com\aiplatform\entity\User$UserStatus.class
+com\aiplatform\entity\SupportChat.class
 com\aiplatform\service\UserService.class
 com\aiplatform\controller\ChatController.class
 com\aiplatform\entity\Chat$AiType.class
@@ -28,6 +30,7 @@ com\aiplatform\dto\UserDTO$AuthResponse.class
 com\aiplatform\exception\GlobalExceptionHandler.class
 com\aiplatform\entity\UserSettings$CleanupFrequency.class
 com\aiplatform\entity\Chat.class
+com\aiplatform\entity\SupportChat$SenderType.class
 com\aiplatform\util\PasswordGenerator.class
 com\aiplatform\controller\AuthController.class
 com\aiplatform\entity\Message$MessageRole.class
@@ -46,6 +49,7 @@ com\aiplatform\entity\User.class
 com\aiplatform\config\WebConfig.class
 com\aiplatform\dto\UserDTO$UserProfileUpdateRequest.class
 com\aiplatform\entity\AdminMessage$MessageType.class
+com\aiplatform\entity\MessageTypeConverter.class
 com\aiplatform\dto\UserDTO$PasswordChangeRequest.class
 com\aiplatform\dto\UserDTO$UserSearchRequest.class
 com\aiplatform\exception\BusinessException.class

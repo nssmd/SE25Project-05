@@ -24,6 +24,60 @@ api.interceptors.request.use(
   }
 );
 
+// 显示提示信息的工具函数
+const showTokenExpiredNotification = () => {
+  // 创建一个简单的通知提示
+  const notification = document.createElement('div');
+  notification.innerHTML = `
+    <div style="
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #ff4757;
+      color: white;
+      padding: 16px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 9999;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      max-width: 320px;
+      animation: slideIn 0.3s ease-out;
+    ">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 18px;">⚠️</span>
+        <div>
+          <div style="font-weight: 600; margin-bottom: 4px;">登录已过期</div>
+          <div style="opacity: 0.9; font-size: 13px;">为了您的安全，请重新登录</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // 添加CSS动画
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  document.body.appendChild(notification);
+  
+  // 3秒后移除通知并跳转
+  setTimeout(() => {
+    if (notification.parentNode) {
+      notification.remove();
+    }
+    // 清除认证信息并跳转到登录页
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+  }, 3000);
+};
+
 // 响应拦截器 - 统一错误处理
 api.interceptors.response.use(
   (response) => {
@@ -32,11 +86,28 @@ api.interceptors.response.use(
   (error) => {
     console.error('API Error:', error.response?.data);
     
+    // 处理认证失败
     if (error.response?.status === 401) {
-      // Token过期或无效，清除本地存储并跳转到登录页
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
+      // 401通常表示未认证或token无效
+      showTokenExpiredNotification();
+      return Promise.reject(new Error('登录已过期，即将跳转到登录页面'));
+    }
+    
+    // 处理403权限不足错误
+    if (error.response?.status === 403) {
+      const errorMsg = error.response?.data?.message || error.response?.data?.error || '';
+      
+      // 只有明确提到token过期的情况才当作认证过期处理
+      if (errorMsg.includes('expired') || errorMsg.includes('过期') || 
+          errorMsg.includes('token') || errorMsg.includes('jwt') ||
+          errorMsg.includes('Expired')) {
+        showTokenExpiredNotification();
+        return Promise.reject(new Error('登录已过期，即将跳转到登录页面'));
+      }
+      
+      // 其他403错误当作权限不足处理
+      const message = errorMsg || '权限不足，无法访问此资源';
+      return Promise.reject(new Error(message));
     }
     
     // 返回更友好的错误信息
@@ -53,8 +124,8 @@ export const authAPI = {
   // 用户登录
   login: (credentials) => api.post('/auth/login', credentials),
   
-  // 验证token
-  verify: () => api.get('/auth/verify'),
+  // 验证token（通过获取当前用户信息）
+  verify: () => api.get('/auth/me'),
   
   // 注销
   logout: () => api.post('/auth/logout'),
@@ -151,6 +222,9 @@ export const userAPI = {
   // 客服对话
   getSupportChat: () => api.get('/user/support/chat'),
   sendToSupport: (messageData) => api.post('/user/support/message', messageData),
+  
+  // 获取客服人员列表
+  getSupportStaff: () => api.get('/user/support/staff'),
 };
 
 // 管理员相关API
@@ -178,6 +252,10 @@ export const adminAPI = {
   
   // 获取系统日志
   getLogs: (params = {}) => api.get('/admin/logs', { params }),
+  
+  // 客服工作台相关
+  getCustomerChats: () => api.get('/admin/support/customer-chats'),
+  replyToCustomer: (replyData) => api.post('/admin/support/reply', replyData),
 };
 
 // 工具函数

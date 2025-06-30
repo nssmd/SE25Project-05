@@ -58,6 +58,11 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     Page<User> findByRoleAndStatus(User.UserRole role, User.UserStatus status, Pageable pageable);
 
     /**
+     * 根据多个角色和状态查找用户
+     */
+    List<User> findByRoleInAndStatus(List<User.UserRole> roles, User.UserStatus status);
+
+    /**
      * 查找活跃用户（有最后登录时间的用户）
      */
     @Query("SELECT u FROM User u WHERE u.status = 'active' AND u.lastLogin >= :since")

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Users, Settings, MessageSquare, Shield, Ban, 
+  Users, Settings, Shield, Ban, 
   CheckCircle, XCircle, Search, Eye, MessageCircle,
-  UserCheck, UserX, AlertTriangle, Crown
+  UserCheck, UserX, AlertTriangle, Crown, MessageSquare
 } from 'lucide-react';
 import { adminAPI } from '../services/api';
 import './AdminPanel.css';
@@ -18,13 +18,10 @@ const AdminPanel = () => {
   const [roleUpdateUser, setRoleUpdateUser] = useState(null);
   const [newRole, setNewRole] = useState('');
   const [roleChangeReason, setRoleChangeReason] = useState('');
-  const [broadcastMessage, setBroadcastMessage] = useState('');
-  const [sentMessages, setSentMessages] = useState([]);
 
   // 加载用户数据
   useEffect(() => {
     loadUsers();
-    loadSentMessages();
   }, []);
 
   const loadUsers = async () => {
@@ -50,48 +47,7 @@ const AdminPanel = () => {
     }
   };
 
-  // 加载已发送消息
-  const loadSentMessages = async () => {
-    try {
-      const messages = await adminAPI.getSentMessages();
-      setSentMessages(messages.content || messages || []);
-    } catch (error) {
-      console.error('加载消息失败:', error);
-    }
-  };
 
-  // 发送广播消息
-  const sendBroadcastMessage = async () => {
-    if (!broadcastMessage.trim()) {
-      alert('请输入广播消息内容');
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      
-      // 发送广播消息给所有用户
-      const activeUsers = users.filter(u => u.status === 'active');
-      const promises = activeUsers.map(user => 
-        adminAPI.sendMessage(user.id, {
-          title: '系统广播',
-          content: broadcastMessage
-        })
-      );
-      
-      await Promise.all(promises);
-      
-      alert(`广播消息已发送给 ${activeUsers.length} 个活跃用户`);
-      setBroadcastMessage('');
-      loadSentMessages();
-      
-    } catch (error) {
-      console.error('发送广播失败:', error);
-      alert('发送广播失败: ' + error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   // 过滤用户
   const filteredUsers = users.filter(user => 
@@ -344,13 +300,6 @@ const AdminPanel = () => {
           <Shield size={20} />
           权限管理
         </button>
-        <button 
-          className={`admin-tab ${activeTab === 'messages' ? 'active' : ''}`}
-          onClick={() => setActiveTab('messages')}
-        >
-          <MessageSquare size={20} />
-          消息管理
-        </button>
       </div>
 
       {/* 用户管理 */}
@@ -499,68 +448,7 @@ const AdminPanel = () => {
         </div>
       )}
 
-      {/* 消息管理 */}
-      {activeTab === 'messages' && (
-        <div className="tab-content">
-          <div className="content-header">
-            <h3>消息管理</h3>
-            <p>向用户发送系统消息和通知</p>
-          </div>
 
-          <div className="message-section">
-            <div className="broadcast-panel">
-              <h4>广播消息</h4>
-              <textarea
-                placeholder="输入要发送给所有用户的消息..."
-                value={broadcastMessage}
-                onChange={(e) => setBroadcastMessage(e.target.value)}
-                rows="4"
-              />
-              <button 
-                className="broadcast-btn"
-                onClick={sendBroadcastMessage}
-                disabled={!broadcastMessage.trim() || isLoading}
-              >
-                <MessageSquare size={16} />
-                {isLoading ? '发送中...' : '发送广播'}
-              </button>
-            </div>
-
-            <div className="recent-messages">
-              <h4>最近消息</h4>
-              <div className="message-list">
-                <div className="message-item">
-                  <div className="message-info">
-                    <span className="message-type">系统通知</span>
-                    <span className="message-time">2024-01-20 15:30</span>
-                  </div>
-                  <div className="message-content">
-                    系统将于今晚22:00进行维护，预计持续1小时
-                  </div>
-                  <div className="message-stats">
-                    <span>已读: 156</span>
-                    <span>未读: 23</span>
-                  </div>
-                </div>
-
-                <div className="message-item">
-                  <div className="message-info">
-                    <span className="message-type">功能更新</span>
-                    <span className="message-time">2024-01-19 10:15</span>
-                  </div>
-                  <div className="message-content">
-                    新增文生视频功能，欢迎体验！
-                  </div>
-                  <div className="message-stats">
-                    <span>已读: 201</span>
-                    <span>未读: 8</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* 修改角色弹窗 */}
       {showRoleModal && roleUpdateUser && (

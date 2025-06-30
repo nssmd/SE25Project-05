@@ -6,6 +6,8 @@ import com.aiplatform.entity.Chat;
 import com.aiplatform.entity.Message;
 import com.aiplatform.entity.User;
 import com.aiplatform.repository.AdminMessageRepository;
+import com.aiplatform.repository.SupportChatRepository;
+import com.aiplatform.entity.SupportChat;
 import com.aiplatform.repository.ChatRepository;
 import com.aiplatform.repository.MessageRepository;
 import com.aiplatform.repository.UserRepository;
@@ -45,6 +47,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AdminMessageRepository adminMessageRepository;
+    private final SupportChatRepository supportChatRepository;
 
     // 获取用户资料
     @Operation(summary = "获取用户资料", description = "获取当前用户的个人资料")
@@ -172,7 +175,7 @@ public class UserController {
      */
     @Operation(summary = "获取用户消息", description = "获取当前用户收到的消息列表")
     @GetMapping("/messages")
-    public ResponseEntity<Page<AdminMessage>> getUserMessages(
+    public ResponseEntity<Map<String, Object>> getUserMessages(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         
@@ -187,10 +190,49 @@ public class UserController {
             log.info("获取用户 {} 的消息列表", email);
             
             Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-            Page<AdminMessage> messages = adminMessageRepository.findByRecipientIdOrderByCreatedAtDesc(
+            Page<AdminMessage> messagesPage = adminMessageRepository.findByToUserIdOrderByCreatedAtDesc(
                     user.getId(), pageable);
             
-            return ResponseEntity.ok(messages);
+            // 构建包含发信人信息的响应数据
+            List<Map<String, Object>> messageList = messagesPage.getContent().stream()
+                    .map(message -> {
+                        Map<String, Object> messageData = new HashMap<>();
+                        messageData.put("id", message.getId());
+                        messageData.put("subject", message.getSubject());
+                        messageData.put("content", message.getContent());
+                        messageData.put("messageType", message.getMessageType().getDatabaseValue());
+                        messageData.put("isRead", message.getIsRead());
+                        messageData.put("createdAt", message.getCreatedAt());
+                        messageData.put("fromUserId", message.getFromUserId());
+                        messageData.put("toUserId", message.getToUserId());
+                        
+                        // 获取发信人信息
+                        if (message.getFromUserId() != null) {
+                            userRepository.findById(message.getFromUserId()).ifPresent(fromUser -> {
+                                Map<String, Object> fromUserData = new HashMap<>();
+                                fromUserData.put("id", fromUser.getId());
+                                fromUserData.put("username", fromUser.getUsername());
+                                fromUserData.put("email", fromUser.getEmail());
+                                fromUserData.put("role", fromUser.getRole().name());
+                                messageData.put("fromUser", fromUserData);
+                            });
+                        }
+                        
+                        return messageData;
+                    })
+                    .toList();
+            
+            // 构建分页响应
+            Map<String, Object> response = new HashMap<>();
+            response.put("content", messageList);
+            response.put("totalPages", messagesPage.getTotalPages());
+            response.put("totalElements", messagesPage.getTotalElements());
+            response.put("size", messagesPage.getSize());
+            response.put("number", messagesPage.getNumber());
+            response.put("first", messagesPage.isFirst());
+            response.put("last", messagesPage.isLast());
+            
+            return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             log.error("获取用户消息失败: {}", e.getMessage());
@@ -272,7 +314,7 @@ public class UserController {
      */
     @Operation(summary = "获取客服对话", description = "获取当前用户与客服的对话记录")
     @GetMapping("/support/chat")
-    public ResponseEntity<List<AdminMessage>> getSupportChat() {
+    public ResponseEntity<List<Map<String, Object>>> getSupportChat() {
         
         try {
             // 获取当前用户
@@ -284,11 +326,46 @@ public class UserController {
             
             log.info("获取用户 {} 的客服对话记录", email);
             
-            // 获取与客服相关的消息（可以通过消息类型区分）
-            List<AdminMessage> messages = adminMessageRepository.findByRecipientIdAndMessageTypeOrderByCreatedAtAsc(
-                    user.getId(), AdminMessage.MessageType.SUPPORT);
+            // 获取用户的所有客服对话记录
+            List<SupportChat> supportChats = supportChatRepository.findByUserIdOrderByCreatedAtAsc(user.getId());
             
-            return ResponseEntity.ok(messages);
+            // 构建响应数据，包含发送者信息
+            List<Map<String, Object>> chatList = supportChats.stream()
+                    .map(chat -> {
+                        Map<String, Object> chatData = new HashMap<>();
+                        chatData.put("id", chat.getId());
+                        chatData.put("content", chat.getContent());
+                        chatData.put("senderType", chat.getSenderType().name());
+                        chatData.put("isRead", chat.getIsRead());
+                        chatData.put("createdAt", chat.getCreatedAt());
+                        chatData.put("userId", chat.getUserId());
+                        chatData.put("supportId", chat.getSupportId());
+                        chatData.put("fromUserId", chat.isFromUser() ? chat.getUserId() : chat.getSupportId());
+                        
+                        // 添加发送者信息
+                        if (chat.isFromSupport() && chat.getSupportId() != null) {
+                            userRepository.findById(chat.getSupportId()).ifPresent(supportUser -> {
+                                Map<String, Object> fromUserData = new HashMap<>();
+                                fromUserData.put("id", supportUser.getId());
+                                fromUserData.put("username", supportUser.getUsername());
+                                fromUserData.put("email", supportUser.getEmail());
+                                fromUserData.put("role", supportUser.getRole().name());
+                                chatData.put("fromUser", fromUserData);
+                            });
+                        } else if (chat.isFromUser()) {
+                            Map<String, Object> fromUserData = new HashMap<>();
+                            fromUserData.put("id", user.getId());
+                            fromUserData.put("username", user.getUsername());
+                            fromUserData.put("email", user.getEmail());
+                            fromUserData.put("role", user.getRole().name());
+                            chatData.put("fromUser", fromUserData);
+                        }
+                        
+                        return chatData;
+                    })
+                    .toList();
+            
+            return ResponseEntity.ok(chatList);
             
         } catch (Exception e) {
             log.error("获取客服对话失败: {}", e.getMessage());
@@ -316,26 +393,76 @@ public class UserController {
                 return ResponseEntity.badRequest().body("消息内容不能为空");
             }
             
+            // 获取指定的客服ID（可选）
+            Object supportIdObj = request.get("supportId");
+            Long supportId = null;
+            if (supportIdObj != null) {
+                if (supportIdObj instanceof String) {
+                    try {
+                        supportId = Long.parseLong((String) supportIdObj);
+                    } catch (NumberFormatException e) {
+                        // 忽略无效的supportId
+                    }
+                } else if (supportIdObj instanceof Number) {
+                    supportId = ((Number) supportIdObj).longValue();
+                }
+            }
+            
             log.info("用户 {} 向客服发送消息", email);
             
-            // 创建用户给客服的消息记录
-            AdminMessage message = new AdminMessage();
-            message.setFromUserId(user.getId());
-            message.setToUserId(null); // 发给客服，暂时设为null或特定客服ID
-            message.setSubject("用户咨询");
-            message.setContent(content);
-            message.setMessageType(AdminMessage.MessageType.SUPPORT);
-            message.setIsRead(false);
+            // 创建客服对话记录
+            SupportChat supportChat = new SupportChat();
+            supportChat.setUserId(user.getId());
+            supportChat.setSupportId(supportId);
+            supportChat.setContent(content);
+            supportChat.setSenderType(SupportChat.SenderType.USER);
+            supportChat.setIsRead(false);
             
-            adminMessageRepository.save(message);
+            supportChatRepository.save(supportChat);
             
-            log.info("用户消息已保存，等待客服回复");
+            log.info("用户消息已保存到客服对话，等待客服回复");
             
             return ResponseEntity.ok("消息已发送给客服，请等待回复");
             
         } catch (Exception e) {
             log.error("发送客服消息失败: {}", e.getMessage());
             return ResponseEntity.internalServerError().body("发送失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 获取客服人员列表
+     */
+    @Operation(summary = "获取客服人员列表", description = "获取可用的客服人员列表")
+    @GetMapping("/support/staff")
+    public ResponseEntity<List<Map<String, Object>>> getSupportStaff() {
+        
+        try {
+            log.info("获取客服人员列表");
+            
+            // 只查询客服用户，不包含管理员
+            List<User> supportStaff = userRepository.findByRoleInAndStatus(
+                    List.of(User.UserRole.support), 
+                    User.UserStatus.active);
+            
+            List<Map<String, Object>> staffList = supportStaff.stream()
+                    .map(staff -> {
+                        Map<String, Object> staffInfo = new HashMap<>();
+                        staffInfo.put("id", staff.getId());
+                        staffInfo.put("username", staff.getUsername());
+                        staffInfo.put("email", staff.getEmail());
+                        staffInfo.put("role", staff.getRole().name());
+                        // 简单的在线状态判断（实际应用中可能需要更复杂的逻辑）
+                        staffInfo.put("status", "online"); // 暂时都设为在线
+                        return staffInfo;
+                    })
+                    .toList();
+            
+            return ResponseEntity.ok(staffList);
+            
+        } catch (Exception e) {
+            log.error("获取客服人员列表失败: {}", e.getMessage());
+            return ResponseEntity.internalServerError().build();
         }
     }
 } 

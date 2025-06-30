@@ -42,6 +42,9 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 
+                // 客服工作台端点 - 只有客服可以访问
+                .requestMatchers("/admin/support/**").hasRole("support")
+                
                 // 管理员专用端点
                 .requestMatchers("/admin/**").hasRole("admin")
                 

@@ -717,13 +717,24 @@
     font-size: 1.5rem;
   }
   
-  .admin-tabs {
-    flex-direction: column;
+    .admin-tabs {
+    flex-direction: row;
     gap: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
-  
+
+  .admin-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
   .admin-tab {
     padding: 0.75rem 1rem;
+    min-width: max-content;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 0.85rem;
   }
   
   .content-header {
@@ -750,13 +761,44 @@
     margin-bottom: 1rem;
   }
   
-  .user-info {
-    justify-content: center;
-    text-align: center;
+    .user-info {
+    justify-content: flex-start;
+    text-align: left;
+    margin-bottom: 0.5rem;
   }
-  
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+
+  .user-name {
+    font-size: 0.9rem;
+  }
+
+  .user-email {
+    font-size: 0.8rem;
+  }
+
+  .role-badge {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+    margin-top: 0.25rem;
+  }
+
   .user-actions {
-    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+  }
+
+  .action-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    flex: 1;
+    min-width: calc(50% - 0.25rem);
   }
   
   .permission-card {
