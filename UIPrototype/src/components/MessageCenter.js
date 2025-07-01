@@ -335,10 +335,25 @@ const MessageCenter = ({ user, onLogout }) => {
         content: newMessage
       });
 
+      // 立即在本地添加客服发送的消息
+      const newMessageObj = {
+        id: Date.now(),
+        content: newMessage,
+        createdAt: new Date().toISOString(),
+        isFromCustomer: false,  // 客服发送的消息
+        senderType: 'SUPPORT'
+      };
+
+      // 更新当前选中客户的消息列表
+      setSelectedCustomer(prev => ({
+        ...prev,
+        messages: [...(prev.messages || []), newMessageObj]
+      }));
+
       setNewMessage('');
       showNotification('消息发送成功', 'success');
       
-      // 刷新客户对话列表
+      // 刷新客户对话列表（更新最后消息时间等）
       await loadCustomerChats();
       
     } catch (error) {
@@ -508,7 +523,7 @@ const MessageCenter = ({ user, onLogout }) => {
                   const senderInfo = getSenderInfo(message);
                   return (
                   <div 
-                    key={message.id} 
+                  key={message.id} 
                     className={`message-item ${!message.isRead ? 'unread' : ''}`}
                     >
                       <div className="message-avatar">
@@ -670,7 +685,8 @@ const MessageCenter = ({ user, onLogout }) => {
                         </button>
                       </div>
                     </div>
-
+                    {/* 1. 客服在自己视角里发言在右侧，用户在左侧 */}
+                    {/* 2. 美化消息框*/}
                     {/* 消息区域 */}
                     <div className="chat-messages">
                       {supportChat.length === 0 ? (
@@ -685,48 +701,72 @@ const MessageCenter = ({ user, onLogout }) => {
                             <div 
                               key={msg.id || index} 
                               className={`message ${msg.senderType === 'USER' ? 'own' : 'other'}`}
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: msg.senderType === 'USER' ? 'flex-end' : 'flex-start',
+                                gap: '0px'
+                              }}
                             >
-                              <div className="message-content">
-                                <div 
-                                  className="message-bubble"
-                                  style={{
-                                    backgroundColor: msg.senderType === 'SUPPORT' ? '#4ade80' : '#e5e7eb',
-                                    color: '#000000',
-                                    padding: '12px 16px',
-                                    borderRadius: '18px',
-                                    maxWidth: '70%',
-                                    wordBreak: 'break-word'
-                                  }}
-                                >
-                                  <div className="message-text" style={{ color: '#000000' }}>
+                              <div className="message-container" style={{ 
+                                display: 'flex', 
+                                alignItems: 'flex-end', 
+                                gap: '12px',
+                                flexDirection: msg.senderType === 'USER' ? 'row' : 'row-reverse'
+                              }}>
+                                <div className="message-bubble" 
+                                style={{ 
+                                  flex: 1,
+                                  maxWidth: '100%',
+                                  wordBreak: 'break-word',
+                                  padding: '8px 10px',
+                                  border: msg.senderType === 'USER' ? '1px solid #4caf50' : '1px solid #2196f3',
+                                  borderRadius: '18px',
+                                  backgroundColor: msg.senderType === 'USER' ? '#e8f5e8' : '#e3f2fd',
+                                  
+                                  color: '#000000',
+                                }}>
+                                  <div className="message-text" 
+                                  style={{ 
+                                    backgroundColor: 'transparent',
+                                    padding: '10px 12px' ,
+                                    fontSize: '14px',
+                                    fontWeight: '500',
+                                    color: '#000000'
+                                    }}>
                                     {msg.content}
                                   </div>
                                 </div>
-                                <div className="message-time" style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>
-                                  {formatTime(msg.createdAt)}
-                                </div>
-                              </div>
-                              <div className="message-avatar">
-                                <span 
-                                  className={msg.senderType === 'USER' ? 'user-avatar' : 'support-avatar'}
+                                <div 
                                   style={{
-                                    display: 'inline-flex',
+                                    display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     width: '32px',
                                     height: '32px',
                                     borderRadius: '50%',
-                                    backgroundColor: msg.senderType === 'USER' ? '#3b82f6' : '#10b981',
+                                    backgroundColor: msg.senderType === 'USER' ? '#10b981' : '#3b82f6',
                                     color: 'white',
                                     fontSize: '14px',
-                                    fontWeight: 'bold'
+                                    fontWeight: 'bold',
+                                    flexShrink: 0
                                   }}
-                                >
+                                 > 
                                   {msg.senderType === 'USER' ? 
                                     (user?.username?.charAt(0) || 'U') : 
                                     (selectedSupport.username?.charAt(0) || 'S')
                                   }
-                                </span>
+                                </div>
+                              </div>
+                              <div className="message-time" style={{ 
+                                fontSize: '12px', 
+                                color: '#6b7280', 
+                                marginTop: '4px',
+                                alignSelf: msg.senderType === 'USER' ? 'flex-end' : 'flex-start',
+                                paddingRight: msg.senderType === 'USER' ? '44px' : '0',
+                                paddingLeft: msg.senderType === 'USER' ? '0' : '44px'
+                              }}>
+                                {formatTime(msg.createdAt)}
                               </div>
                             </div>
                           ))}
@@ -760,7 +800,7 @@ const MessageCenter = ({ user, onLogout }) => {
                 <textarea
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                          placeholder={`向 ${selectedSupport.username} 发送消息...`}
+                          placeholder={`发送消息...`}
                           rows="1"
                   disabled={isLoading}
                   onKeyPress={(e) => {
@@ -1018,7 +1058,7 @@ const MessageCenter = ({ user, onLogout }) => {
                         backgroundColor: '#f9fafb',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '12px',
+                        justifyContent: 'space-between',
                         flexShrink: 0
                       }}
                     >
@@ -1157,11 +1197,13 @@ const MessageCenter = ({ user, onLogout }) => {
                           padding: '12px',
                           border: '1px solid #e5e7eb',
                           transition: 'all 0.2s ease',
-                          maxWidth: '100%'
+                          maxWidth: '100%',
+                          boxSizing: 'border-box',
+                          position: 'relative',
+                          top: '-10px'
                         }}
                       >
                         <textarea
-                          className="chat-input"
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
                           placeholder="回复客户..."
@@ -1185,7 +1227,9 @@ const MessageCenter = ({ user, onLogout }) => {
                             padding: '8px 0',
                             minHeight: '20px',
                             maxHeight: '80px',
-                            fontFamily: 'inherit'
+                            fontFamily: 'inherit',
+                            boxSizing: 'border-box',
+                            verticalAlign: 'bottom'
                           }}
                           onInput={(e) => {
                             e.target.style.height = 'auto';
