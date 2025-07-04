@@ -10,8 +10,10 @@ import HistorySearch from './components/HistorySearch';
 import DataManagement from './components/DataManagement';
 import AdminPanel from './components/AdminPanel';
 import MessageCenter from './components/MessageCenter';
+import { ThemeProvider } from './contexts/ThemeContext';
 import userService from './services/UserService';
 import { authAPI } from './services/api';
+import './theme.css';
 import './App.css';
 import './mobile.css';
 
@@ -166,9 +168,10 @@ function App() {
   }
 
   return (
-    <Router>
-    <div className="App">
-        <Routes>
+    <ThemeProvider>
+      <Router>
+      <div className="App">
+          <Routes>
           <Route 
             path="/login" 
             element={
@@ -253,8 +256,9 @@ function App() {
         
         {/* 客服组件 - 仅在登录后显示 */}
         {isAuthenticated && <CustomerService user={user} />}
-    </div>
-    </Router>
+      </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 

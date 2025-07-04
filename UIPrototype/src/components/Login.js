@@ -137,6 +137,7 @@ const Login = ({ onLogin }) => {
                 name="rememberMe"
                 checked={formData.rememberMe}
                 onChange={handleInputChange}
+                style={{width: '20px', height: '20px'}}
               />
               <span className="checkmark"></span>
               记住我

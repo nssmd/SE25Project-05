@@ -28,6 +28,7 @@ import {
   Bell
 } from 'lucide-react';
 import { chatAPI } from '../services/api';
+import ThemeToggle from './ThemeToggle';
 import './Dashboard.css';
 
 const Dashboard = ({ user, onLogout }) => {
@@ -740,6 +741,7 @@ const Dashboard = ({ user, onLogout }) => {
                 <span>本地模型: 2个</span>
               </div>
             </div>
+            <ThemeToggle variant="button" />
             <button 
               className="hide-header-btn"
               onClick={() => setShowHeader(false)}

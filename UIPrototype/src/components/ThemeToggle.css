@@ -1,0 +1,225 @@
+/* 主题切换按钮样式 */
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-focus);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.icon-container {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sun-icon,
+.moon-icon {
+  position: absolute;
+  transition: all 0.4s ease;
+  transform-origin: center;
+}
+
+.sun-icon {
+  opacity: 0;
+  transform: rotate(180deg) scale(0.5);
+  color: #f59e0b;
+}
+
+.sun-icon.active {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.moon-icon {
+  opacity: 0;
+  transform: rotate(-180deg) scale(0.5);
+  color: #6366f1;
+}
+
+.moon-icon.active {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.theme-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+
+/* 开关样式 */
+.theme-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.theme-toggle-switch {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.switch-track {
+  width: 52px;
+  height: 28px;
+  background: var(--border-secondary);
+  border-radius: 14px;
+  position: relative;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.theme-toggle-switch.dark .switch-track {
+  background: var(--primary-600);
+}
+
+.switch-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--bg-primary);
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-toggle-switch.dark .switch-thumb {
+  transform: translateX(24px);
+  background: var(--bg-primary);
+}
+
+.switch-thumb svg {
+  color: var(--text-secondary);
+}
+
+.theme-toggle-switch.dark .switch-thumb svg {
+  color: var(--primary-600);
+}
+
+/* 下拉选择样式 */
+.theme-dropdown {
+  position: relative;
+}
+
+.theme-select {
+  padding: 0.5rem 1rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.theme-select:hover {
+  border-color: var(--border-focus);
+}
+
+.theme-select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* 紧凑模式 */
+.theme-toggle-btn.compact {
+  padding: 0.375rem;
+  min-width: auto;
+}
+
+.theme-toggle-btn.compact .theme-label {
+  display: none;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .theme-toggle-btn {
+    padding: 0.75rem;
+    touch-action: manipulation;
+  }
+  
+  .switch-track {
+    width: 48px;
+    height: 26px;
+  }
+  
+  .switch-thumb {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .theme-toggle-switch.dark .switch-thumb {
+    transform: translateX(22px);
+  }
+}
+
+/* 动画效果 */
+@keyframes themeSwitch {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.theme-toggle-btn:active {
+  animation: themeSwitch 0.2s ease;
+}
+
+/* 无障碍支持 */
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle-btn,
+  .switch-track,
+  .switch-thumb,
+  .sun-icon,
+  .moon-icon {
+    transition: none;
+  }
+  
+  .theme-toggle-btn:active {
+    animation: none;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  .theme-toggle-btn {
+    border-width: 2px;
+  }
+  
+  .switch-track {
+    border-width: 2px;
+    border-color: var(--border-primary);
+  }
+} 
