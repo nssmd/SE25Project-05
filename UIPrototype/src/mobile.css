@@ -15,6 +15,896 @@
     overflow-x: hidden;
   }
 
+  /* 移动端顶栏优化 */
+  .main-header {
+    padding: 0.75rem 1rem !important;
+    min-height: 60px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+    background: var(--bg-primary) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .header-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .header-left h1 {
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    color: var(--text-primary) !important;
+    white-space: nowrap !important;
+  }
+
+  .header-left p {
+    display: none !important; /* 移动端隐藏描述文字 */
+  }
+
+  .header-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .model-status {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+    background: var(--bg-secondary) !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 16px !important;
+    font-size: 0.7rem !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .model-status .status-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.2rem !important;
+    font-size: 0.7rem !important;
+    font-weight: 500 !important;
+  }
+
+  .model-status .status-item:first-child::after {
+    content: "•" !important;
+    margin: 0 0.25rem !important;
+    color: var(--text-tertiary) !important;
+  }
+
+  .model-status .status-item span {
+    display: none !important; /* 隐藏"模型"文字 */
+  }
+
+  .model-status .status-item::after {
+    content: attr(data-count) !important;
+    font-weight: 600 !important;
+    color: var(--primary-500) !important;
+    font-size: 0.8rem !important;
+  }
+
+  .hide-header-btn {
+    display: none !important; /* 移动端隐藏隐藏按钮 */
+  }
+
+  .mobile-menu-btn {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 8px !important;
+    background: var(--bg-secondary) !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: var(--text-primary) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .mobile-menu-btn:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--primary-500) !important;
+  }
+
+  .mobile-menu-btn:active {
+    transform: scale(0.95) !important;
+  }
+
+  /* 主题切换按钮移动端优化 */
+  .theme-toggle-btn {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 18px !important;
+    background: var(--bg-secondary) !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: var(--text-primary) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .theme-toggle-btn:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--primary-500) !important;
+  }
+
+  /* 移动端顶栏响应式布局 */
+  .main-header .header-left {
+    overflow: hidden !important;
+  }
+
+  .main-header .header-left h1 {
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+  }
+
+  .main-header .header-right {
+    max-width: 60% !important;
+  }
+
+  /* 模型状态更紧凑的显示 */
+  .model-status {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+  }
+
+  .model-status .status-item {
+    position: relative !important;
+  }
+
+  .model-status .status-item svg {
+    flex-shrink: 0 !important;
+  }
+
+  /* 移动端隐藏某些不重要的元素 */
+  .main-header .header-left p {
+    display: none !important;
+  }
+
+  /* 确保所有元素在一行内 */
+  .main-header * {
+    flex-shrink: 0 !important;
+  }
+
+  .main-header .header-left {
+    flex-shrink: 1 !important;
+  }
+
+  /* 移动端模型选择栏优化 - 简约设计 */
+  .feature-header {
+    padding: 0.75rem 1rem !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+    background: var(--bg-primary) !important;
+    min-height: auto !important;
+    position: relative !important; /* 确保正确的定位上下文 */
+    z-index: 90 !important; /* 确保在对话消息上方 */
+  }
+
+  /* 第一行：功能标题 + 模型选择器的容器 */
+  .feature-header-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 1rem !important;
+  }
+
+  /* 重新安排第一行的布局 */
+  .feature-header-row .feature-title,
+  .feature-header-row .model-selector {
+    margin: 0 !important;
+  }
+
+  /* 当有mobile-chat-controls时，调整间距 */
+  .feature-header:has(.mobile-chat-controls) {
+    gap: 0.5rem !important;
+  }
+
+  /* 第二行：对话控制（仅在文生文模式下显示） */
+  .mobile-chat-controls {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 0.75rem !important;
+    border-top: 1px solid var(--border-secondary) !important;
+    background: var(--bg-secondary) !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 0.75rem !important;
+    margin-top: 0.25rem !important;
+  }
+
+  /* 移动端控制按钮组 */
+  .mobile-control-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+  }
+
+  /* 移动端新建对话按钮样式 */
+  .mobile-chat-controls .new-chat-btn.mobile {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important;
+    height: 32px !important;
+    background: var(--primary-500) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    flex-shrink: 0 !important;
+  }
+
+  .mobile-chat-controls .new-chat-btn.mobile:hover {
+    background: var(--primary-600) !important;
+    transform: scale(1.05) !important;
+  }
+
+  /* 移动端历史按钮样式 */
+  .mobile-chat-controls .toggle-chat-list {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.5rem 0.75rem !important;
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    font-size: 0.8rem !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .mobile-chat-controls .toggle-chat-list:hover {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--primary-400) !important;
+    color: var(--primary-500) !important;
+  }
+
+  .mobile-chat-controls .toggle-chat-list.prominent {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border-color: var(--primary-500) !important;
+    font-weight: 600 !important;
+  }
+
+  /* 移动端对话信息样式 */
+  .mobile-chat-controls .current-chat-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    justify-content: flex-end !important;
+  }
+
+  .mobile-chat-controls .chat-title {
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    color: var(--text-primary) !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    max-width: 150px !important;
+  }
+
+  .mobile-chat-controls .chat-message-count {
+    font-size: 0.75rem !important;
+    color: var(--text-tertiary) !important;
+    background: var(--bg-primary) !important;
+    padding: 0.2rem 0.5rem !important;
+    border-radius: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  /* 移动端隐藏原有的chat-header */
+  .chat-header {
+    display: none !important;
+  }
+
+  /* 移动端显示对话控制，桌面端隐藏 */
+  .mobile-chat-controls {
+    display: flex !important;
+  }
+
+  .feature-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .feature-icon {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+    color: var(--primary-500) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .feature-title h2 {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    color: var(--text-primary) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .feature-title p {
+    display: none !important; /* 移动端隐藏描述文字 */
+  }
+
+  .model-selector {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .model-selector label {
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    color: var(--text-secondary) !important;
+    white-space: nowrap !important;
+  }
+
+  .model-select {
+    padding: 0.5rem 0.75rem !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: 8px !important;
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    font-size: 0.8rem !important;
+    min-width: 120px !important;
+    max-width: 140px !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+  }
+
+  .model-select:focus {
+    outline: none !important;
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+  }
+
+  /* 模型选择栏的响应式调整 */
+  .feature-header {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .feature-title div {
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  /* 确保模型选择器不会被压缩 */
+  .model-selector {
+    min-width: fit-content !important;
+  }
+
+  /* 优化选择框的视觉效果 */
+  .model-select {
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+  }
+
+  .model-select:hover {
+    border-color: var(--primary-400) !important;
+  }
+
+  /* 移动端历史记录显示优化 */
+  .chat-layout {
+    flex-direction: column !important;
+    height: 100% !important;
+    flex: 1 !important;
+    overflow: hidden !important;
+    position: relative !important; /* 确保正确的定位上下文 */
+    display: flex !important; /* 确保flex布局 */
+  }
+
+  /* 当显示历史记录时，只隐藏对话容器，保留模式选择栏 */
+  .chat-layout .chat-list-sidebar:not(.hidden) ~ .chat-container {
+    display: none !important;
+  }
+
+  /* 确保模式选择栏始终显示 */
+  .feature-header {
+    display: flex !important;
+    position: relative !important;
+    z-index: 50 !important;
+  }
+
+  /* 确保feature-content的布局正确 */
+  .feature-content {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    position: relative !important;
+    z-index: 1 !important;
+    overflow: hidden !important; /* 防止内容溢出 */
+  }
+
+  /* 确保各组件层级关系正确 */
+  .main-header {
+    z-index: 100 !important;
+  }
+
+  .feature-header {
+    z-index: 90 !important;
+  }
+
+  .chat-header {
+    z-index: 80 !important;
+    position: relative !important; /* 强制使用相对定位 */
+  }
+
+  .chat-list-sidebar {
+    z-index: 70 !important;
+  }
+
+  .chat-container {
+    z-index: 60 !important;
+    position: relative !important; /* 确保正确的定位上下文 */
+  }
+
+  .chat-messages {
+    z-index: 50 !important;
+    position: relative !important; /* 确保消息区域正确定位 */
+  }
+
+  .chat-input {
+    z-index: 1000 !important;
+  }
+
+  /* 防止组件互相覆盖的额外保护 */
+  .content-area {
+    position: relative !important;
+    z-index: 10 !important;
+    overflow: hidden !important;
+  }
+
+  /* 当隐藏历史记录时，对话容器占据全部空间 */
+  .chat-layout .chat-list-sidebar.hidden ~ .chat-container {
+    flex: 1 !important;
+    height: 100% !important;
+    order: 1 !important;
+    display: flex !important;
+  }
+
+  /* 当显示历史记录时，隐藏输入框 */
+  .chat-layout .chat-list-sidebar:not(.hidden) + .chat-container .chat-input,
+  .chat-layout .chat-list-sidebar:not(.hidden) ~ .chat-container .chat-input {
+    display: none !important;
+  }
+
+  /* 当隐藏历史记录时，确保输入框显示 */
+  .chat-layout .chat-list-sidebar.hidden ~ .chat-container .chat-input {
+    display: flex !important;
+  }
+
+  /* 历史记录列表在移动端的优化 */
+  .chat-list-sidebar {
+    width: 100% !important;
+    height: auto !important;
+    flex: 1 !important;
+    border-right: none !important;
+    border-top: 1px solid var(--border-primary) !important;
+    order: 1 !important;
+    margin: 0 !important;
+  }
+
+  .chat-list-sidebar.hidden {
+    height: 0 !important;
+    overflow: hidden !important;
+    flex: 0 !important;
+    border-top: none !important;
+  }
+
+  /* 对话容器在移动端的优化 */
+  .chat-container {
+    order: 2 !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+  }
+
+  /* 移动端隐藏历史记录头部 */
+  .chat-list-header {
+    display: none !important;
+  }
+
+  .chat-list-header h3 {
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+    margin: 0 !important;
+  }
+
+  .chat-list-actions {
+    gap: 0.5rem !important;
+  }
+
+  .new-chat-btn,
+  .hide-sidebar-btn {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .new-chat-btn {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border: none !important;
+  }
+
+  .new-chat-btn:hover {
+    background: var(--primary-600) !important;
+    transform: scale(1.05) !important;
+  }
+
+  .hide-sidebar-btn {
+    background: var(--bg-secondary) !important;
+    color: var(--text-secondary) !important;
+    border: 1px solid var(--border-primary) !important;
+  }
+
+  .hide-sidebar-btn:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  /* 历史记录列表优化 */
+  .chat-list {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 1rem 0.5rem 0.5rem 0.5rem !important; /* 增加顶部padding替代header */
+  }
+
+  .chat-item {
+    padding: 1rem !important;
+    margin-bottom: 0.5rem !important;
+    border-radius: 12px !important;
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .chat-item:hover {
+    background: var(--bg-secondary) !important;
+    border-color: var(--primary-300) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .chat-item.active {
+    background: var(--primary-50) !important;
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+  }
+
+  .chat-title {
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+    margin-bottom: 0.5rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .chat-meta {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    font-size: 0.8rem !important;
+    color: var(--text-tertiary) !important;
+  }
+
+  .message-count {
+    font-weight: 500 !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .last-activity {
+    opacity: 0.8 !important;
+  }
+
+  /* 空状态优化 */
+  .empty-chats {
+    padding: 3rem 2rem !important;
+    text-align: center !important;
+    color: var(--text-tertiary) !important;
+  }
+
+  .empty-chats svg {
+    margin-bottom: 1rem !important;
+    opacity: 0.3 !important;
+  }
+
+  .empty-chats h3 {
+    font-size: 1.1rem !important;
+    color: var(--text-secondary) !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .empty-chats p {
+    font-size: 0.9rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .start-chat-btn {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border: none !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 8px !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .start-chat-btn:hover {
+    background: var(--primary-600) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  /* 移动端"显示历史"按钮优化 */
+  .toggle-chat-list {
+    width: auto !important;
+    height: 40px !important;
+    padding: 0 1rem !important;
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    color: var(--text-secondary) !important;
+    gap: 0.5rem !important;
+    white-space: nowrap !important;
+  }
+
+  .toggle-chat-list:hover {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--primary-400) !important;
+    color: var(--primary-500) !important;
+  }
+
+  .toggle-chat-list.prominent {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border-color: var(--primary-500) !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+    animation: pulse 2s infinite !important;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+    50% {
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
+    }
+    100% {
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+  }
+
+  .toggle-chat-list.prominent:hover {
+    background: var(--primary-600) !important;
+    border-color: var(--primary-600) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+  }
+
+  .toggle-text {
+    font-size: 0.85rem !important;
+    font-weight: inherit !important;
+  }
+
+  /* 对话头部在移动端的优化 */
+  .chat-header {
+    padding: 0.75rem 1rem !important;
+    background: var(--bg-primary) !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+    position: relative !important; /* 改为相对定位，避免重叠 */
+    z-index: 80 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    min-height: 60px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .chat-header-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+  }
+
+  .current-chat-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .current-chat-info h4 {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+    margin: 0 0 0.25rem 0 !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
+
+  .chat-message-count {
+    font-size: 0.8rem !important;
+    color: var(--text-tertiary) !important;
+  }
+
+  /* 移动端输入框底部优化 */
+  .chat-input {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1000 !important;
+    padding: 1rem !important;
+    background: var(--bg-primary) !important;
+    border-top: 2px solid var(--border-primary) !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    margin: 0 !important;
+    min-height: 80px !important;
+    backdrop-filter: blur(10px) !important;
+  }
+
+  .chat-input input {
+    flex: 1 !important;
+    padding: 0.75rem 1rem !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: 25px !important;
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    font-size: 0.9rem !important;
+    outline: none !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .chat-input input:focus {
+    border-color: var(--primary-500) !important;
+    background: var(--bg-primary) !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  }
+
+  .chat-input input::placeholder {
+    color: var(--text-tertiary) !important;
+  }
+
+  .send-button {
+    width: 44px !important;
+    height: 44px !important;
+    background: var(--primary-500) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 22px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .send-button:hover:not(:disabled) {
+    background: var(--primary-600) !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+  }
+
+  .send-button:disabled {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-tertiary) !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  /* 对话消息区域适配底部输入框 */
+  .chat-messages {
+    padding-bottom: 10rem !important; /* 为底部输入框留出更多空间 */
+    margin-bottom: 0 !important;
+    min-height: calc(100vh - 300px) !important; /* 减去顶部栏+双行模型选择栏+输入框高度 */
+    box-sizing: border-box !important;
+  }
+
+  /* 对话容器适配 */
+  .chat-container {
+    padding-bottom: 0 !important;
+    height: calc(100vh - 220px) !important; /* 减去顶部栏(60px)和双行模型选择栏(160px) */
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important; /* 确保正确的定位上下文 */
+    margin-top: 0 !important; /* 确保没有额外的上边距 */
+    clear: both !important; /* 清除浮动 */
+  }
+
+  /* 确保消息能够正常滚动并占据更多空间 */
+  .chat-messages {
+    overflow-y: auto !important;
+    flex: 1 !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 1rem !important;
+    padding-bottom: 10rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+    box-sizing: border-box !important;
+    position: relative !important; /* 确保正确的定位 */
+    margin-top: 0 !important; /* 确保不会被上方元素遮挡 */
+    top: 0 !important; /* 确保从顶部开始 */
+    border-top: 1px solid transparent !important; /* 确保与上方有足够间距 */
+  }
+
+  /* 消息项优化 */
+  .message {
+    margin-bottom: 0 !important; /* 移除额外的margin，使用gap代替 */
+  }
+
+  /* 消息内容优化 */
+  .message-content {
+    max-width: 85% !important;
+    word-wrap: break-word !important;
+    line-height: 1.5 !important;
+  }
+
+  /* 确保最后一条消息有足够的底部空间 */
+  .message:last-child {
+    margin-bottom: 2rem !important;
+  }
+
+  /* 防止消息被输入框遮挡的额外保护 */
+  .chat-messages::after {
+    content: "" !important;
+    display: block !important;
+    height: 3rem !important;
+    width: 100% !important;
+  }
+
+  /* 空状态页面适配底部输入框 */
+  .empty-chat {
+    margin-bottom: 10rem !important; /* 避免被输入框遮挡 */
+    height: calc(100vh - 300px) !important; /* 减去顶部栏+双行模型选择栏+输入框高度 */
+    min-height: 300px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 2rem !important;
+    box-sizing: border-box !important;
+  }
+
   /* 通用按钮样式 */
   button {
     min-height: 44px;
@@ -109,6 +999,221 @@
     padding: 0.75rem;
   }
 
+  /* 极小屏幕的顶栏优化 */
+  .main-header {
+    padding: 0.5rem 0.75rem !important;
+    min-height: 56px !important;
+  }
+
+  .main-header .header-left h1 {
+    font-size: 1rem !important;
+  }
+
+  .mobile-menu-btn {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .theme-toggle-btn {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .model-status {
+    font-size: 0.65rem !important;
+    padding: 0.2rem 0.4rem !important;
+  }
+
+  .model-status .status-item::after {
+    font-size: 0.7rem !important;
+  }
+
+  .header-right {
+    gap: 0.25rem !important;
+  }
+
+  /* 极小屏幕的模型选择栏优化 */
+  .feature-header {
+    padding: 0.5rem 0.75rem !important;
+    gap: 0.5rem !important;
+    min-height: auto !important;
+    display: flex !important;
+    position: relative !important;
+    z-index: 90 !important;
+  }
+
+  /* 极小屏幕的第一行布局 */
+  .feature-header-row {
+    gap: 0.5rem !important;
+  }
+
+  /* 极小屏幕的移动端对话控制 */
+  .mobile-chat-controls {
+    padding: 0.4rem 0.6rem !important;
+    gap: 0.6rem !important;
+  }
+
+  .mobile-control-actions {
+    gap: 0.4rem !important;
+  }
+
+  .mobile-chat-controls .new-chat-btn.mobile {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .mobile-chat-controls .toggle-chat-list {
+    padding: 0.4rem 0.6rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  .mobile-chat-controls .chat-title {
+    font-size: 0.8rem !important;
+    max-width: 100px !important;
+  }
+
+  .mobile-chat-controls .chat-message-count {
+    font-size: 0.7rem !important;
+    padding: 0.15rem 0.4rem !important;
+  }
+
+  .feature-title h2 {
+    font-size: 0.9rem !important;
+  }
+
+  .feature-icon {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+  }
+
+  .model-selector label {
+    font-size: 0.75rem !important;
+  }
+
+  .model-select {
+    padding: 0.4rem 0.6rem !important;
+    font-size: 0.75rem !important;
+    min-width: 100px !important;
+    max-width: 120px !important;
+  }
+
+  /* 极小屏幕也隐藏历史记录头部 */
+  .chat-list-header {
+    display: none !important;
+  }
+
+  .chat-item {
+    padding: 0.75rem !important;
+    margin-bottom: 0.25rem !important;
+    border-radius: 8px !important;
+  }
+
+  .chat-title {
+    font-size: 0.9rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .chat-meta {
+    font-size: 0.75rem !important;
+  }
+
+  .empty-chats {
+    padding: 2rem 1rem !important;
+  }
+
+  .empty-chats h3 {
+    font-size: 1rem !important;
+  }
+
+  .empty-chats p {
+    font-size: 0.8rem !important;
+  }
+
+  .start-chat-btn {
+    padding: 0.6rem 1.2rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* 极小屏幕的"显示历史"按钮优化 */
+  .toggle-chat-list {
+    height: 36px !important;
+    padding: 0 0.75rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  .toggle-chat-list.prominent {
+    font-weight: 600 !important;
+  }
+
+  .toggle-text {
+    font-size: 0.8rem !important;
+  }
+
+  .chat-header {
+    padding: 0.75rem !important;
+    position: relative !important; /* 确保在小屏幕上也不重叠 */
+  }
+
+  .chat-header-left {
+    gap: 0.5rem !important;
+  }
+
+  .current-chat-info h4 {
+    font-size: 0.9rem !important;
+  }
+
+  .chat-message-count {
+    font-size: 0.75rem !important;
+  }
+
+  /* 极小屏幕的输入框优化 */
+  .chat-input {
+    padding: 0.75rem !important;
+    min-height: 70px !important;
+  }
+
+  .chat-input input {
+    padding: 0.6rem 0.8rem !important;
+    font-size: 0.8rem !important;
+    border-radius: 20px !important;
+  }
+
+  .send-button {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 20px !important;
+  }
+
+  /* 极小屏幕的对话消息区域适配 */
+  .chat-messages {
+    padding-bottom: 8rem !important; /* 为输入框留更多空间 */
+    min-height: calc(100vh - 230px) !important;
+    max-height: calc(100vh - 230px) !important;
+  }
+
+  .chat-container {
+    height: calc(100vh - 150px) !important; /* 减去更小的顶部栏高度和扩展后的模型选择栏 */
+  }
+
+  /* 极小屏幕的空状态页面适配 */
+  .empty-chat {
+    margin-bottom: 8rem !important;
+    height: calc(100vh - 230px) !important;
+    min-height: 250px !important;
+  }
+
+  /* iOS设备键盘优化 */
+  @supports (-webkit-appearance: none) {
+    .chat-input {
+      padding-bottom: env(safe-area-inset-bottom, 0.75rem) !important;
+    }
+
+    /* iOS键盘弹出时的处理 */
+    .chat-input input:focus {
+      transform: translateY(0) !important;
+    }
+  }
+
   /* 按钮尺寸调整 */
   .btn, button {
     padding: 0.5rem 0.75rem;
@@ -148,6 +1253,21 @@
 
   .sidebar {
     width: 240px;
+  }
+
+  /* 横屏时的模型选择栏优化 */
+  .feature-header {
+    padding: 0.5rem 1rem !important;
+    min-height: 50px !important;
+  }
+
+  .feature-title h2 {
+    font-size: 0.9rem !important;
+  }
+
+  .model-select {
+    min-width: 110px !important;
+    max-width: 130px !important;
   }
 }
 
@@ -200,5 +1320,1836 @@
   
   button {
     border: 2px solid;
+  }
+}
+
+/* 桌面端样式 - 确保正常显示 */
+@media (min-width: 769px) {
+  /* 桌面端显示原有的chat-header */
+  .chat-header {
+    display: flex !important;
+  }
+
+  /* 桌面端显示chat-list-header */
+  .chat-list-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 1rem 1.5rem !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+    background: var(--bg-tertiary) !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* 桌面端隐藏移动端对话控制 */
+  .mobile-chat-controls {
+    display: none !important;
+  }
+
+  /* 桌面端恢复历史记录列表原有padding */
+  .chat-list {
+    padding: 0.5rem !important;
+  }
+
+  /* 桌面端feature-header恢复原有样式 */
+  .feature-header {
+    flex-direction: row !important;
+    align-items: center !important;
+    min-height: 60px !important;
+  }
+
+  .feature-header-row {
+    flex: 1 !important;
+    justify-content: flex-start !important;
+  }
+
+  .feature-title {
+    flex: 1 !important;
+  }
+
+  .model-selector {
+    flex-shrink: 0 !important;
+  }
+}
+
+/* 深色模式移动端适配 */
+@media (prefers-color-scheme: dark) and (max-width: 768px) {
+  .card, .modal, .panel {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  input, textarea, select {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
+  }
+}
+
+/* 深色模式移动端完整适配 */
+@media (max-width: 768px) {
+  /* 移动端全局背景深色适配 */
+  .dark-mode {
+    background: var(--bg-secondary) !important;
+  }
+
+  .dark-mode body {
+    background: var(--bg-secondary) !important;
+  }
+
+  .dark-mode .content-area {
+    background: var(--bg-secondary) !important;
+  }
+
+  .dark-mode .feature-content {
+    background: var(--bg-secondary) !important;
+  }
+
+  /* 移动端顶栏深色适配 */
+  .dark-mode .main-header {
+    background: var(--bg-primary) !important;
+    border-bottom-color: var(--border-primary) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark-mode .header-left h1 {
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .header-left p {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .mobile-menu-btn {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .mobile-menu-btn:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .theme-toggle-btn {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .theme-toggle-btn:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .model-status {
+    background: var(--bg-secondary) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .model-status .status-item:first-child::after {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .model-status .status-item::after {
+    color: var(--primary-500) !important;
+  }
+
+  /* 移动端功能选择栏深色适配 */
+  .dark-mode .feature-header {
+    background: var(--bg-primary) !important;
+    border-bottom-color: var(--border-primary) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .dark-mode .feature-title h2 {
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .feature-icon {
+    color: var(--primary-500) !important;
+  }
+
+  .dark-mode .model-selector label {
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .model-select {
+    background: var(--bg-primary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .model-select:focus {
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3) !important;
+  }
+
+  .dark-mode .model-select:hover {
+    border-color: var(--primary-400) !important;
+  }
+
+  /* 移动端对话控制深色适配 */
+  .dark-mode .mobile-chat-controls {
+    background: var(--bg-secondary) !important;
+    border-top-color: var(--border-secondary) !important;
+  }
+
+  .dark-mode .mobile-chat-controls .new-chat-btn.mobile {
+    background: var(--primary-500) !important;
+    color: white !important;
+  }
+
+  .dark-mode .mobile-chat-controls .new-chat-btn.mobile:hover {
+    background: var(--primary-600) !important;
+  }
+
+  .dark-mode .mobile-chat-controls .toggle-chat-list {
+    background: var(--bg-primary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .mobile-chat-controls .toggle-chat-list:hover {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--primary-400) !important;
+    color: var(--primary-500) !important;
+  }
+
+  .dark-mode .mobile-chat-controls .toggle-chat-list.prominent {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border-color: var(--primary-500) !important;
+  }
+
+  .dark-mode .mobile-chat-controls .chat-title {
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .mobile-chat-controls .chat-message-count {
+    color: var(--text-tertiary) !important;
+    background: var(--bg-primary) !important;
+  }
+
+  /* 移动端历史记录深色适配 */
+  .dark-mode .chat-list {
+    background: var(--bg-primary) !important;
+  }
+
+  .dark-mode .chat-list-sidebar {
+    background: var(--bg-primary) !important;
+  }
+
+  .dark-mode .chat-item {
+    background: var(--bg-primary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .chat-item:hover {
+    background: var(--bg-secondary) !important;
+    border-color: var(--primary-300) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark-mode .chat-item.active {
+    background: var(--primary-50) !important;
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3) !important;
+  }
+
+  .dark-mode .chat-title {
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .chat-meta {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .message-count {
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .last-activity {
+    color: var(--text-tertiary) !important;
+  }
+
+  /* 移动端空状态深色适配 */
+  .dark-mode .empty-chats {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .empty-chats h3 {
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .empty-chats p {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .empty-chats svg {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .start-chat-btn {
+    background: var(--primary-500) !important;
+    color: white !important;
+  }
+
+  .dark-mode .start-chat-btn:hover {
+    background: var(--primary-600) !important;
+  }
+
+  /* 移动端显示历史按钮深色适配 */
+  .dark-mode .toggle-chat-list {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .toggle-chat-list:hover {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--primary-400) !important;
+    color: var(--primary-500) !important;
+  }
+
+  .dark-mode .toggle-chat-list.prominent {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 2px 8px rgba(96, 165, 250, 0.5) !important;
+    animation: pulse 2s infinite !important;
+  }
+
+  .dark-mode .toggle-chat-list.prominent:hover {
+    background: var(--primary-600) !important;
+    border-color: var(--primary-600) !important;
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.6) !important;
+  }
+
+  /* 移动端对话头部深色适配 */
+  .dark-mode .chat-header {
+    background: var(--bg-primary) !important;
+    border-bottom-color: var(--border-primary) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .dark-mode .current-chat-info h4 {
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .chat-message-count {
+    color: var(--text-tertiary) !important;
+  }
+
+  /* 移动端输入框深色适配 */
+  .dark-mode .chat-input {
+    background: var(--bg-primary) !important;
+    border-top-color: var(--border-primary) !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .dark-mode .chat-input input,
+  .dark-mode .chat-input textarea {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .chat-input input:focus,
+  .dark-mode .chat-input textarea:focus {
+    border-color: var(--primary-500) !important;
+    background: var(--bg-primary) !important;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3) !important;
+  }
+
+  .dark-mode .chat-input input::placeholder,
+  .dark-mode .chat-input textarea::placeholder {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .send-button {
+    background: var(--primary-500) !important;
+    color: white !important;
+  }
+
+  .dark-mode .send-button:hover:not(:disabled) {
+    background: var(--primary-600) !important;
+  }
+
+  .dark-mode .send-button:disabled {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-tertiary) !important;
+  }
+
+  /* 移动端对话消息深色适配 */
+  .dark-mode .chat-messages {
+    background: var(--bg-primary) !important;
+  }
+
+  .dark-mode .chat-container {
+    background: var(--bg-primary) !important;
+  }
+
+  .dark-mode .empty-chat {
+    background: var(--bg-primary) !important;
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .empty-chat h3 {
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .empty-chat p {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .empty-chat svg {
+    color: var(--text-tertiary) !important;
+  }
+
+  /* 移动端通用按钮深色适配 */
+  .dark-mode .btn,
+  .dark-mode button {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .btn:hover,
+  .dark-mode button:hover {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--primary-400) !important;
+    color: var(--primary-500) !important;
+  }
+
+  .dark-mode .btn-primary,
+  .dark-mode button.primary {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border-color: var(--primary-500) !important;
+  }
+
+  .dark-mode .btn-primary:hover,
+  .dark-mode button.primary:hover {
+    background: var(--primary-600) !important;
+    border-color: var(--primary-600) !important;
+  }
+
+  /* 移动端输入框深色适配 */
+  .dark-mode input,
+  .dark-mode textarea,
+  .dark-mode select {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode input:focus,
+  .dark-mode textarea:focus,
+  .dark-mode select:focus {
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3) !important;
+  }
+
+  .dark-mode input::placeholder,
+  .dark-mode textarea::placeholder {
+    color: var(--text-tertiary) !important;
+  }
+
+  /* 移动端卡片深色适配 */
+  .dark-mode .card,
+  .dark-mode .modal,
+  .dark-mode .panel {
+    background: var(--bg-primary) !important;
+    border-color: var(--border-primary) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  }
+}
+
+/* 极小屏幕深色模式适配 */
+@media (max-width: 480px) {
+  /* 极小屏幕特定的深色模式调整 */
+  .dark-mode .main-header {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .dark-mode .feature-header {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark-mode .chat-input {
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .dark-mode .send-button {
+    box-shadow: 0 2px 6px rgba(96, 165, 250, 0.6) !important;
+  }
+
+  .dark-mode .send-button:hover:not(:disabled) {
+    box-shadow: 0 3px 8px rgba(96, 165, 250, 0.7) !important;
+  }
+
+  .dark-mode .toggle-chat-list.prominent {
+    box-shadow: 0 2px 6px rgba(96, 165, 250, 0.6) !important;
+  }
+
+  .dark-mode .toggle-chat-list.prominent:hover {
+    box-shadow: 0 3px 8px rgba(96, 165, 250, 0.7) !important;
+  }
+
+  .dark-mode .chat-item:hover {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .dark-mode .card,
+  .dark-mode .modal,
+  .dark-mode .panel {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+  }
+}
+
+/* 全局深色模式适配 */
+.dark-mode {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* 深色模式下的全局背景适配 */
+.dark-mode html {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode body {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode .content-area {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode .feature-content {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode .dashboard {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode .main-content {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* 深色模式动画过渡优化 */
+.dark-mode * {
+  transition: background-color 0.3s ease, 
+              border-color 0.3s ease, 
+              color 0.3s ease,
+              box-shadow 0.3s ease !important;
+}
+
+/* 深色模式下的图标颜色调整 */
+.dark-mode svg {
+  color: inherit !important;
+}
+
+.dark-mode .feature-icon {
+  color: var(--primary-500) !important;
+}
+
+.dark-mode .mobile-menu-btn svg,
+.dark-mode .theme-toggle-btn svg {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .model-status svg {
+  color: var(--text-secondary) !important;
+}
+
+/* 深色模式下的滚动条适配 */
+.dark-mode ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+  background: var(--bg-tertiary) !important;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background: var(--border-secondary) !important;
+  border-radius: 4px;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted) !important;
+}
+
+/* 深色模式下的文本选择 */
+.dark-mode ::selection {
+  background-color: var(--primary-600) !important;
+  color: white !important;
+}
+
+/* 深色模式下的边框线适配 */
+.dark-mode hr,
+.dark-mode .divider {
+  border-color: var(--border-primary) !important;
+}
+
+/* 深色模式下的列表项适配 */
+.dark-mode .list-item {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .list-item:hover {
+  background: var(--bg-secondary) !important;
+  border-color: var(--primary-300) !important;
+}
+
+/* 深色模式下的表格适配 */
+.dark-mode table {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode table th {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode table td {
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode table tr:hover {
+  background: var(--bg-hover) !important;
+}
+
+/* 深色模式下的导航标签适配 */
+.dark-mode .nav-tabs,
+.dark-mode .tabs {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.dark-mode .nav-tab,
+.dark-mode .tab {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .nav-tab:hover,
+.dark-mode .tab:hover {
+  background: var(--bg-tertiary) !important;
+  color: var(--primary-500) !important;
+}
+
+.dark-mode .nav-tab.active,
+.dark-mode .tab.active {
+  background: var(--primary-500) !important;
+  color: white !important;
+  border-color: var(--primary-500) !important;
+}
+
+/* 深色模式下的模态框适配 */
+.dark-mode .modal-dialog {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6) !important;
+}
+
+.dark-mode .modal-header {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .modal-body {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .modal-footer {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* 深色模式下的表单适配 */
+.dark-mode .form-group {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .form-label {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .form-control {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .form-control:focus {
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3) !important;
+}
+
+/* 深色模式下的代码块适配 */
+.dark-mode code,
+.dark-mode pre {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* 深色模式下的引用块适配 */
+.dark-mode blockquote {
+  background: var(--bg-secondary) !important;
+  border-left-color: var(--primary-500) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 深色模式下的提示框适配 */
+.dark-mode .alert {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .alert-success {
+  background: var(--success-bg) !important;
+  border-color: var(--success) !important;
+  color: var(--success) !important;
+}
+
+.dark-mode .alert-warning {
+  background: var(--warning-bg) !important;
+  border-color: var(--warning) !important;
+  color: var(--warning) !important;
+}
+
+.dark-mode .alert-error {
+  background: var(--error-bg) !important;
+  border-color: var(--error) !important;
+  color: var(--error) !important;
+}
+
+.dark-mode .alert-info {
+  background: var(--info-bg) !important;
+  border-color: var(--info) !important;
+  color: var(--info) !important;
+}
+
+/* 深色模式下的工具栏适配 */
+.dark-mode .toolbar {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.dark-mode .toolbar button {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .toolbar button:hover {
+  background: var(--bg-tertiary) !important;
+  color: var(--primary-500) !important;
+}
+
+/* ==================== 桌面端深色模式完整适配 ==================== */
+
+/* 桌面端侧边栏深色适配 */
+.dark-mode .sidebar {
+  background: var(--bg-primary) !important;
+  border-right-color: var(--border-primary) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .sidebar-header {
+  background: var(--bg-primary) !important;
+  border-bottom-color: var(--border-primary) !important;
+}
+
+.dark-mode .logo span {
+  background: var(--gradient-secondary) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.dark-mode .user-avatar {
+  background: var(--gradient-secondary) !important;
+  color: var(--text-inverse) !important;
+}
+
+.dark-mode .user-name {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .user-email {
+  color: var(--text-tertiary) !important;
+}
+
+/* 桌面端导航深色适配 */
+.dark-mode .sidebar-nav {
+  background: var(--bg-primary) !important;
+}
+
+.dark-mode .nav-section h3 {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .nav-item {
+  color: var(--text-secondary) !important;
+  background: transparent !important;
+}
+
+.dark-mode .nav-item:hover {
+  background: var(--bg-hover) !important;
+  color: var(--primary-500) !important;
+}
+
+.dark-mode .nav-item.active {
+  background: var(--primary-500) !important;
+  color: white !important;
+}
+
+.dark-mode .nav-item.active::before {
+  background: var(--primary-600) !important;
+}
+
+.dark-mode .nav-item.admin-only {
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  color: white !important;
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.5) !important;
+}
+
+.dark-mode .nav-item.admin-only:hover {
+  background: linear-gradient(135deg, #d97706, #b45309) !important;
+  box-shadow: 0 4px 8px rgba(245, 158, 11, 0.6) !important;
+}
+
+.dark-mode .sidebar-footer {
+  background: var(--bg-primary) !important;
+  border-top-color: var(--border-primary) !important;
+}
+
+.dark-mode .logout-button {
+  background: transparent !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .logout-button:hover {
+  background: var(--error-bg) !important;
+  border-color: var(--error) !important;
+  color: var(--error) !important;
+}
+
+/* 桌面端主内容区域深色适配 */
+.dark-mode .main-content {
+  background: var(--bg-secondary) !important;
+}
+
+.dark-mode .main-header {
+  background: var(--bg-primary) !important;
+  border-bottom-color: var(--border-primary) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .header-left h1 {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .header-left p {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .model-status {
+  background: var(--bg-secondary) !important;
+}
+
+.dark-mode .status-item {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .hide-header-btn {
+  background: var(--bg-tertiary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .hide-header-btn:hover {
+  background: var(--bg-hover) !important;
+  border-color: var(--border-focus) !important;
+  color: var(--primary-500) !important;
+}
+
+.dark-mode .content-area {
+  background: var(--bg-secondary) !important;
+}
+
+/* 桌面端功能内容区域深色适配 */
+.dark-mode .feature-content {
+  background: var(--bg-primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark-mode .feature-header {
+  background: var(--bg-primary) !important;
+  border-bottom-color: var(--border-primary) !important;
+}
+
+.dark-mode .feature-title h2 {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .feature-title p {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .feature-icon {
+  color: var(--primary-500) !important;
+}
+
+.dark-mode .model-selector label {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .model-select {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .model-select:focus {
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3) !important;
+}
+
+.dark-mode .model-select:hover {
+  border-color: var(--primary-400) !important;
+}
+
+/* 桌面端聊天布局深色适配 */
+.dark-mode .chat-layout {
+  background: var(--bg-primary) !important;
+}
+
+.dark-mode .chat-list-sidebar {
+  background: var(--bg-primary) !important;
+  border-right-color: var(--border-primary) !important;
+}
+
+.dark-mode .chat-list-header {
+  background: var(--bg-tertiary) !important;
+  border-bottom-color: var(--border-primary) !important;
+}
+
+.dark-mode .chat-list-header h3 {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .new-chat-btn {
+  background: var(--primary-500) !important;
+  color: white !important;
+}
+
+.dark-mode .new-chat-btn:hover {
+  background: var(--primary-600) !important;
+}
+
+.dark-mode .hide-sidebar-btn {
+  background: var(--text-secondary) !important;
+  color: white !important;
+}
+
+.dark-mode .hide-sidebar-btn:hover {
+  background: var(--text-primary) !important;
+}
+
+.dark-mode .chat-list {
+  background: var(--bg-primary) !important;
+}
+
+.dark-mode .loading-chats {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .empty-chats {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .empty-chats h3 {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .empty-chats p {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .empty-chats svg {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .start-chat-btn {
+  background: var(--primary-500) !important;
+  color: white !important;
+}
+
+.dark-mode .start-chat-btn:hover {
+  background: var(--primary-600) !important;
+}
+
+.dark-mode .chat-item {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .chat-item:hover {
+  background: var(--bg-tertiary) !important;
+  border-color: var(--border-secondary) !important;
+}
+
+.dark-mode .chat-item.active {
+  background: var(--primary-bg) !important;
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.3) !important;
+}
+
+.dark-mode .chat-title {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .chat-meta {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .message-count {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .last-activity {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .more-actions-btn {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .more-actions-btn:hover {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+}
+
+/* 桌面端右键菜单深色适配 */
+.dark-mode .context-menu {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark-mode .context-menu-item {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .context-menu-item:hover {
+  background: var(--bg-secondary) !important;
+}
+
+.dark-mode .context-menu-item.delete {
+  color: var(--error) !important;
+}
+
+.dark-mode .context-menu-item.delete:hover {
+  background: var(--error-bg) !important;
+}
+
+.dark-mode .context-menu-divider {
+  background: var(--border-primary) !important;
+}
+
+/* 桌面端聊天头部深色适配 */
+.dark-mode .chat-header {
+  background: var(--bg-primary) !important;
+  border-bottom-color: var(--border-primary) !important;
+}
+
+.dark-mode .toggle-chat-list {
+  background: var(--bg-tertiary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .toggle-chat-list:hover {
+  background: var(--bg-hover) !important;
+  border-color: var(--border-focus) !important;
+  color: var(--primary-500) !important;
+}
+
+.dark-mode .toggle-chat-list.prominent {
+  background: var(--primary-500) !important;
+  color: white !important;
+  border-color: var(--primary-500) !important;
+}
+
+.dark-mode .toggle-chat-list.prominent:hover {
+  background: var(--primary-600) !important;
+  border-color: var(--primary-600) !important;
+}
+
+.dark-mode .toggle-header-btn {
+  background: var(--bg-tertiary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .toggle-header-btn:hover {
+  background: var(--bg-hover) !important;
+  border-color: var(--border-focus) !important;
+  color: var(--primary-500) !important;
+}
+
+.dark-mode .current-chat-info h4 {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .chat-message-count {
+  color: var(--text-tertiary) !important;
+}
+
+/* 桌面端聊天消息区域深色适配 */
+.dark-mode .chat-container {
+  background: var(--bg-primary) !important;
+}
+
+.dark-mode .chat-messages {
+  background: var(--bg-secondary) !important;
+}
+
+.dark-mode .message {
+  background: transparent !important;
+  border: none !important;
+}
+
+.dark-mode .message-content {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+}
+
+.dark-mode .message.user .message-content {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+}
+
+.dark-mode .message.assistant .message-content {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .message-meta {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .timestamp {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .typing-indicator span {
+  background: var(--border-secondary) !important;
+}
+
+.dark-mode .empty-chat {
+  background: var(--bg-primary) !important;
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .empty-chat h3 {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .empty-chat p {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .empty-chat svg {
+  color: var(--text-tertiary) !important;
+}
+
+/* ==================== 聊天框深色模式修复 ==================== */
+
+/* Dashboard聊天滚动条深色适配 */
+.dark-mode .chat-messages::-webkit-scrollbar-track {
+  background: var(--bg-tertiary) !important;
+}
+
+.dark-mode .chat-messages::-webkit-scrollbar-thumb {
+  background: var(--border-secondary) !important;
+}
+
+.dark-mode .chat-messages::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted) !important;
+}
+
+/* MessageCenter聊天深色适配 */
+.dark-mode .chat-header {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border-bottom-color: var(--border-primary) !important;
+}
+
+.dark-mode .header-content {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .header-title {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .role-badge {
+  background: var(--primary-bg) !important;
+  color: var(--primary-500) !important;
+  border-color: var(--primary-400) !important;
+}
+
+.dark-mode .chat-message .avatar {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .message-bubble {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .chat-message.user .message-bubble {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+  color: white !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4) !important;
+}
+
+.dark-mode .chat-message.support .message-bubble,
+.dark-mode .chat-message.customer .message-bubble {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.dark-mode .message-text {
+  color: inherit !important;
+  background: transparent !important;
+}
+
+.dark-mode .message-timestamp {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .chat-empty {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .chat-empty h3 {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .chat-empty p {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .chat-empty svg {
+  color: var(--text-muted) !important;
+}
+
+.dark-mode .message-time {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .message.own .message-time {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.dark-mode .user-avatar,
+.dark-mode .support-avatar {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: white !important;
+}
+
+.dark-mode .input-container textarea {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .input-container textarea:focus {
+  border-color: var(--primary-500) !important;
+  background: var(--bg-primary) !important;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3) !important;
+}
+
+.dark-mode .input-container textarea::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .no-selection {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .no-selection h3 {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .no-selection p {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .no-selection svg {
+  color: var(--text-muted) !important;
+}
+
+/* 支持聊天容器深色适配 */
+.dark-mode .support-chat-container {
+  background: var(--bg-primary) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .support-chat-container .message-bubble {
+  background: var(--bg-tertiary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .support-chat-container .message.own .message-bubble {
+  background: var(--primary-500) !important;
+  color: white !important;
+  border-color: var(--primary-500) !important;
+}
+
+.dark-mode .support-chat-container .message-text {
+  color: inherit !important;
+}
+
+/* CustomerService组件深色适配 */
+.dark-mode .message-avatar {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-tertiary) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .chat-message.user .message-avatar {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+}
+
+.dark-mode .chat-message.user .message-text {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+}
+
+.dark-mode .chat-message.user .message-text:hover {
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5) !important;
+}
+
+.dark-mode .chat-message:not(.user) .message-text {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .chat-message.user .message-time {
+  color: rgba(96, 165, 250, 0.8) !important;
+}
+
+.dark-mode .message-actions {
+  background: var(--bg-primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .action-btn {
+  background: var(--bg-secondary) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border-primary) !important;
+}
+
+.dark-mode .action-btn:hover {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .action-btn.copy:hover {
+  background: var(--success-bg) !important;
+  color: var(--success) !important;
+}
+
+.dark-mode .action-btn.delete:hover {
+  background: var(--error-bg) !important;
+  color: var(--error) !important;
+}
+
+/* 快速回复按钮深色适配 */
+.dark-mode .quick-replies {
+  background: var(--bg-primary) !important;
+}
+
+.dark-mode .quick-reply-btn {
+  background: var(--bg-secondary) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border-primary) !important;
+}
+
+.dark-mode .quick-reply-btn:hover {
+  background: var(--bg-tertiary) !important;
+  color: var(--primary-500) !important;
+  border-color: var(--primary-400) !important;
+}
+
+/* 内联样式的颜色覆盖 */
+.dark-mode .message-bubble[style*="backgroundColor: #e8f5e8"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.dark-mode .message-bubble[style*="backgroundColor: #e3f2fd"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.dark-mode .message-bubble[style*="border: 1px solid #4caf50"] {
+  border-color: var(--border-primary) !important;
+}
+
+.dark-mode .message-bubble[style*="border: 1px solid #2196f3"] {
+  border-color: var(--border-primary) !important;
+}
+
+.dark-mode .message-text[style*="color: #000000"] {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode [style*="backgroundColor: #e8f5e8"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.dark-mode [style*="backgroundColor: #e3f2fd"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.dark-mode [style*="border: 1px solid #4caf50"] {
+  border-color: var(--border-primary) !important;
+}
+
+.dark-mode [style*="border: 1px solid #2196f3"] {
+  border-color: var(--border-primary) !important;
+}
+
+.dark-mode [style*="color: #000000"] {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode [style*="backgroundColor: #f9fafb"] {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode [style*="backgroundColor: #ffffff"] {
+  background-color: var(--bg-primary) !important;
+}
+
+.dark-mode [style*="borderBottom: 1px solid #e5e7eb"] {
+  border-bottom-color: var(--border-primary) !important;
+}
+
+.dark-mode [style*="color: #374151"] {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode [style*="color: #6b7280"] {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode [style*="color: #666666"] {
+  color: var(--text-tertiary) !important;
+}
+
+/* 桌面端聊天输入框深色适配 */
+.dark-mode .chat-input {
+  background: var(--bg-primary) !important;
+  border-top-color: var(--border-primary) !important;
+}
+
+.dark-mode .chat-input input,
+.dark-mode .chat-input textarea {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .chat-input input:focus,
+.dark-mode .chat-input textarea:focus {
+  border-color: var(--primary-500) !important;
+  background: var(--bg-primary) !important;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3) !important;
+}
+
+.dark-mode .chat-input input::placeholder,
+.dark-mode .chat-input textarea::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .send-button {
+  background: var(--primary-500) !important;
+  color: white !important;
+}
+
+.dark-mode .send-button:hover:not(:disabled) {
+  background: var(--primary-600) !important;
+}
+
+.dark-mode .send-button:disabled {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-tertiary) !important;
+}
+
+/* 桌面端移动端菜单按钮深色适配 */
+.dark-mode .mobile-menu-btn {
+  background: var(--bg-tertiary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .mobile-menu-btn:hover {
+  background: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 桌面端其他组件深色适配 */
+.dark-mode .profile-page {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .profile-header-bar {
+  background: var(--bg-primary) !important;
+  border-bottom-color: var(--border-primary) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .profile-header-bar h1 {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .back-button {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .back-button:hover {
+  background: var(--bg-tertiary) !important;
+  border-color: var(--border-secondary) !important;
+}
+
+.dark-mode .logout-btn {
+  background: var(--error) !important;
+  color: white !important;
+}
+
+.dark-mode .logout-btn:hover {
+  background: var(--error-dark) !important;
+}
+
+.dark-mode .profile-container {
+  background: var(--bg-secondary) !important;
+}
+
+.dark-mode .profile-sidebar {
+  background: var(--bg-primary) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .tab-button {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .tab-button:hover {
+  background: var(--bg-hover) !important;
+  color: var(--primary-500) !important;
+}
+
+.dark-mode .tab-button.active {
+  background: var(--primary-bg) !important;
+  color: var(--primary-500) !important;
+  border-right-color: var(--primary-500) !important;
+}
+
+/* 桌面端表单元素深色适配 */
+.dark-mode .form-group {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .form-label {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .form-control {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .form-control:focus {
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3) !important;
+}
+
+/* 桌面端通知和消息中心深色适配 */
+.dark-mode .notification {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark-mode .notification.success {
+  background: var(--success-bg) !important;
+  color: var(--success) !important;
+}
+
+.dark-mode .notification.error {
+  background: var(--error-bg) !important;
+  color: var(--error) !important;
+}
+
+.dark-mode .message-center {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .message-item {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .message-item:hover {
+  background: var(--bg-tertiary) !important;
+}
+
+.dark-mode .message-item.unread {
+  background: var(--primary-bg) !important;
+  border-color: var(--primary-200) !important;
+}
+
+.dark-mode .message-bubble {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .message-bubble.own {
+  background: var(--primary-500) !important;
+  color: white !important;
+}
+
+.dark-mode .chat-input-section {
+  background: var(--bg-primary) !important;
+  border-top-color: var(--border-primary) !important;
+}
+
+.dark-mode .send-btn {
+  background: var(--primary-500) !important;
+  color: white !important;
+}
+
+.dark-mode .send-btn:hover:not(:disabled) {
+  background: var(--primary-600) !important;
+}
+
+.dark-mode .send-btn:disabled {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-tertiary) !important;
+}
+
+/* 桌面端客服工作台深色适配 */
+.dark-mode .support-desk {
+  background: var(--bg-primary) !important;
+}
+
+.dark-mode .desk-sidebar {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .desk-sidebar h3 {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .customer-item {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .customer-item:hover,
+.dark-mode .customer-item.selected {
+  background: var(--primary-bg) !important;
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3) !important;
+}
+
+.dark-mode .customer-name {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .last-message {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .customer-item .message-time {
+  color: var(--text-muted) !important;
+}
+
+.dark-mode .unread-badge {
+  background: var(--error) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.5) !important;
+}
+
+.dark-mode .desk-main {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .support-chat-container {
+  background: var(--bg-primary) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .support-sidebar {
+  background: var(--bg-secondary) !important;
+  border-right-color: var(--border-primary) !important;
+}
+
+.dark-mode .sidebar-header {
+  background: var(--bg-primary) !important;
+  border-bottom-color: var(--border-primary) !important;
+}
+
+.dark-mode .sidebar-header h3 {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .online-count {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .sidebar-empty {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .sidebar-empty h3 {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .sidebar-empty p {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .sidebar-empty svg {
+  color: var(--text-muted) !important;
+}
+
+/* 桌面端特定屏幕尺寸深色适配 */
+@media (min-width: 769px) {
+  .dark-mode .sidebar-overlay {
+    background: rgba(0, 0, 0, 0.7) !important;
+  }
+  
+  .dark-mode .mobile-menu-btn {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-secondary) !important;
+  }
+  
+  .dark-mode .mobile-menu-btn:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+  }
+}
+
+/* 桌面端高对比度模式深色适配 */
+@media (prefers-contrast: high) {
+  .dark-mode .card,
+  .dark-mode .modal,
+  .dark-mode .panel {
+    border: 2px solid var(--border-primary) !important;
+  }
+  
+  .dark-mode button {
+    border: 2px solid var(--border-primary) !important;
+  }
+  
+  .dark-mode .nav-item.active {
+    border: 2px solid var(--primary-500) !important;
+  }
+  
+  .dark-mode .chat-item.active {
+    border: 2px solid var(--primary-500) !important;
+  }
+}
+
+/* 桌面端响应式深色模式适配 */
+@media (min-width: 1024px) {
+  .dark-mode .profile-container {
+    max-width: 1200px;
+  }
+  
+  .dark-mode .chat-layout {
+    gap: 2rem;
+  }
+  
+  .dark-mode .content-area {
+    padding: 2rem;
+  }
+  
+  .dark-mode .main-header {
+    padding: 1.5rem 2rem;
+  }
+  
+  .dark-mode .feature-header {
+    padding: 1.5rem 2rem;
+  }
+}
+
+/* 桌面端大屏幕深色模式适配 */
+@media (min-width: 1440px) {
+  .dark-mode .dashboard {
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  
+  .dark-mode .sidebar {
+    width: 320px;
+  }
+  
+  .dark-mode .chat-list-sidebar {
+    width: 360px;
   }
 } 
