@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import {
-  Brain,
-  Settings, 
-  LogOut,
+  Settings,
   Cpu,
   Cloud,
-  Search,
-  Database,
-  User,
-  Crown,
   Trash2,
   Star,
   Lock,
-  Mail,
   Menu
 } from 'lucide-react';
 import { chatAPI } from '../services/api';
@@ -22,8 +15,6 @@ import './Dashboard.css';
 import UserCorner from "./UserCorner";
 
 import { useParams } from 'react-router-dom';
-
-import features from "../data/features";
 
 const Dashboard = ({ user, onLogout }) => {
   const navigate = useNavigate();
@@ -63,6 +54,19 @@ const Dashboard = ({ user, onLogout }) => {
   React.useEffect(() => {
     scrollToBottom();
   }, [chatHistory]);
+
+  // 监听窗口大小变化，在桌面端自动显示历史记录列表
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        // 桌面端自动显示历史记录列表
+        setShowChatList(true);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     // 组件加载时获取对话列表
@@ -132,6 +136,11 @@ const Dashboard = ({ user, onLogout }) => {
       setCurrentChat(newChat);
       setChatHistory([]);
       
+      // 在移动端创建新对话后自动隐藏历史记录列表
+      if (window.innerWidth <= 768) {
+        setShowChatList(false);
+      }
+
       // 重新加载对话列表
       await loadChatList();
     } catch (error) {
@@ -148,6 +157,11 @@ const Dashboard = ({ user, onLogout }) => {
       setChatHistory([]);
       setIsLoading(true);
       
+      // 在移动端切换对话后自动隐藏历史记录列表
+      if (window.innerWidth <= 768) {
+        setShowChatList(false);
+      }
+
       // 获取对话的消息历史
       if (chat.id) {
         const response = await fetch(`http://localhost:8080/api/history/chats/${chat.id}`, {
@@ -278,6 +292,11 @@ const Dashboard = ({ user, onLogout }) => {
     
     setIsLoading(true);
     
+    // 在移动端发送消息时自动隐藏历史记录列表，专注于对话
+    if (window.innerWidth <= 768) {
+      setShowChatList(false);
+    }
+
     try {
       // 如果没有当前对话，先创建一个
       let chatId = currentChat?.id;
@@ -335,10 +354,6 @@ const Dashboard = ({ user, onLogout }) => {
       setIsLoading(false);
       setInputText('');
     }
-  };
-
-  const handleLogout = () => {
-    onLogout();
   };
 
   const contextSet = {
@@ -405,86 +420,6 @@ const Dashboard = ({ user, onLogout }) => {
           </div>
         </div>
       )}
-      {/*<aside className={`sidebar ${showSidebar ? 'open' : ''}`}>*/}
-      {/*  <div className="sidebar-header">*/}
-      {/*    <div className="logo">*/}
-      {/*      <Brain className="logo-icon" />*/}
-      {/*      <span>AI平台</span>*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-
-      {/*  <nav className="sidebar-nav">*/}
-      {/*    <div className="nav-section">*/}
-      {/*      <h3>AI功能</h3>*/}
-      {/*      {features.map(feature => (*/}
-      {/*        <button*/}
-      {/*          key={feature.id}*/}
-      {/*          className={`nav-item ${activeTab === feature.id ? 'active' : ''}`}*/}
-      {/*          onClick={() => navigate(`/dashboard/${feature.id}`)}*/}
-      {/*        >*/}
-      {/*          <feature.icon className="nav-icon" />*/}
-      {/*          <span>{feature.name}</span>*/}
-      {/*        </button>*/}
-      {/*      ))}*/}
-      {/*    </div>*/}
-
-      {/*    <div className="nav-section">*/}
-      {/*      <h3>工具</h3>*/}
-      {/*      <button*/}
-      {/*        className="nav-item"*/}
-      {/*        onClick={() => navigate('/finetuning')}*/}
-      {/*      >*/}
-      {/*        <Cpu className="nav-icon" />*/}
-      {/*        <span>数据微调</span>*/}
-      {/*      </button>*/}
-      {/*      <button*/}
-      {/*        className="nav-item"*/}
-      {/*        onClick={() => navigate('/history')}*/}
-      {/*      >*/}
-      {/*        <Search className="nav-icon" />*/}
-      {/*        <span>历史搜索</span>*/}
-      {/*      </button>*/}
-      {/*      <button*/}
-      {/*        className="nav-item"*/}
-      {/*        onClick={() => navigate('/data-management')}*/}
-      {/*      >*/}
-      {/*        <Database className="nav-icon" />*/}
-      {/*        <span>数据管理</span>*/}
-      {/*      </button>*/}
-      {/*      <button*/}
-      {/*        className="nav-item"*/}
-      {/*        onClick={() => navigate('/profile')}*/}
-      {/*      >*/}
-      {/*        <User className="nav-icon" />*/}
-      {/*        <span>个人中心</span>*/}
-      {/*      </button>*/}
-      {/*      <button*/}
-      {/*        className="nav-item"*/}
-      {/*        onClick={() => navigate('/messages')}*/}
-      {/*      >*/}
-      {/*        <Mail className="nav-icon" />*/}
-      {/*        <span>消息中心</span>*/}
-      {/*      </button>*/}
-      {/*      /!* 管理员专用功能 *!/*/}
-      {/*      {user?.role === 'admin' && (*/}
-      {/*        <button*/}
-      {/*          className="nav-item admin-only"*/}
-      {/*          onClick={() => navigate('/admin')}*/}
-      {/*        >*/}
-      {/*          <Crown className="nav-icon" />*/}
-      {/*          <span>管理员面板</span>*/}
-      {/*        </button>*/}
-      {/*      )}*/}
-      {/*    </div>*/}
-      {/*  </nav>*/}
-
-      {/*  <div className="sidebar-footer">*/}
-      {/*    <button className="logout-button" onClick={handleLogout}>*/}
-      {/*      <LogOut className="nav-icon" />*/}
-      {/*      <span>退出登录</span>*/}
-      {/*    </button>*/}
-      {/*  </div>*/}
-      {/*</aside>*/}
 
       <main className="main-content">
         <header className={`main-header ${showHeader ? 'visible' : 'hidden'}`}>
@@ -500,13 +435,13 @@ const Dashboard = ({ user, onLogout }) => {
           </div>
           <div className="header-right">
             <div className="model-status">
-              <div className="status-item">
-                <Cloud size={16} />
-                <span>云端模型: 4个</span>
+              <div className="status-item" data-count="4">
+                <Cloud size={14} />
+                <span>云端模型</span>
               </div>
-              <div className="status-item">
-                <Cpu size={16} />
-                <span>本地模型: 2个</span>
+              <div className="status-item" data-count="2">
+                <Cpu size={14} />
+                <span>本地模型</span>
               </div>
             </div>
             <ThemeToggle variant="button" />
