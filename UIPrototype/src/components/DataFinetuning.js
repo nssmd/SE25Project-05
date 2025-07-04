@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { dataAPI } from '../services/api';
 import './DataFinetuning.css';
+import UserCorner from "./UserCorner";
 
 const DataFinetuning = ({ user, onLogout }) => {
   const navigate = useNavigate();
@@ -468,10 +469,7 @@ const DataFinetuning = ({ user, onLogout }) => {
           <h1>数据微调</h1>
           <p>上传您的数据，训练专属的AI模型</p>
         </div>
-        <div className="user-info">
-          <span>{user?.username || user?.name}</span>
-          <button onClick={onLogout} className="logout-btn">退出</button>
-        </div>
+        <UserCorner user={user} onLogout={onLogout} />
       </header>
 
       <div className="finetuning-content">

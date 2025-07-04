@@ -25,11 +25,13 @@ import {
   Lock,
   MoreVertical,
   Mail,
-  Bell
+  Bell,
+  Menu
 } from 'lucide-react';
 import { chatAPI } from '../services/api';
 import ThemeToggle from './ThemeToggle';
 import './Dashboard.css';
+import UserCorner from "./UserCorner";
 
 const Dashboard = ({ user, onLogout }) => {
   const navigate = useNavigate();
@@ -634,15 +636,6 @@ const Dashboard = ({ user, onLogout }) => {
             <Brain className="logo-icon" />
             <span>AI平台</span>
           </div>
-          <div className="user-info">
-            <div className="user-avatar">
-                              {(user?.username || user?.name)?.charAt(0) || 'U'}
-              </div>
-              <div className="user-details">
-                <span className="user-name">{user?.username || user?.name}</span>
-              <span className="user-email">{user?.email}</span>
-            </div>
-          </div>
         </div>
 
         <nav className="sidebar-nav">
@@ -725,7 +718,7 @@ const Dashboard = ({ user, onLogout }) => {
               className="mobile-menu-btn"
               onClick={() => setShowSidebar(!showSidebar)}
             >
-              <MessageSquare size={20} />
+              <Menu size={20} />
             </button>
             <h1>AI工作台</h1>
             <p>选择下方功能开始您的AI之旅</p>
@@ -750,6 +743,7 @@ const Dashboard = ({ user, onLogout }) => {
               <Settings size={16} />
             </button>
           </div>
+          <UserCorner user={user} onLogout={onLogout} />
         </header>
 
         <div className="content-area">

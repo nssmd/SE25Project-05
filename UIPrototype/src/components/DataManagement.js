@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { dataAPI, chatAPI, historyAPI } from '../services/api';
 import './DataManagement.css';
+import UserCorner from "./UserCorner";
 
 const DataManagement = ({ user, onLogout }) => {
   const navigate = useNavigate();
@@ -228,10 +229,7 @@ const DataManagement = ({ user, onLogout }) => {
             <RefreshCw size={16} />
             刷新
           </button>
-          <div className="user-info">
-            <span>{user?.username || user?.name}</span>
-            <button onClick={onLogout} className="logout-btn">退出</button>
-          </div>
+          <UserCorner user={user} onLogout={onLogout} />
         </div>
       </header>
       

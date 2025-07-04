@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, Calendar, Clock, MessageSquare, Filter, X, ArrowLeft } from 'lucide-react';
 import { historyAPI } from '../services/api';
 import './HistorySearch.css';
+import UserCorner from "./UserCorner";
 
 const HistorySearch = ({ user, onLogout }) => {
   const navigate = useNavigate();
@@ -139,10 +140,7 @@ const HistorySearch = ({ user, onLogout }) => {
           <h1>历史记录搜索</h1>
           <p>搜索您的对话历史，快速找到需要的内容</p>
         </div>
-        <div className="user-info">
-          <span>{user?.username || user?.name}</span>
-          <button onClick={onLogout} className="logout-btn">退出</button>
-        </div>
+        <UserCorner user={user} onLogout={onLogout} />
       </header>
       
       <div className="search-content">
