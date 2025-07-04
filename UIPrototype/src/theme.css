@@ -6,6 +6,8 @@
   /* 主色调 */
   --primary-50: #eff6ff;
   --primary-100: #dbeafe;
+  --primary-300: #93c5fd;
+  --primary-400: #60a5fa;
   --primary-500: #3b82f6;
   --primary-600: #2563eb;
   --primary-700: #1d4ed8;
@@ -56,6 +58,8 @@
   /* 主色调 - 稍微调亮以适应深色背景 */
   --primary-50: #1e293b;
   --primary-100: #334155;
+  --primary-300: #64748b;
+  --primary-400: #94a3b8;
   --primary-500: #60a5fa;
   --primary-600: #3b82f6;
   --primary-700: #2563eb;
