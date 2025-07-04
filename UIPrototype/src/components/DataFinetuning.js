@@ -458,13 +458,13 @@ const DataFinetuning = ({ user, onLogout }) => {
   return (
     <div className="finetuning-page">
       <header className="page-header">
-        <button 
-          className="back-button"
-          onClick={() => navigate('/dashboard')}
-        >
-          <ArrowLeft size={20} />
-          返回主界面
-        </button>
+        {/*<button */}
+        {/*  className="back-button"*/}
+        {/*  onClick={() => navigate('/dashboard')}*/}
+        {/*>*/}
+        {/*  <ArrowLeft size={20} />*/}
+        {/*  返回主界面*/}
+        {/*</button>*/}
         <div className="header-content">
           <h1>数据微调</h1>
           <p>上传您的数据，训练专属的AI模型</p>

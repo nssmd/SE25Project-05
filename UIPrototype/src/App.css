@@ -23,6 +23,14 @@ code {
 
 .App {
   min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  flex-direction: row;
+}
+
+.content {
+  display: flex;
+  flex-grow: 1;
 }
 
 /* Global button styles */

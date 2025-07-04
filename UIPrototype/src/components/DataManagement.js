@@ -209,13 +209,13 @@ const DataManagement = ({ user, onLogout }) => {
   return (
     <div className="data-management">
       <header className="page-header">
-        <button 
-          className="back-button"
-          onClick={() => navigate('/dashboard')}
-        >
-          <ArrowLeft size={20} />
-          返回主界面
-        </button>
+        {/*<button */}
+        {/*  className="back-button"*/}
+        {/*  onClick={() => navigate('/dashboard')}*/}
+        {/*>*/}
+        {/*  <ArrowLeft size={20} />*/}
+        {/*  返回主界面*/}
+        {/*</button>*/}
         <div className="header-content">
           <h1>数据管理</h1>
           <p>管理您的对话数据，设置自动清理规则</p>

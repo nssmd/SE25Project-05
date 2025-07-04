@@ -345,10 +345,10 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
   return (
     <div className="profile-page">
       <div className="profile-header-bar">
-        <button className="back-button" onClick={() => navigate('/dashboard')}>
-          <ArrowLeft size={20} />
-          <span className="back-text">返回</span>
-        </button>
+        {/*<button className="back-button" onClick={() => navigate('/dashboard')}>*/}
+        {/*  <ArrowLeft size={20} />*/}
+        {/*  <span className="back-text">返回</span>*/}
+        {/*</button>*/}
         <h1>个人中心</h1>
         <UserCorner user={user} onLogout={onLogout} />
       </div>

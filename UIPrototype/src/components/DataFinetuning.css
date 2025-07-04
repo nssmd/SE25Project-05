@@ -1,5 +1,6 @@
 .finetuning-page {
   min-height: 100vh;
+  flex-grow: 1;
   background: #f8fafc;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }

@@ -1,5 +1,6 @@
 .message-center {
   min-height: 100vh;
+  flex-grow: 1;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   display: flex;
   flex-direction: column;

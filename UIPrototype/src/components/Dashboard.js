@@ -1,37 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { 
-  MessageSquare, 
-  Image, 
-  FileText, 
-  Video, 
-  Box, 
-  Brain, 
-  History, 
-  Settings, 
-  LogOut, 
-  Plus,
-  Send,
-  Upload,
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
+import {
+  Settings,
   Cpu,
   Cloud,
-  Search,
-  Database,
-  Shield,
-  User,
-  Crown,
   Trash2,
   Star,
   Lock,
-  MoreVertical,
-  Mail,
-  Bell,
   Menu
 } from 'lucide-react';
 import { chatAPI } from '../services/api';
 import ThemeToggle from './ThemeToggle';
 import './Dashboard.css';
 import UserCorner from "./UserCorner";
+
+import { useParams } from 'react-router-dom';
 
 const Dashboard = ({ user, onLogout }) => {
   const navigate = useNavigate();
@@ -49,6 +32,19 @@ const Dashboard = ({ user, onLogout }) => {
   const [contextMenu, setContextMenu] = useState({ show: false, x: 0, y: 0, chatId: null });
   const [showSidebar, setShowSidebar] = useState(false);
   const messagesEndRef = React.useRef(null);
+
+  const { featureId } = useParams();
+
+  useEffect(() => {
+    if (!featureId) {
+      navigate('text_to_text');
+      setActiveTab('text_to_text');
+    } else {
+      setActiveTab(featureId);
+    }
+
+    // console.log(location.pathname);
+  },[featureId]);
 
   // 滚动到消息底部
   const scrollToBottom = () => {
@@ -71,22 +67,6 @@ const Dashboard = ({ user, onLogout }) => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  const aiModels = [
-    { id: 'gpt-4', name: 'GPT-4', type: 'cloud', description: '最强大的语言模型' },
-    { id: 'claude-3', name: 'Claude-3', type: 'cloud', description: '优秀的对话模型' },
-    { id: 'custom-model-1', name: '自定义模型 1', type: 'local', description: '本地部署的专用模型' },
-    { id: 'custom-model-2', name: '自定义模型 2', type: 'local', description: '微调后的图像模型' },
-  ];
-
-  const features = [
-    { id: 'text_to_text', name: '文生文', icon: MessageSquare, description: '文本对话生成' },
-    { id: 'text_to_image', name: '文生图', icon: Image, description: '根据文本生成图像' },
-    { id: 'image_to_image', name: '图生图', icon: Image, description: '图像风格转换' },
-    { id: 'image_to_text', name: '图生文', icon: FileText, description: '图像内容描述' },
-    { id: 'text_to_video', name: '文生视频', icon: Video, description: '文本生成视频' },
-    { id: 'text_to_3d', name: '文生3D', icon: Box, description: '文本生成3D模型' },
-  ];
 
   useEffect(() => {
     // 组件加载时获取对话列表
@@ -160,7 +140,7 @@ const Dashboard = ({ user, onLogout }) => {
       if (window.innerWidth <= 768) {
         setShowChatList(false);
       }
-      
+
       // 重新加载对话列表
       await loadChatList();
     } catch (error) {
@@ -181,7 +161,7 @@ const Dashboard = ({ user, onLogout }) => {
       if (window.innerWidth <= 768) {
         setShowChatList(false);
       }
-      
+
       // 获取对话的消息历史
       if (chat.id) {
         const response = await fetch(`http://localhost:8080/api/history/chats/${chat.id}`, {
@@ -307,25 +287,6 @@ const Dashboard = ({ user, onLogout }) => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [contextMenu.show]);
 
-  // 格式化时间
-  const formatTime = (timestamp) => {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffHours = diffMs / (1000 * 60 * 60);
-    const diffDays = diffHours / 24;
-    
-    if (diffHours < 1) {
-      return '刚刚';
-    } else if (diffHours < 24) {
-      return `${Math.floor(diffHours)}小时前`;
-    } else if (diffDays < 7) {
-      return `${Math.floor(diffDays)}天前`;
-    } else {
-      return date.toLocaleDateString();
-    }
-  };
-
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
     
@@ -335,7 +296,7 @@ const Dashboard = ({ user, onLogout }) => {
     if (window.innerWidth <= 768) {
       setShowChatList(false);
     }
-    
+
     try {
       // 如果没有当前对话，先创建一个
       let chatId = currentChat?.id;
@@ -395,261 +356,27 @@ const Dashboard = ({ user, onLogout }) => {
     }
   };
 
-  const handleLogout = () => {
-    onLogout();
-  };
-
-  const renderFeatureContent = () => {
-    const currentFeature = features.find(f => f.id === activeTab);
-    
-    return (
-      <div className="feature-content">
-        <div className="feature-header">
-          {/* 第一行：功能标题 + 模型选择器 */}
-          <div className="feature-header-row">
-            <div className="feature-title">
-              <currentFeature.icon className="feature-icon" />
-              <div>
-                <h2>{currentFeature.name}</h2>
-                <p>{currentFeature.description}</p>
-              </div>
-            </div>
-            
-            <div className="model-selector">
-              <label>模型:</label>
-              <select 
-                value={selectedModel} 
-                onChange={(e) => setSelectedModel(e.target.value)}
-                className="model-select"
-                title="选择要使用的AI模型"
-              >
-                {aiModels.map(model => (
-                  <option key={model.id} value={model.id}>
-                    {model.name} ({model.type === 'cloud' ? '云端' : '本地'})
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          
-          {/* 第二行：移动端集成的对话信息和控制按钮 */}
-          {activeTab === 'text_to_text' && (
-            <div className="mobile-chat-controls">
-              <div className="mobile-control-actions">
-                <button 
-                  className="new-chat-btn mobile"
-                  onClick={createNewChat}
-                  title="新建对话"
-                >
-                  <Plus size={16} />
-                </button>
-                <button 
-                  className={`toggle-chat-list ${!showChatList ? 'prominent' : ''}`}
-                  onClick={() => setShowChatList(!showChatList)}
-                  title={showChatList ? '隐藏对话列表' : '显示对话列表'}
-                >
-                  <History size={16} />
-                  {!showChatList && <span className="toggle-text">历史</span>}
-                </button>
-              </div>
-              <div className="current-chat-info">
-                <span className="chat-title">{currentChat?.title || '新对话'}</span>
-                {currentChat?.messageCount > 0 && (
-                  <span className="chat-message-count">
-                    {currentChat.messageCount}条
-                  </span>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {activeTab === 'text_to_text' && (
-          <div className="chat-layout">
-            {/* 对话列表侧边栏 */}
-            <div className={`chat-list-sidebar ${showChatList ? 'visible' : 'hidden'}`}>
-              <div className="chat-list-header">
-                <h3>对话历史</h3>
-                <div className="chat-list-actions">
-                  <button 
-                    className="new-chat-btn"
-                    onClick={createNewChat}
-                    title="新建对话"
-                  >
-                    <Plus size={16} />
-                  </button>
-                  <button 
-                    className="hide-sidebar-btn"
-                    onClick={() => setShowChatList(false)}
-                    title="隐藏侧边栏"
-                  >
-                    <History size={16} />
-                  </button>
-                </div>
-              </div>
-                
-              <div className="chat-list">
-                {isLoadingChats ? (
-                  <div className="loading-chats">加载中...</div>
-                ) : chatList.length === 0 ? (
-                  <div className="empty-chats">
-                    <MessageSquare size={24} />
-                    <p>还没有对话记录</p>
-                    <button onClick={createNewChat} className="start-chat-btn">
-                      开始对话
-                    </button>
-                  </div>
-                ) : (
-                  chatList.map(chat => (
-                    <div 
-                      key={chat.id}
-                      className={`chat-item ${currentChat?.id === chat.id ? 'active' : ''}`}
-                      onClick={() => switchChat(chat)}
-                      onContextMenu={(e) => showContextMenu(e, chat.id)}
-                    >
-                      <div className="chat-item-content">
-                        <div className="chat-title">
-                          {chat.title || '新对话'}
-                        </div>
-                        <div className="chat-meta">
-                          <span className="message-count">
-                            {chat.messageCount || 0} 条消息
-                          </span>
-                          <span className="last-activity">
-                            {formatTime(chat.lastActivity)}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <div className="chat-actions">
-                        {chat.isFavorite && <Star size={12} className="favorite-icon" />}
-                        {chat.isProtected && <Lock size={12} className="protected-icon" />}
-                        <button 
-                          className="more-actions-btn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            showContextMenu(e, chat.id);
-                          }}
-                          title="更多操作"
-                        >
-                          <MoreVertical size={12} />
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-            
-            {/* 对话区域 */}
-            <div className="chat-container">
-              <div className="chat-header">
-                <div className="chat-header-left">
-                  <button 
-                    className={`toggle-chat-list ${!showChatList ? 'prominent' : ''}`}
-                    onClick={() => setShowChatList(!showChatList)}
-                    title={showChatList ? '隐藏对话列表' : '显示对话列表'}
-                  >
-                    <History size={16} />
-                    {!showChatList && <span className="toggle-text">显示历史</span>}
-                  </button>
-                  {!showHeader && (
-                    <button 
-                      className="toggle-header-btn prominent"
-                      onClick={() => setShowHeader(true)}
-                      title="显示顶部栏"
-                    >
-                      <Settings size={16} />
-                      <span className="toggle-text">显示顶栏</span>
-                    </button>
-                  )}
-                </div>
-                <div className="current-chat-info">
-                  <h4>{currentChat?.title || '新对话'}</h4>
-                  {currentChat?.messageCount > 0 && (
-                    <span className="chat-message-count">
-                      {currentChat.messageCount} 条消息
-                    </span>
-                  )}
-                </div>
-              </div>
-              
-              <div className="chat-messages">
-                {chatHistory.length === 0 && !isLoading && (
-                  <div className="empty-chat">
-                    <MessageSquare size={48} />
-                    <h3>开始新的对话</h3>
-                    <p>在下方输入框中输入您的问题，开始与AI对话</p>
-                  </div>
-                )}
-                
-                {chatHistory.map(message => (
-                  <div key={message.id} className={`message ${message.role}`}>
-                    <div className="message-content">
-                      {message.content}
-                    </div>
-                    <div className="message-meta">
-                      <span className="timestamp">
-                        {new Date(message.createdAt).toLocaleTimeString()}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-                
-                {isLoading && (
-                  <div className="message assistant loading">
-                    <div className="typing-indicator">
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                    </div>
-                  </div>
-                )}
-                
-                {/* 用于滚动到底部的隐藏元素 */}
-                <div ref={messagesEndRef} />
-              </div>
-              
-              <div className="chat-input">
-                <input
-                  type="text"
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  placeholder="输入您的问题..."
-                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  disabled={isLoading}
-                />
-                <button 
-                  onClick={handleSendMessage}
-                  disabled={isLoading || !inputText.trim()}
-                  className="send-button"
-                >
-                  <Send size={20} />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab !== 'text_to_text' && (
-          <div className="feature-placeholder">
-            <div className="placeholder-content">
-              <Upload size={48} />
-              <h3>功能正在开发中</h3>
-              <p>
-                {activeTab === 'text_to_image' && '文本生成图像功能即将上线'}
-                {activeTab === 'image_to_image' && '图像风格转换功能即将上线'}
-                {activeTab === 'image_to_text' && '图像内容识别功能即将上线'}
-                {activeTab === 'text_to_video' && '文本生成视频功能即将上线'}
-                {activeTab === 'text_to_3d' && '文本生成3D模型功能即将上线'}
-              </p>
-              <p>敬请期待！</p>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
+  const contextSet = {
+    activeTab: activeTab,
+    selectedModel: selectedModel,
+    setSelectedModel: setSelectedModel,
+    inputText: inputText,
+    setInputText: setInputText,
+    chatHistory: chatHistory,
+    isLoading: isLoading,
+    currentChat: currentChat,
+    chatList: chatList,
+    isLoadingChats: isLoadingChats,
+    showChatList: showChatList,
+    setShowChatList: setShowChatList,
+    showHeader: showHeader,
+    setShowHeader: setShowHeader,
+    messagesEndRef: messagesEndRef,
+    createNewChat: createNewChat,
+    showContextMenu: showContextMenu,
+    switchChat: switchChat,
+    handleSendMessage: handleSendMessage,
+  }
 
   return (
     <div className="dashboard">
@@ -693,86 +420,6 @@ const Dashboard = ({ user, onLogout }) => {
           </div>
         </div>
       )}
-      <aside className={`sidebar ${showSidebar ? 'open' : ''}`}>
-        <div className="sidebar-header">
-          <div className="logo">
-            <Brain className="logo-icon" />
-            <span>AI平台</span>
-          </div>
-        </div>
-
-        <nav className="sidebar-nav">
-          <div className="nav-section">
-            <h3>AI功能</h3>
-            {features.map(feature => (
-              <button
-                key={feature.id}
-                className={`nav-item ${activeTab === feature.id ? 'active' : ''}`}
-                onClick={() => setActiveTab(feature.id)}
-              >
-                <feature.icon className="nav-icon" />
-                <span>{feature.name}</span>
-              </button>
-            ))}
-          </div>
-
-          <div className="nav-section">
-            <h3>工具</h3>
-            <button 
-              className="nav-item"
-              onClick={() => navigate('/finetuning')}
-            >
-              <Cpu className="nav-icon" />
-              <span>数据微调</span>
-            </button>
-            <button 
-              className="nav-item"
-              onClick={() => navigate('/history')}
-            >
-              <Search className="nav-icon" />
-              <span>历史搜索</span>
-            </button>
-            <button 
-              className="nav-item"
-              onClick={() => navigate('/data-management')}
-            >
-              <Database className="nav-icon" />
-              <span>数据管理</span>
-            </button>
-            <button 
-              className="nav-item"
-              onClick={() => navigate('/profile')}
-            >
-              <User className="nav-icon" />
-              <span>个人中心</span>
-            </button>
-            <button 
-              className="nav-item"
-              onClick={() => navigate('/messages')}
-            >
-              <Mail className="nav-icon" />
-              <span>消息中心</span>
-            </button>
-            {/* 管理员专用功能 */}
-            {user?.role === 'admin' && (
-              <button 
-                className="nav-item admin-only"
-                onClick={() => navigate('/admin')}
-              >
-                <Crown className="nav-icon" />
-                <span>管理员面板</span>
-              </button>
-            )}
-          </div>
-        </nav>
-
-        <div className="sidebar-footer">
-          <button className="logout-button" onClick={handleLogout}>
-            <LogOut className="nav-icon" />
-            <span>退出登录</span>
-          </button>
-        </div>
-      </aside>
 
       <main className="main-content">
         <header className={`main-header ${showHeader ? 'visible' : 'hidden'}`}>
@@ -810,7 +457,7 @@ const Dashboard = ({ user, onLogout }) => {
         </header>
 
         <div className="content-area">
-          {renderFeatureContent()}
+          <Outlet context={contextSet} />
         </div>
       </main>
     </div>
