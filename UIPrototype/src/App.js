@@ -16,6 +16,8 @@ import { authAPI } from './services/api';
 import './theme.css';
 import './App.css';
 import './mobile.css';
+import FeatureContent from "./components/FeatureContent";
+import Sidebar from './components/Sidebar';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -171,91 +173,96 @@ function App() {
     <ThemeProvider>
       <Router>
       <div className="App">
-          <Routes>
-          <Route 
-            path="/login" 
-            element={
-              !isAuthenticated ? 
-              <Login onLogin={handleLogin} /> : 
-              <Navigate to="/dashboard" replace />
-            } 
-          />
-          <Route 
-            path="/register" 
-            element={
-              !isAuthenticated ? 
-              <Register onRegister={handleLogin} /> : 
-              <Navigate to="/dashboard" replace />
-            } 
-          />
-          <Route 
-            path="/dashboard" 
-            element={
-              isAuthenticated ? 
-              <Dashboard user={user} onLogout={handleLogout} /> : 
-              <Navigate to="/login" replace />
-            } 
-          />
-          <Route 
-            path="/finetuning" 
-            element={
-              isAuthenticated ? 
-              <DataFinetuning user={user} onLogout={handleLogout} /> : 
-              <Navigate to="/login" replace />
-            } 
-          />
-          <Route 
-            path="/profile" 
-            element={
-              isAuthenticated ? 
-              <Profile user={user} onLogout={handleLogout} /> : 
-              <Navigate to="/login" replace />
-            } 
-          />
-          <Route 
-            path="/history" 
-            element={
-              isAuthenticated ? 
-              <HistorySearch user={user} onLogout={handleLogout} /> : 
-              <Navigate to="/login" replace />
-            } 
-          />
-          <Route 
-            path="/data-management" 
-            element={
-              isAuthenticated ? 
-              <DataManagement user={user} onLogout={handleLogout} /> : 
-              <Navigate to="/login" replace />
-            } 
-          />
-          
-          <Route 
-            path="/messages" 
-            element={
-              isAuthenticated ? 
-              <MessageCenter user={user} onLogout={handleLogout} /> : 
-              <Navigate to="/login" replace />
-            } 
-          />
-          
-          {/* 管理员专用路由 */}
-          <Route 
-            path="/admin" 
-            element={
-              isAuthenticated && hasRole('admin') ? 
-              <AdminPanel user={user} onLogout={handleLogout} /> : 
-              <Navigate to="/dashboard" replace />
-            } 
-          />
-          
-          <Route 
-            path="/" 
-            element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} 
-          />
-        </Routes>
-        
-        {/* 客服组件 - 仅在登录后显示 */}
-        {isAuthenticated && <CustomerService user={user} />}
+          {isAuthenticated && <Sidebar user={user} onLogout={handleLogout}/>}
+          <div className="content">
+              <Routes>
+                  <Route
+                      path="/login"
+                      element={
+                          !isAuthenticated ?
+                              <Login onLogin={handleLogin} /> :
+                              <Navigate to="/dashboard" replace />
+                      }
+                  />
+                  <Route
+                      path="/register"
+                      element={
+                          !isAuthenticated ?
+                              <Register onRegister={handleLogin} /> :
+                              <Navigate to="/dashboard" replace />
+                      }
+                  />
+                  <Route
+                      path="/dashboard"
+                      element={
+                          isAuthenticated ?
+                              <Dashboard user={user} onLogout={handleLogout} /> :
+                              <Navigate to="/login" replace />
+                      }
+                  >
+                      <Route path=":featureId" element={<FeatureContent/>}/>
+                  </Route>
+                  <Route
+                      path="/finetuning"
+                      element={
+                          isAuthenticated ?
+                              <DataFinetuning user={user} onLogout={handleLogout} /> :
+                              <Navigate to="/login" replace />
+                      }
+                  />
+                  <Route
+                      path="/profile"
+                      element={
+                          isAuthenticated ?
+                              <Profile user={user} onLogout={handleLogout} /> :
+                              <Navigate to="/login" replace />
+                      }
+                  />
+                  <Route
+                      path="/history"
+                      element={
+                          isAuthenticated ?
+                              <HistorySearch user={user} onLogout={handleLogout} /> :
+                              <Navigate to="/login" replace />
+                      }
+                  />
+                  <Route
+                      path="/data-management"
+                      element={
+                          isAuthenticated ?
+                              <DataManagement user={user} onLogout={handleLogout} /> :
+                              <Navigate to="/login" replace />
+                      }
+                  />
+
+                  <Route
+                      path="/messages"
+                      element={
+                          isAuthenticated ?
+                              <MessageCenter user={user} onLogout={handleLogout} /> :
+                              <Navigate to="/login" replace />
+                      }
+                  />
+
+                  {/* 管理员专用路由 */}
+                  <Route
+                      path="/admin"
+                      element={
+                          isAuthenticated && hasRole('admin') ?
+                              <AdminPanel user={user} onLogout={handleLogout} /> :
+                              <Navigate to="/dashboard" replace />
+                      }
+                  />
+
+                  <Route
+                      path="/"
+                      element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />}
+                  />
+              </Routes>
+
+              {/* 客服组件 - 仅在登录后显示 */}
+              {isAuthenticated && <CustomerService user={user} />}
+          </div>
       </div>
       </Router>
     </ThemeProvider>

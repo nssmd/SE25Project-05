@@ -4,6 +4,7 @@
 /UIPrototype/node_modules/
 /UIPrototype/.idea/
 /UIPrototype/server/java-backend/.idea/
+/UIPrototype/server/java-backend/logs/
 /.pnp
 .pnp.js
 

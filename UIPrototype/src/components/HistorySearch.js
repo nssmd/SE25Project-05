@@ -129,13 +129,13 @@ const HistorySearch = ({ user, onLogout }) => {
   return (
     <div className="history-search">
       <header className="page-header">
-        <button 
-          className="back-button"
-          onClick={() => navigate('/dashboard')}
-        >
-          <ArrowLeft size={20} />
-          返回主界面
-        </button>
+        {/*<button */}
+        {/*  className="back-button"*/}
+        {/*  onClick={() => navigate('/dashboard')}*/}
+        {/*>*/}
+        {/*  <ArrowLeft size={20} />*/}
+        {/*  返回主界面*/}
+        {/*</button>*/}
         <div className="header-content">
           <h1>历史记录搜索</h1>
           <p>搜索您的对话历史，快速找到需要的内容</p>
