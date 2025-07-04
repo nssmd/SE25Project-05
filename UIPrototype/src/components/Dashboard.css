@@ -24,7 +24,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
 }
 
 .logo-icon {
@@ -192,6 +192,8 @@
 /* 默认隐藏移动端菜单按钮 */
 .mobile-menu-btn {
   display: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
 }
 
 .main-header {
@@ -224,6 +226,11 @@
   font-size: 0.9rem;
 }
 
+.header-right {
+  display: flex;
+  gap: 1rem;
+}
+
 .model-status {
   display: flex;
   gap: 1rem;
@@ -252,7 +259,6 @@
   cursor: pointer;
   color: var(--text-secondary);
   transition: all 0.2s ease;
-  margin-left: 1rem;
 }
 
 .hide-header-btn:hover {
