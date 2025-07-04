@@ -6,6 +6,7 @@
   /* 主色调 */
   --primary-50: #eff6ff;
   --primary-100: #dbeafe;
+  --primary-200: #bfdbfe;
   --primary-300: #93c5fd;
   --primary-400: #60a5fa;
   --primary-500: #3b82f6;
@@ -19,6 +20,9 @@
   --bg-tertiary: #f1f5f9;
   --bg-hover: #f0f9ff;
   --bg-active: #ebf4ff;
+  
+  /* 主色调背景 */
+  --primary-bg: #eff6ff;
 
   /* 文字颜色 */
   --text-primary: #1a202c;
@@ -45,6 +49,7 @@
   --warning-bg: #fffbeb;
   --error: #ef4444;
   --error-bg: #fef2f2;
+  --error-dark: #dc2626;
   --info: #06b6d4;
   --info-bg: #ecfeff;
 
@@ -58,6 +63,7 @@
   /* 主色调 - 稍微调亮以适应深色背景 */
   --primary-50: #1e293b;
   --primary-100: #334155;
+  --primary-200: #475569;
   --primary-300: #64748b;
   --primary-400: #94a3b8;
   --primary-500: #60a5fa;
@@ -71,6 +77,9 @@
   --bg-tertiary: #334155;
   --bg-hover: #1e40af20;
   --bg-active: #1e40af30;
+  
+  /* 主色调背景 */
+  --primary-bg: #1e293b;
 
   /* 文字颜色 */
   --text-primary: #f8fafc;
@@ -97,6 +106,7 @@
   --warning-bg: #451a03;
   --error: #f87171;
   --error-bg: #7f1d1d;
+  --error-dark: #ef4444;
   --info: #38bdf8;
   --info-bg: #0c4a6e;
 

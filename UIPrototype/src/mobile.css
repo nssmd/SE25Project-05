@@ -1422,14 +1422,16 @@
   }
 }
 
-/* 高对比度模式 */
-@media (prefers-contrast: high) {
-  .card, .modal, .panel {
-    border: 2px solid;
-  }
-  
-  button {
-    border: 2px solid;
+/* 高对比度模式 - 仅在支持的浏览器中使用 */
+@supports (prefers-contrast: high) {
+  @media (prefers-contrast: high) {
+    .card, .modal, .panel {
+      border: 2px solid;
+    }
+    
+    button {
+      border: 2px solid;
+    }
   }
 }
 
@@ -1504,17 +1506,19 @@
   }
 }
 
-/* 深色模式移动端适配 */
-@media (prefers-color-scheme: dark) and (max-width: 768px) {
-  .card, .modal, .panel {
-    background: #1f2937;
-    border-color: #374151;
-  }
+/* 深色模式移动端适配 - 仅在支持的浏览器中使用 */
+@supports (prefers-color-scheme: dark) {
+  @media (prefers-color-scheme: dark) and (max-width: 768px) {
+    .card, .modal, .panel {
+      background: #1f2937;
+      border-color: #374151;
+    }
 
-  input, textarea, select {
-    background: #374151;
-    border-color: #4b5563;
-    color: #f9fafb;
+    input, textarea, select {
+      background: #374151;
+      border-color: #4b5563;
+      color: #f9fafb;
+    }
   }
 }
 
@@ -3380,24 +3384,26 @@
   }
 }
 
-/* 桌面端高对比度模式深色适配 */
-@media (prefers-contrast: high) {
-  .dark-mode .card,
-  .dark-mode .modal,
-  .dark-mode .panel {
-    border: 2px solid var(--border-primary) !important;
-  }
-  
-  .dark-mode button {
-    border: 2px solid var(--border-primary) !important;
-  }
-  
-  .dark-mode .nav-item.active {
-    border: 2px solid var(--primary-500) !important;
-  }
-  
-  .dark-mode .chat-item.active {
-    border: 2px solid var(--primary-500) !important;
+/* 桌面端高对比度模式深色适配 - 仅在支持的浏览器中使用 */
+@supports (prefers-contrast: high) {
+  @media (prefers-contrast: high) {
+    .dark-mode .card,
+    .dark-mode .modal,
+    .dark-mode .panel {
+      border: 2px solid var(--border-primary) !important;
+    }
+    
+    .dark-mode button {
+      border: 2px solid var(--border-primary) !important;
+    }
+    
+    .dark-mode .nav-item.active {
+      border: 2px solid var(--primary-500) !important;
+    }
+    
+    .dark-mode .chat-item.active {
+      border: 2px solid var(--primary-500) !important;
+    }
   }
 }
 
@@ -3527,3 +3533,4 @@
     display: none !important;
   }
 } 
+

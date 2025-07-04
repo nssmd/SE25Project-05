@@ -212,14 +212,16 @@
   }
 }
 
-/* 高对比度模式 */
-@media (prefers-contrast: high) {
-  .theme-toggle-btn {
-    border-width: 2px;
-  }
-  
-  .switch-track {
-    border-width: 2px;
-    border-color: var(--border-primary);
+/* 高对比度模式 - 仅在支持的浏览器中使用 */
+@supports (prefers-contrast: high) {
+  @media (prefers-contrast: high) {
+    .theme-toggle-btn {
+      border-width: 2px;
+    }
+    
+    .switch-track {
+      border-width: 2px;
+      border-color: var(--border-primary);
+    }
   }
 } 
