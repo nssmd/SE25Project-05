@@ -21,7 +21,8 @@
     min-height: 60px !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important;
+    justify-content: flex-start !important; /* 改为从左开始对齐 */
+    gap: 1rem !important; /* 添加间距 */
     border-bottom: 1px solid var(--border-primary) !important;
     background: var(--bg-primary) !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
@@ -31,8 +32,9 @@
     display: flex !important;
     align-items: center !important;
     gap: 0.5rem !important;
-    flex: 1 !important;
+    flex: 0 1 auto !important; /* 改为自动大小，不强制占据剩余空间 */
     min-width: 0 !important;
+    overflow: hidden !important;
   }
 
   .header-left h1 {
@@ -41,6 +43,9 @@
     margin: 0 !important;
     color: var(--text-primary) !important;
     white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    max-width: 150px !important; /* 限制标题最大宽度 */
   }
 
   .header-left p {
@@ -51,26 +56,42 @@
     display: flex !important;
     align-items: center !important;
     gap: 0.5rem !important;
-    flex-shrink: 0 !important;
+    flex: 1 !important; /* 让右侧占据剩余空间 */
+    justify-content: space-between !important; /* 分散排列，确保空间利用 */
+    min-width: 0 !important;
+  }
+
+  /* 移动端隐藏用户名和退出登录按钮 */
+  .main-header .user-name,
+  .main-header .user-email,
+  .main-header .logout-btn,
+  .main-header .logout-button,
+  .main-header .user-info span,
+  .main-header .user-details,
+  .main-header .user-info .user-details {
+    display: none !important;
   }
 
   .model-status {
     display: flex !important;
-    align-items: center !important;
-    gap: 0.25rem !important;
-    background: var(--bg-secondary) !important;
-    padding: 0.25rem 0.5rem !important;
-    border-radius: 16px !important;
-    font-size: 0.7rem !important;
-    color: var(--text-secondary) !important;
+    gap: 0.3rem !important; /* 更紧凑的间距以适应所有项 */
+    flex-wrap: nowrap !important; /* 不换行 */
+    overflow: visible !important; /* 允许显示所有内容 */
+    position: relative !important;
   }
 
   .model-status .status-item {
     display: flex !important;
     align-items: center !important;
-    gap: 0.2rem !important;
-    font-size: 0.7rem !important;
+    gap: 0.2rem !important; /* 更紧凑的间距 */
+    padding: 0.2rem 0.4rem !important; /* 更紧凑的内边距 */
+    background: var(--bg-tertiary) !important; /* 和web端保持一致 */
+    border-radius: 4px !important; /* 更小的圆角 */
+    font-size: 0.7rem !important; /* 较小的字体 */
+    color: var(--text-secondary) !important;
     font-weight: 500 !important;
+    white-space: nowrap !important; /* 不换行 */
+    flex-shrink: 0 !important; /* 不缩小 */
   }
 
   .model-status .status-item:first-child::after {
@@ -84,99 +105,71 @@
   }
 
   .model-status .status-item::after {
-    content: attr(data-count) !important;
-    font-weight: 600 !important;
-    color: var(--primary-500) !important;
-    font-size: 0.8rem !important;
+    display: none !important; /* 隐藏after伪元素 */
+  }
+
+  /* 移动端显示svg图标，稍微小一些以适应紧凑布局 */
+  .model-status svg,
+  .model-status .status-icon {
+    display: inline-flex !important; /* 显示图标 */
+    width: 0.9rem !important; /* 稍微小一些以适应紧凑布局 */
+    height: 0.9rem !important; /* 稍微小一些以适应紧凑布局 */
+    flex-shrink: 0 !important;
   }
 
   .hide-header-btn {
     display: none !important; /* 移动端隐藏隐藏按钮 */
   }
 
-  .mobile-menu-btn {
+  /* 统一的main-header按钮样式 */
+  .main-header .mobile-menu-btn,
+  .main-header .theme-toggle-btn,
+  .main-header .header-btn {
     width: 40px !important;
     height: 40px !important;
     border-radius: 8px !important;
     background: var(--bg-secondary) !important;
-    border: none !important;
+    border: 1px solid var(--border-primary) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     color: var(--text-primary) !important;
     cursor: pointer !important;
     transition: all 0.2s ease !important;
+    flex-shrink: 0 !important;
   }
 
-  .mobile-menu-btn:hover {
+  .main-header .mobile-menu-btn:hover,
+  .main-header .theme-toggle-btn:hover,
+  .main-header .header-btn:hover {
     background: var(--bg-tertiary) !important;
     color: var(--primary-500) !important;
+    border-color: var(--primary-300) !important;
   }
 
-  .mobile-menu-btn:active {
+  .main-header .mobile-menu-btn:active,
+  .main-header .theme-toggle-btn:active,
+  .main-header .header-btn:active {
     transform: scale(0.95) !important;
   }
 
-  /* 主题切换按钮移动端优化 */
-  .theme-toggle-btn {
-    width: 36px !important;
-    height: 36px !important;
-    border-radius: 18px !important;
-    background: var(--bg-secondary) !important;
-    border: none !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: var(--text-primary) !important;
-    cursor: pointer !important;
-    transition: all 0.2s ease !important;
+  /* 移动端按钮组布局优化 */
+  .header-right .model-status {
+    max-width: none !important; /* 移除宽度限制，确保所有status-item都能显示 */
+    overflow: visible !important; /* 允许内容溢出显示 */
+    flex: 1 !important; /* 让model-status获得更多空间 */
   }
 
-  .theme-toggle-btn:hover {
-    background: var(--bg-tertiary) !important;
-    color: var(--primary-500) !important;
-  }
-
-  /* 移动端顶栏响应式布局 */
-  .main-header .header-left {
-    overflow: hidden !important;
-  }
-
-  .main-header .header-left h1 {
-    text-overflow: ellipsis !important;
-    overflow: hidden !important;
-  }
-
-  .main-header .header-right {
-    max-width: 60% !important;
-  }
-
-  /* 模型状态更紧凑的显示 */
-  .model-status {
-    white-space: nowrap !important;
-    overflow: hidden !important;
-  }
-
-  .model-status .status-item {
-    position: relative !important;
-  }
-
+  /* 移动端模型状态icon优化 */
   .model-status .status-item svg {
     flex-shrink: 0 !important;
   }
 
-  /* 移动端隐藏某些不重要的元素 */
-  .main-header .header-left p {
-    display: none !important;
-  }
-
-  /* 确保所有元素在一行内 */
-  .main-header * {
+  /* 确保按钮不会被挤压 */
+  .header-right .mobile-menu-btn,
+  .header-right .theme-toggle-btn,
+  .header-right .header-btn {
     flex-shrink: 0 !important;
-  }
-
-  .main-header .header-left {
-    flex-shrink: 1 !important;
   }
 
   /* 移动端模型选择栏优化 - 简约设计 */
@@ -624,6 +617,43 @@
     opacity: 0.8 !important;
   }
 
+  /* 移动端 more-actions-btn 样式优化 */
+  .more-actions-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important; /* 移动端更大的触摸目标 */
+    height: 32px !important; /* 移动端更大的触摸目标 */
+    background: var(--bg-secondary) !important; /* 添加背景色 */
+    border: 1px solid var(--border-primary) !important; /* 添加边框 */
+    border-radius: 8px !important; /* 更大的圆角 */
+    color: var(--text-secondary) !important; /* 更明显的颜色 */
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    flex-shrink: 0 !important; /* 防止被挤压 */
+    opacity: 1 !important; /* 确保在移动端始终可见 */
+  }
+
+  .more-actions-btn:hover {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--border-secondary) !important;
+    color: var(--text-primary) !important;
+    transform: scale(1.05) !important; /* 悬停时轻微放大 */
+  }
+
+  .more-actions-btn:active {
+    transform: scale(0.95) !important; /* 点击时轻微缩小 */
+  }
+
+  /* 确保chat-actions在移动端可见 */
+  .chat-actions {
+    opacity: 1 !important; /* 在移动端始终显示 */
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex-shrink: 0 !important;
+  }
+
   /* 空状态优化 */
   .empty-chats {
     padding: 3rem 2rem !important;
@@ -1003,33 +1033,98 @@
   .main-header {
     padding: 0.5rem 0.75rem !important;
     min-height: 56px !important;
+    gap: 0.75rem !important; /* 稍微小一些的间距 */
   }
 
   .main-header .header-left h1 {
     font-size: 1rem !important;
+    max-width: 120px !important; /* 极小屏幕更小的标题宽度 */
   }
 
-  .mobile-menu-btn {
+  /* 极小屏幕的model-status调整但确保所有项都显示 */
+  .header-right .model-status {
+    max-width: none !important; /* 移除宽度限制，让所有状态项都能显示 */
+    flex: 1 !important; /* 让model-status获得更多空间 */
+  }
+
+  /* 极小屏幕统一按钮样式 */
+  .main-header .mobile-menu-btn,
+  .main-header .theme-toggle-btn,
+  .main-header .header-btn {
     width: 36px !important;
     height: 36px !important;
+    border-radius: 8px !important;
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-primary) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: var(--text-primary) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    flex-shrink: 0 !important;
   }
 
-  .theme-toggle-btn {
-    width: 32px !important;
-    height: 32px !important;
+  .main-header .mobile-menu-btn:hover,
+  .main-header .theme-toggle-btn:hover,
+  .main-header .header-btn:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--primary-500) !important;
+    border-color: var(--primary-300) !important;
   }
 
+  .main-header .mobile-menu-btn:active,
+  .main-header .theme-toggle-btn:active,
+  .main-header .header-btn:active {
+    transform: scale(0.95) !important;
+  }
+
+  /* 极小屏幕的model-status调整 */
   .model-status {
-    font-size: 0.65rem !important;
-    padding: 0.2rem 0.4rem !important;
+    gap: 0.2rem !important; /* 更小的间距以适应所有项 */
+  }
+
+  .model-status .status-item {
+    gap: 0.2rem !important; /* 更紧凑的间距 */
+    padding: 0.2rem 0.4rem !important; /* 更小的内边距 */
+    font-size: 0.65rem !important; /* 更小的字体以节省空间 */
+    border-radius: 4px !important; /* 更小的圆角 */
   }
 
   .model-status .status-item::after {
-    font-size: 0.7rem !important;
+    display: none !important; /* 隐藏after伪元素 */
+  }
+
+  /* 极小屏幕也显示svg图标，更小以节省空间 */
+  .model-status svg,
+  .model-status .status-icon {
+    display: inline-flex !important; /* 显示图标 */
+    width: 0.8rem !important; /* 极小屏幕更小以节省空间 */
+    height: 0.8rem !important; /* 极小屏幕更小以节省空间 */
+    flex-shrink: 0 !important;
   }
 
   .header-right {
     gap: 0.25rem !important;
+    justify-content: space-between !important; /* 极小屏幕也分散排列 */
+  }
+
+  /* 极小屏幕的按钮也不被挤压 */
+  .header-right .mobile-menu-btn,
+  .header-right .theme-toggle-btn,
+  .header-right .header-btn {
+    flex-shrink: 0 !important;
+  }
+
+  /* 极小屏幕也隐藏用户名和退出登录按钮 */
+  .main-header .user-name,
+  .main-header .user-email,
+  .main-header .logout-btn,
+  .main-header .logout-button,
+  .main-header .user-info span,
+  .main-header .user-details,
+  .main-header .user-info .user-details {
+    display: none !important;
   }
 
   /* 极小屏幕的模型选择栏优化 */
@@ -1115,6 +1210,21 @@
 
   .chat-meta {
     font-size: 0.75rem !important;
+  }
+
+  /* 极小屏幕的 more-actions-btn 样式 */
+  .more-actions-btn {
+    width: 28px !important; /* 极小屏幕稍微小一点 */
+    height: 28px !important;
+    border-radius: 6px !important;
+  }
+
+  .more-actions-btn:hover {
+    transform: scale(1.03) !important; /* 极小屏幕减小放大效果 */
+  }
+
+  .chat-actions {
+    gap: 0.3rem !important; /* 极小屏幕更紧凑的间距 */
   }
 
   .empty-chats {
@@ -1370,6 +1480,28 @@
   .model-selector {
     flex-shrink: 0 !important;
   }
+
+  /* 桌面端恢复用户名和退出登录按钮的显示 */
+  .main-header .user-name,
+  .main-header .user-email,
+  .main-header .logout-btn,
+  .main-header .logout-button,
+  .main-header .user-info span,
+  .main-header .user-details,
+  .main-header .user-info .user-details {
+    display: flex !important;
+  }
+
+  /* 桌面端恢复模型状态图标的显示 */
+  .model-status svg,
+  .model-status .status-icon {
+    display: inline-flex !important;
+  }
+
+  /* 桌面端也隐藏after伪元素，使用svg图标 */
+  .model-status .status-item::after {
+    display: none !important;
+  }
 }
 
 /* 深色模式移动端适配 */
@@ -1420,28 +1552,30 @@
     color: var(--text-tertiary) !important;
   }
 
-  .dark-mode .mobile-menu-btn {
+  /* 深色模式下统一按钮样式 */
+  .dark-mode .main-header .mobile-menu-btn,
+  .dark-mode .main-header .theme-toggle-btn,
+  .dark-mode .main-header .header-btn {
     background: var(--bg-secondary) !important;
     color: var(--text-primary) !important;
+    border-color: var(--border-primary) !important;
   }
 
-  .dark-mode .mobile-menu-btn:hover {
+  .dark-mode .main-header .mobile-menu-btn:hover,
+  .dark-mode .main-header .theme-toggle-btn:hover,
+  .dark-mode .main-header .header-btn:hover {
     background: var(--bg-tertiary) !important;
-    color: var(--text-primary) !important;
+    color: var(--primary-500) !important;
+    border-color: var(--primary-300) !important;
   }
 
-  .dark-mode .theme-toggle-btn {
-    background: var(--bg-secondary) !important;
-    color: var(--text-primary) !important;
-  }
-
-  .dark-mode .theme-toggle-btn:hover {
-    background: var(--bg-tertiary) !important;
-    color: var(--text-primary) !important;
-  }
-
+  /* 深色模式下的model-status容器背景与页面一致 */
   .dark-mode .model-status {
-    background: var(--bg-secondary) !important;
+    background: transparent !important; /* 透明背景，与父容器保持一致 */
+  }
+
+  .dark-mode .model-status .status-item {
+    background: var(--bg-tertiary) !important; /* 和web端保持一致 */
     color: var(--text-secondary) !important;
   }
 
@@ -1451,6 +1585,27 @@
 
   .dark-mode .model-status .status-item::after {
     color: var(--primary-500) !important;
+  }
+
+  /* 深色模式下也隐藏用户名和退出登录按钮 */
+  .dark-mode .main-header .user-name,
+  .dark-mode .main-header .user-email,
+  .dark-mode .main-header .logout-btn,
+  .dark-mode .main-header .logout-button,
+  .dark-mode .main-header .user-info span,
+  .dark-mode .main-header .user-details,
+  .dark-mode .main-header .user-info .user-details {
+    display: none !important;
+  }
+
+  /* 深色模式下显示模型状态图标 */
+  .dark-mode .model-status svg,
+  .dark-mode .model-status .status-icon {
+    display: inline-flex !important; /* 显示图标 */
+    width: 1rem !important; /* 和web端一致的大小 */
+    height: 1rem !important; /* 和web端一致的大小 */
+    flex-shrink: 0 !important;
+    color: var(--text-secondary) !important; /* 深色模式下的颜色 */
   }
 
   /* 移动端功能选择栏深色适配 */
@@ -1570,6 +1725,73 @@
 
   .dark-mode .last-activity {
     color: var(--text-tertiary) !important;
+  }
+
+  /* 移动端 more-actions-btn 深色模式 */
+  .dark-mode .more-actions-btn {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--border-secondary) !important;
+    color: var(--text-primary) !important; /* 深色模式下更明显的颜色 */
+  }
+
+  .dark-mode .more-actions-btn:hover {
+    background: var(--bg-hover) !important;
+    border-color: var(--border-focus) !important;
+    color: var(--primary-500) !important;
+  }
+
+  .dark-mode .more-actions-btn:active {
+    background: var(--bg-secondary) !important;
+  }
+
+  /* 移动端context menu定位优化 - 显示在左侧 */
+  .context-menu {
+    position: fixed !important;
+    transform: translateX(-100%) !important; /* 向左偏移自身宽度 */
+    min-width: 180px !important; /* 增加最小宽度以确保内容可见 */
+    max-width: 220px !important; /* 限制最大宽度 */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+    border-radius: 12px !important; /* 更圆润的边角 */
+    padding: 0.75rem 0 !important; /* 增加内边距 */
+    backdrop-filter: blur(10px) !important; /* 添加毛玻璃效果 */
+    z-index: 2000 !important; /* 提高层级确保在最上层 */
+    animation: contextMenuSlideIn 0.2s ease-out !important; /* 添加进入动画 */
+  }
+
+  @keyframes contextMenuSlideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-100%) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-100%) scale(1);
+    }
+  }
+
+  .context-menu-item {
+    padding: 0.75rem 1rem !important; /* 增加触摸目标 */
+    font-size: 0.9rem !important; /* 稍微增大字体 */
+    gap: 0.75rem !important; /* 增加图标和文字间距 */
+    border-radius: 8px !important; /* 为菜单项添加圆角 */
+    margin: 0 0.5rem !important; /* 为菜单项添加左右边距 */
+    transition: all 0.2s ease !important;
+  }
+
+  .context-menu-item:hover {
+    background-color: var(--bg-tertiary) !important; /* 使用主题色 */
+    transform: translateX(2px) !important; /* 轻微向右移动 */
+  }
+
+  .context-menu-item.delete:hover {
+    background-color: var(--error-bg) !important; /* 删除项使用错误色背景 */
+    color: var(--error) !important;
+  }
+
+  .context-menu-divider {
+    margin: 0.5rem 1rem !important; /* 增加分割线边距 */
+    background-color: var(--border-primary) !important; /* 使用主题色 */
+    opacity: 0.5 !important;
   }
 
   /* 移动端空状态深色适配 */
@@ -1805,6 +2027,58 @@
   .dark-mode .panel {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
   }
+
+  /* 极小屏幕深色模式下也隐藏用户名和退出登录按钮 */
+  .dark-mode .main-header .user-name,
+  .dark-mode .main-header .user-email,
+  .dark-mode .main-header .logout-btn,
+  .dark-mode .main-header .logout-button,
+  .dark-mode .main-header .user-info span,
+  .dark-mode .main-header .user-details,
+  .dark-mode .main-header .user-info .user-details {
+    display: none !important;
+  }
+
+  /* 极小屏幕深色模式下显示模型状态图标 */
+  .dark-mode .model-status svg,
+  .dark-mode .model-status .status-icon {
+    display: inline-flex !important; /* 显示图标 */
+    width: 0.9rem !important; /* 极小屏幕稍微小一点 */
+    height: 0.9rem !important; /* 极小屏幕稍微小一点 */
+    flex-shrink: 0 !important;
+    color: var(--text-secondary) !important; /* 深色模式下的颜色 */
+  }
+
+  /* 极小屏幕深色模式下的 more-actions-btn */
+  .dark-mode .more-actions-btn {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--border-secondary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .more-actions-btn:hover {
+    background: var(--bg-hover) !important;
+    border-color: var(--border-focus) !important;
+    color: var(--primary-500) !important;
+  }
+
+  /* 极小屏幕context menu优化 */
+  .context-menu {
+    min-width: 160px !important; /* 极小屏幕减小最小宽度 */
+    max-width: 200px !important; /* 极小屏幕减小最大宽度 */
+    padding: 0.5rem 0 !important; /* 减少内边距 */
+    border-radius: 10px !important; /* 稍微小一点的圆角 */
+  }
+
+  .context-menu-item {
+    padding: 0.6rem 0.75rem !important; /* 减少触摸目标 */
+    font-size: 0.85rem !important; /* 稍微减小字体 */
+    gap: 0.5rem !important; /* 减少图标和文字间距 */
+  }
+
+  .context-menu-divider {
+    margin: 0.4rem 0.75rem !important; /* 减少分割线边距 */
+  }
 }
 
 /* 全局深色模式适配 */
@@ -1859,9 +2133,13 @@
   color: var(--text-primary) !important;
 }
 
-.dark-mode .model-status svg {
-  color: var(--text-secondary) !important;
-}
+  .dark-mode .model-status svg {
+    display: inline-flex !important; /* 显示图标 */
+    width: 1rem !important; /* 和web端一致的大小 */
+    height: 1rem !important; /* 和web端一致的大小 */
+    flex-shrink: 0 !important;
+    color: var(--text-secondary) !important;
+  }
 
 /* 深色模式下的滚动条适配 */
 .dark-mode ::-webkit-scrollbar {
@@ -2171,7 +2449,7 @@
 }
 
 .dark-mode .model-status {
-  background: var(--bg-secondary) !important;
+  background: transparent !important; /* 与页面背景保持一致 */
 }
 
 .dark-mode .status-item {
@@ -2341,19 +2619,23 @@
 }
 
 .dark-mode .more-actions-btn {
-  color: var(--text-tertiary) !important;
+  background: var(--bg-tertiary) !important; /* 添加背景色 */
+  border: 1px solid var(--border-secondary) !important; /* 添加边框 */
+  color: var(--text-primary) !important; /* 更明显的颜色 */
 }
 
 .dark-mode .more-actions-btn:hover {
-  background: var(--bg-tertiary) !important;
-  color: var(--text-secondary) !important;
+  background: var(--bg-hover) !important;
+  border-color: var(--border-focus) !important;
+  color: var(--primary-500) !important; /* 悬停时使用主题色 */
 }
 
-/* 桌面端右键菜单深色适配 */
+/* 全局context menu深色适配 */
 .dark-mode .context-menu {
   background: var(--bg-primary) !important;
   border-color: var(--border-primary) !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(10px) !important; /* 深色模式下的毛玻璃效果 */
 }
 
 .dark-mode .context-menu-item {
@@ -2361,7 +2643,9 @@
 }
 
 .dark-mode .context-menu-item:hover {
-  background: var(--bg-secondary) !important;
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  transform: translateX(2px) !important; /* 深色模式下的悬停效果 */
 }
 
 .dark-mode .context-menu-item.delete {
@@ -2370,10 +2654,12 @@
 
 .dark-mode .context-menu-item.delete:hover {
   background: var(--error-bg) !important;
+  color: var(--error) !important;
 }
 
 .dark-mode .context-menu-divider {
   background: var(--border-primary) !important;
+  opacity: 0.5 !important; /* 深色模式下的分割线透明度 */
 }
 
 /* 桌面端聊天头部深色适配 */
@@ -3136,6 +3422,50 @@
   .dark-mode .feature-header {
     padding: 1.5rem 2rem;
   }
+
+  /* 桌面端恢复用户名和退出登录按钮的显示 */
+  .main-header .user-name,
+  .main-header .user-email,
+  .main-header .logout-btn,
+  .main-header .logout-button,
+  .main-header .user-info span,
+  .main-header .user-details,
+  .main-header .user-info .user-details {
+    display: flex !important;
+  }
+
+  /* 桌面端恢复模型状态图标的显示 */
+  .model-status svg,
+  .model-status .status-icon {
+    display: inline-flex !important;
+  }
+
+  /* 桌面端也隐藏after伪元素，使用svg图标 */
+  .model-status .status-item::after {
+    display: none !important;
+  }
+
+  /* 桌面端深色模式恢复用户名和退出登录按钮的显示 */
+  .dark-mode .main-header .user-name,
+  .dark-mode .main-header .user-email,
+  .dark-mode .main-header .logout-btn,
+  .dark-mode .main-header .logout-button,
+  .dark-mode .main-header .user-info span,
+  .dark-mode .main-header .user-details,
+  .dark-mode .main-header .user-info .user-details {
+    display: flex !important;
+  }
+
+  /* 桌面端深色模式恢复模型状态图标的显示 */
+  .dark-mode .model-status svg,
+  .dark-mode .model-status .status-icon {
+    display: inline-flex !important;
+  }
+
+  /* 桌面端深色模式也隐藏after伪元素，使用svg图标 */
+  .dark-mode .model-status .status-item::after {
+    display: none !important;
+  }
 }
 
 /* 桌面端大屏幕深色模式适配 */
@@ -3151,5 +3481,49 @@
   
   .dark-mode .chat-list-sidebar {
     width: 360px;
+  }
+
+  /* 大屏幕桌面端恢复用户名和退出登录按钮的显示 */
+  .main-header .user-name,
+  .main-header .user-email,
+  .main-header .logout-btn,
+  .main-header .logout-button,
+  .main-header .user-info span,
+  .main-header .user-details,
+  .main-header .user-info .user-details {
+    display: flex !important;
+  }
+
+  /* 大屏幕桌面端恢复模型状态图标的显示 */
+  .model-status svg,
+  .model-status .status-icon {
+    display: inline-flex !important;
+  }
+
+  /* 大屏幕桌面端也隐藏after伪元素，使用svg图标 */
+  .model-status .status-item::after {
+    display: none !important;
+  }
+
+  /* 大屏幕桌面端深色模式恢复用户名和退出登录按钮的显示 */
+  .dark-mode .main-header .user-name,
+  .dark-mode .main-header .user-email,
+  .dark-mode .main-header .logout-btn,
+  .dark-mode .main-header .logout-button,
+  .dark-mode .main-header .user-info span,
+  .dark-mode .main-header .user-details,
+  .dark-mode .main-header .user-info .user-details {
+    display: flex !important;
+  }
+
+  /* 大屏幕桌面端深色模式恢复模型状态图标的显示 */
+  .dark-mode .model-status svg,
+  .dark-mode .model-status .status-icon {
+    display: inline-flex !important;
+  }
+
+  /* 大屏幕桌面端深色模式也隐藏after伪元素，使用svg图标 */
+  .dark-mode .model-status .status-item::after {
+    display: none !important;
   }
 } 
