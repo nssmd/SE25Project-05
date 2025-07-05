@@ -3476,19 +3476,6 @@
 
 /* 桌面端大屏幕深色模式适配 */
 @media (min-width: 1440px) {
-  .dark-mode .dashboard {
-    max-width: 1440px;
-    margin: 0 auto;
-  }
-  
-  .dark-mode .sidebar {
-    width: 320px;
-  }
-  
-  .dark-mode .chat-list-sidebar {
-    width: 360px;
-  }
-
   /* 大屏幕桌面端恢复用户名和退出登录按钮的显示 */
   .main-header .user-name,
   .main-header .user-email,

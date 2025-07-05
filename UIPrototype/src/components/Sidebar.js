@@ -9,19 +9,17 @@ import {
     User,
 } from "lucide-react";
 import React, { useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 
 import features from "../data/features";
 
-const Sidebar = ({ user, onLogout }) => {
-    const [showSidebar, setShowSidebar] = useState(true);
-    const { featureId } = useParams();
+const Sidebar = ({ user, onLogout, showSidebar }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
     return (
-        <aside className={`sidebar ${showSidebar ? 'open' : ''}`}>
+        <aside className={`sidebar ${showSidebar ? 'open' : 'closed'}`}>
             <div className="sidebar-header">
                 <div className="logo">
                     <Brain className="logo-icon" />
@@ -35,7 +33,7 @@ const Sidebar = ({ user, onLogout }) => {
                     {features.map(feature => (
                         <button
                             key={feature.id}
-                            className={`nav-item ${featureId === feature.id ? 'active' : ''}`}
+                            className={`nav-item ${location.pathname.startsWith(`/dashboard/${feature.id}`) ? 'active' : ''}`}
                             onClick={() =>  navigate(`/dashboard/${feature.id}`)}
                         >
                             <feature.icon className="nav-icon" />

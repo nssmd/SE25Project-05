@@ -28,9 +28,42 @@ code {
   flex-direction: row;
 }
 
-.content {
+.main-content {
   display: flex;
   flex-grow: 1;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.sidebar-closed {
+  margin-left: -250px;
+}
+
+@media (max-width: 768px) {
+  .main-content.sidebar-closed {
+    margin-left: 0;
+  }
+}
+
+.floating-sidebar-toggle {
+  position: fixed;
+  left: 10px;
+  top: 20px;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.floating-sidebar-toggle:hover {
+  background: rgba(0, 0, 0, 0.9);
 }
 
 /* Global button styles */
