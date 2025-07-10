@@ -1,0 +1,914 @@
+/* 移动端组件样式 */
+
+@media (max-width: 768px) {
+  /* 模型状态组件 */
+  .model-status {
+    display: flex !important;
+    gap: 0.3rem !important; /* 更紧凑的间距以适应所有项 */
+    flex-wrap: nowrap !important; /* 不换行 */
+    overflow: visible !important; /* 允许显示所有内容 */
+    position: relative !important;
+  }
+
+  .model-status .status-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.2rem !important; /* 更紧凑的间距 */
+    padding: 0.2rem 0.4rem !important; /* 更紧凑的内边距 */
+    background: var(--bg-tertiary) !important; /* 和web端保持一致 */
+    border-radius: 4px !important; /* 更小的圆角 */
+    font-size: 0.7rem !important; /* 较小的字体 */
+    color: var(--text-secondary) !important;
+    font-weight: 500 !important;
+    white-space: nowrap !important; /* 不换行 */
+    flex-shrink: 0 !important; /* 不缩小 */
+  }
+
+  .model-status .status-item:first-child::after {
+    content: "•" !important;
+    margin: 0 0.25rem !important;
+    color: var(--text-tertiary) !important;
+  }
+
+  .model-status .status-item span {
+    display: none !important; /* 隐藏"模型"文字 */
+  }
+
+  .model-status .status-item::after {
+    display: none !important; /* 隐藏after伪元素 */
+  }
+
+  /* 移动端显示svg图标，稍微小一些以适应紧凑布局 */
+  .model-status svg,
+  .model-status .status-icon {
+    display: inline-flex !important; /* 显示图标 */
+    width: 0.9rem !important; /* 稍微小一些以适应紧凑布局 */
+    height: 0.9rem !important; /* 稍微小一些以适应紧凑布局 */
+    flex-shrink: 0 !important;
+  }
+
+  /* 模型选择栏组件 */
+  .feature-header {
+    padding: 0.75rem 1rem !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+    background: var(--bg-primary) !important;
+    min-height: auto !important;
+    position: relative !important; /* 确保正确的定位上下文 */
+    z-index: 90 !important; /* 确保在对话消息上方 */
+  }
+
+  /* 第一行：功能标题 + 模型选择器的容器 */
+  .feature-header-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 1rem !important;
+  }
+
+  /* 重新安排第一行的布局 */
+  .feature-header-row .feature-title,
+  .feature-header-row .model-selector {
+    margin: 0 !important;
+  }
+
+  /* 当有mobile-chat-controls时，调整间距 */
+  .feature-header:has(.mobile-chat-controls) {
+    gap: 0.5rem !important;
+  }
+
+  /* 第二行：对话控制（仅在文生文模式下显示） */
+  .mobile-chat-controls {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 0.75rem !important;
+    border-top: 1px solid var(--border-secondary) !important;
+    background: var(--bg-secondary) !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 0.75rem !important;
+    margin-top: 0.25rem !important;
+  }
+
+  /* 移动端控制按钮组 */
+  .mobile-control-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+  }
+
+  /* 移动端新建对话按钮样式 */
+  .mobile-chat-controls .new-chat-btn.mobile {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important;
+    height: 32px !important;
+    background: var(--primary-500) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    flex-shrink: 0 !important;
+  }
+
+  .mobile-chat-controls .new-chat-btn.mobile:hover {
+    background: var(--primary-600) !important;
+    transform: scale(1.05) !important;
+  }
+
+  /* 移动端历史按钮样式 */
+  .mobile-chat-controls .toggle-chat-list {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.5rem 0.75rem !important;
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    font-size: 0.8rem !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .mobile-chat-controls .toggle-chat-list:hover {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--primary-400) !important;
+    color: var(--primary-500) !important;
+  }
+
+  .mobile-chat-controls .toggle-chat-list.prominent {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border-color: var(--primary-500) !important;
+    font-weight: 600 !important;
+  }
+
+  /* 移动端对话信息样式 */
+  .mobile-chat-controls .current-chat-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    justify-content: flex-end !important;
+  }
+
+  .mobile-chat-controls .chat-title {
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    color: var(--text-primary) !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    max-width: 150px !important;
+  }
+
+  .mobile-chat-controls .chat-message-count {
+    font-size: 0.75rem !important;
+    color: var(--text-tertiary) !important;
+    background: var(--bg-primary) !important;
+    padding: 0.2rem 0.5rem !important;
+    border-radius: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  /* 功能标题组件 */
+  .feature-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .feature-icon {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+    color: var(--primary-500) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .feature-title h2 {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    color: var(--text-primary) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .feature-title p {
+    display: none !important; /* 移动端隐藏描述文字 */
+  }
+
+  /* 模型选择器组件 */
+  .model-selector {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .model-selector label {
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    color: var(--text-secondary) !important;
+    white-space: nowrap !important;
+  }
+
+  .model-select {
+    padding: 0.5rem 0.75rem !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: 8px !important;
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    font-size: 0.8rem !important;
+    min-width: 120px !important;
+    max-width: 140px !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+  }
+
+  .model-select:focus {
+    outline: none !important;
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+  }
+
+  /* 模型选择栏的响应式调整 */
+  .feature-header {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .feature-title div {
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  /* 确保模型选择器不会被压缩 */
+  .model-selector {
+    min-width: fit-content !important;
+  }
+
+  /* 优化选择框的视觉效果 */
+  .model-select {
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+  }
+
+  .model-select:hover {
+    border-color: var(--primary-400) !important;
+  }
+
+  /* 聊天头部组件 */
+  .chat-header {
+    display: flex !important;
+    padding: 0.75rem 1rem !important;
+    background: var(--bg-primary) !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+    position: relative !important;
+    z-index: 80 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    min-height: 60px !important;
+    flex-shrink: 0 !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .chat-header-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .chat-header-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .current-chat-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .current-chat-info h4 {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+    margin: 0 0 0.25rem 0 !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
+
+  .chat-message-count {
+    font-size: 0.8rem !important;
+    color: var(--text-tertiary) !important;
+    margin: 0 !important;
+  }
+
+  /* 移动端显示对话控制，桌面端隐藏 */
+  .mobile-chat-controls {
+    display: flex !important;
+  }
+
+  /* 历史记录头部组件 */
+  .chat-list-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 1rem !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+    background: var(--bg-tertiary) !important;
+    flex-shrink: 0 !important;
+    gap: 0.5rem !important;
+  }
+
+  .chat-list-header h3 {
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+    margin: 0 !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .chat-list-actions {
+    gap: 0.5rem !important;
+  }
+
+  .new-chat-btn,
+  .hide-sidebar-btn {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .new-chat-btn {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border: none !important;
+  }
+
+  .new-chat-btn:hover {
+    background: var(--primary-600) !important;
+    transform: scale(1.05) !important;
+  }
+
+  .hide-sidebar-btn {
+    background: var(--bg-secondary) !important;
+    color: var(--text-secondary) !important;
+    border: 1px solid var(--border-primary) !important;
+  }
+
+  .hide-sidebar-btn:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  /* 历史记录列表组件 */
+  .chat-list {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 0.5rem !important; /* 现在有header了，移除额外的顶部padding */
+  }
+
+  .chat-item {
+    padding: 1rem !important;
+    margin-bottom: 0.5rem !important;
+    border-radius: 12px !important;
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .chat-item:hover {
+    background: var(--bg-secondary) !important;
+    border-color: var(--primary-300) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .chat-item.active {
+    background: var(--primary-50) !important;
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+  }
+
+  .chat-title {
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+    margin-bottom: 0.5rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .chat-meta {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    font-size: 0.8rem !important;
+    color: var(--text-tertiary) !important;
+  }
+
+  .message-count {
+    font-weight: 500 !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .last-activity {
+    opacity: 0.8 !important;
+  }
+
+  /* 更多操作按钮组件 */
+  .more-actions-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important; /* 移动端更大的触摸目标 */
+    height: 32px !important; /* 移动端更大的触摸目标 */
+    background: var(--bg-secondary) !important; /* 添加背景色 */
+    border: 1px solid var(--border-primary) !important; /* 添加边框 */
+    border-radius: 8px !important; /* 更大的圆角 */
+    color: var(--text-secondary) !important; /* 更明显的颜色 */
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    flex-shrink: 0 !important; /* 防止被挤压 */
+    opacity: 1 !important; /* 确保在移动端始终可见 */
+  }
+
+  .more-actions-btn:hover {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--border-secondary) !important;
+    color: var(--text-primary) !important;
+    transform: scale(1.05) !important; /* 悬停时轻微放大 */
+  }
+
+  .more-actions-btn:active {
+    transform: scale(0.95) !important; /* 点击时轻微缩小 */
+  }
+
+  /* 确保chat-actions在移动端可见 */
+  .chat-actions {
+    opacity: 1 !important; /* 在移动端始终显示 */
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* 空状态组件 */
+  .empty-chats {
+    padding: 3rem 2rem !important;
+    text-align: center !important;
+    color: var(--text-tertiary) !important;
+  }
+
+  .empty-chats svg {
+    margin-bottom: 1rem !important;
+    opacity: 0.3 !important;
+  }
+
+  .empty-chats h3 {
+    font-size: 1.1rem !important;
+    color: var(--text-secondary) !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .empty-chats p {
+    font-size: 0.9rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .start-chat-btn {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border: none !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 8px !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .start-chat-btn:hover {
+    background: var(--primary-600) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  /* 显示历史按钮组件 */
+  .toggle-chat-list {
+    width: auto !important;
+    height: 40px !important;
+    padding: 0 1rem !important;
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    color: var(--text-secondary) !important;
+    gap: 0.5rem !important;
+    white-space: nowrap !important;
+  }
+
+  .toggle-chat-list:hover {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--primary-400) !important;
+    color: var(--primary-500) !important;
+  }
+
+  .toggle-chat-list.prominent {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border-color: var(--primary-500) !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+    animation: pulse 2s infinite !important;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+    50% {
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
+    }
+    100% {
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+  }
+
+  .toggle-chat-list.prominent:hover {
+    background: var(--primary-600) !important;
+    border-color: var(--primary-600) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+  }
+
+  .toggle-text {
+    font-size: 0.85rem !important;
+    font-weight: inherit !important;
+  }
+
+  /* 聊天输入框组件 */
+  .chat-input {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1000 !important;
+    padding: 1rem !important;
+    background: var(--bg-primary) !important;
+    border-top: 2px solid var(--border-primary) !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    margin: 0 !important;
+    min-height: 80px !important;
+    backdrop-filter: blur(10px) !important;
+  }
+
+  .chat-input input {
+    flex: 1 !important;
+    padding: 0.75rem 1rem !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: 25px !important;
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    font-size: 0.9rem !important;
+    outline: none !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .chat-input input:focus {
+    border-color: var(--primary-500) !important;
+    background: var(--bg-primary) !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  }
+
+  .chat-input input::placeholder {
+    color: var(--text-tertiary) !important;
+  }
+
+  .send-button {
+    width: 44px !important;
+    height: 44px !important;
+    background: var(--primary-500) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 22px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .send-button:hover:not(:disabled) {
+    background: var(--primary-600) !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+  }
+
+  .send-button:disabled {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-tertiary) !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  /* 消息内容优化 */
+  .message-content {
+    max-width: 95vw !important;
+    word-break: break-word !important;
+    word-wrap: break-word !important;
+    white-space: pre-line !important;
+    line-height: 1.8 !important;
+    font-size: 1.05rem !important;
+    border-radius: 12px !important;
+    padding: 0.85rem 1.1rem !important;
+    margin: 0.2rem 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: auto !important;
+  }
+
+  .message-content p {
+    margin: 0.5em 0 !important;
+    line-height: 1.8 !important;
+  }
+
+  .message-content ul,
+  .message-content ol {
+    margin: 0.5em 0 0.5em 1.5em !important;
+    padding-left: 1.5em !important;
+  }
+
+  .message-content li {
+    margin-bottom: 0.3em !important;
+    line-height: 1.7 !important;
+  }
+
+  /* 消息项优化 */
+  .message {
+    margin-bottom: 0 !important; /* 移除额外的margin，使用gap代替 */
+  }
+
+  /* 确保最后一条消息有足够的底部空间 */
+  .message:last-child {
+    margin-bottom: 2rem !important;
+  }
+}
+
+/* 小屏手机组件优化 */
+@media (max-width: 480px) {
+  /* 极小屏幕的model-status调整但确保所有项都显示 */
+  .header-right .model-status {
+    max-width: none !important; /* 移除宽度限制，让所有状态项都能显示 */
+    flex: 0 1 auto !important; /* 让model-status自动调整大小 */
+  }
+
+  /* 极小屏幕的model-status调整 */
+  .model-status {
+    gap: 0.2rem !important; /* 更小的间距以适应所有项 */
+  }
+
+  .model-status .status-item {
+    gap: 0.2rem !important; /* 更紧凑的间距 */
+    padding: 0.2rem 0.4rem !important; /* 更小的内边距 */
+    font-size: 0.65rem !important; /* 更小的字体以节省空间 */
+    border-radius: 4px !important; /* 更小的圆角 */
+  }
+
+  .model-status .status-item::after {
+    display: none !important; /* 隐藏after伪元素 */
+  }
+
+  /* 极小屏幕也显示svg图标，更小以节省空间 */
+  .model-status svg,
+  .model-status .status-icon {
+    display: inline-flex !important; /* 显示图标 */
+    width: 0.8rem !important; /* 极小屏幕更小以节省空间 */
+    height: 0.8rem !important; /* 极小屏幕更小以节省空间 */
+    flex-shrink: 0 !important;
+  }
+
+  /* 极小屏幕的模型选择栏优化 */
+  .feature-header {
+    padding: 0.5rem 0.75rem !important;
+    gap: 0.5rem !important;
+    min-height: auto !important;
+    display: flex !important;
+    position: relative !important;
+    z-index: 90 !important;
+  }
+
+  /* 极小屏幕的第一行布局 */
+  .feature-header-row {
+    gap: 0.5rem !important;
+  }
+
+  /* 极小屏幕的移动端对话控制 */
+  .mobile-chat-controls {
+    padding: 0.4rem 0.6rem !important;
+    gap: 0.6rem !important;
+  }
+
+  .mobile-control-actions {
+    gap: 0.4rem !important;
+  }
+
+  .mobile-chat-controls .new-chat-btn.mobile {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .mobile-chat-controls .toggle-chat-list {
+    padding: 0.4rem 0.6rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  .mobile-chat-controls .chat-title {
+    font-size: 0.8rem !important;
+    max-width: 100px !important;
+  }
+
+  .mobile-chat-controls .chat-message-count {
+    font-size: 0.7rem !important;
+    padding: 0.15rem 0.4rem !important;
+  }
+
+  .feature-title h2 {
+    font-size: 0.9rem !important;
+  }
+
+  .feature-icon {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+  }
+
+  .model-selector label {
+    font-size: 0.75rem !important;
+  }
+
+  .model-select {
+    padding: 0.4rem 0.6rem !important;
+    font-size: 0.75rem !important;
+    min-width: 100px !important;
+    max-width: 120px !important;
+  }
+
+  /* 极小屏幕也显示历史记录头部，但使用更紧凑的样式 */
+  .chat-list-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0.75rem !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+    background: var(--bg-tertiary) !important;
+    flex-shrink: 0 !important;
+    gap: 0.5rem !important;
+  }
+
+  .chat-item {
+    padding: 0.75rem !important;
+    margin-bottom: 0.25rem !important;
+    border-radius: 8px !important;
+  }
+
+  .chat-title {
+    font-size: 0.9rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .chat-meta {
+    font-size: 0.75rem !important;
+  }
+
+  /* 极小屏幕的 more-actions-btn 样式 */
+  .more-actions-btn {
+    width: 28px !important; /* 极小屏幕稍微小一点 */
+    height: 28px !important;
+    border-radius: 6px !important;
+  }
+
+  .more-actions-btn:hover {
+    transform: scale(1.03) !important; /* 极小屏幕减小放大效果 */
+  }
+
+  .chat-actions {
+    gap: 0.3rem !important; /* 极小屏幕更紧凑的间距 */
+  }
+
+  .empty-chats {
+    padding: 2rem 1rem !important;
+  }
+
+  .empty-chats h3 {
+    font-size: 1rem !important;
+  }
+
+  .empty-chats p {
+    font-size: 0.8rem !important;
+  }
+
+  .start-chat-btn {
+    padding: 0.6rem 1.2rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* 极小屏幕的"显示历史"按钮优化 */
+  .toggle-chat-list {
+    height: 36px !important;
+    padding: 0 0.75rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  .toggle-chat-list.prominent {
+    font-weight: 600 !important;
+  }
+
+  .toggle-text {
+    font-size: 0.8rem !important;
+  }
+
+  .chat-header {
+    padding: 0.75rem !important;
+    position: relative !important; /* 确保在小屏幕上也不重叠 */
+  }
+
+  .chat-header-left {
+    gap: 0.5rem !important;
+  }
+
+  .current-chat-info h4 {
+    font-size: 0.9rem !important;
+  }
+
+  .chat-message-count {
+    font-size: 0.75rem !important;
+  }
+
+  /* 极小屏幕的输入框优化 */
+  .chat-input {
+    padding: 0.75rem !important;
+    min-height: 70px !important;
+  }
+
+  .chat-input input {
+    padding: 0.6rem 0.8rem !important;
+    font-size: 0.8rem !important;
+    border-radius: 20px !important;
+  }
+
+  .send-button {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 20px !important;
+  }
+}
+
+/* 桌面端组件样式恢复 */
+@media (min-width: 769px) {
+  /* 桌面端恢复模型状态图标的显示 */
+  .model-status svg,
+  .model-status .status-icon {
+    display: inline-flex !important;
+  }
+
+  /* 桌面端也隐藏after伪元素，使用svg图标 */
+  .model-status .status-item::after {
+    display: none !important;
+  }
+
+  /* 桌面端恢复模型状态图标的显示 */
+  .model-status svg,
+  .model-status .status-icon {
+    display: inline-flex !important;
+  }
+
+  /* 桌面端也隐藏after伪元素，使用svg图标 */
+  .model-status .status-item::after {
+    display: none !important;
+  }
+} 

@@ -139,7 +139,7 @@ export const chatAPI = {
   // 创建新对话
   create: (chatData) => api.post('/chat/create', chatData),
   
-  // 发送消息
+  // 发送消息 - 支持模型选择和文件附件
   sendMessage: (chatId, messageData) => api.post(`/chat/${chatId}/message`, messageData),
   
   // 获取对话消息
@@ -156,6 +156,9 @@ export const chatAPI = {
   
   // 切换保护状态
   toggleProtection: (chatId) => api.patch(`/chat/${chatId}/protect`),
+  
+  // 新增：更新对话使用的AI模型
+  updateModel: (chatId, aiModel) => api.patch(`/chat/${chatId}/model`, { aiModel }),
 };
 
 // 历史记录相关API
@@ -258,6 +261,60 @@ export const adminAPI = {
   replyToCustomer: (replyData) => api.post('/admin/support/reply', replyData),
 };
 
+// AI服务相关API
+export const aiAPI = {
+  // 获取AI服务状态
+  getStatus: () => api.get('/ai/status'),
+  
+  // 测试AI回复
+  testAI: (message = '你好') => api.post('/ai/test', { message }),
+  
+  // 获取AI配置信息
+  getConfig: () => api.get('/ai/config'),
+  
+  // 获取聊天AI状态
+  getChatStatus: () => api.get('/ai/chat/status'),
+  
+  // 新增：获取所有可用的AI模型
+  getModels: () => api.get('/ai/models'),
+  
+  // 新增：获取支持图片的AI模型
+  getImageModels: () => api.get('/ai/models/image-supported'),
+  
+  // 新增：获取特定模型的详细信息
+  getModelDetails: (modelName) => api.get(`/ai/models/${encodeURIComponent(modelName)}`),
+};
+
+// 新增：文件上传相关API
+export const fileAPI = {
+  // 上传文件
+  upload: (file, progressCallback) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    return api.post('/files/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: (progressEvent) => {
+        if (progressCallback) {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          progressCallback(percentCompleted);
+        }
+      },
+    });
+  },
+  
+  // 获取文件信息
+  getFileInfo: (fileId) => api.get(`/files/${fileId}`),
+  
+  // 删除文件
+  deleteFile: (fileId) => api.delete(`/files/${fileId}`),
+  
+  // 获取文件下载链接
+  getDownloadUrl: (fileId) => api.get(`/files/${fileId}/download`),
+};
+
 // 工具函数
 export const apiUtils = {
   // 设置认证token
@@ -303,6 +360,52 @@ export const apiUtils = {
     const user = apiUtils.getCurrentUser();
     return user?.permissions?.[permission] === true;
   },
+};
+
+// Prompt模板相关API
+export const promptTemplateAPI = {
+  // 获取所有分类
+  getCategories: () => api.get('/prompt-templates/categories'),
+  
+  // 获取模板列表
+  getTemplates: (params = {}) => api.get('/prompt-templates', { params }),
+  
+  // 获取精选模板
+  getFeaturedTemplates: () => api.get('/prompt-templates/featured'),
+  
+  // 获取热门模板
+  getPopularTemplates: () => api.get('/prompt-templates/popular'),
+  
+  // 获取最新模板
+  getLatestTemplates: () => api.get('/prompt-templates/latest'),
+  
+  // 根据AI模型推荐模板
+  getRecommendedTemplates: (aiModel) => api.get('/prompt-templates/recommended', { params: { aiModel } }),
+  
+  // 获取模板详情
+  getTemplateById: (id) => api.get(`/prompt-templates/${id}`),
+  
+  // 创建模板
+  createTemplate: (templateData) => api.post('/prompt-templates', templateData),
+  
+  // 更新模板
+  updateTemplate: (id, templateData) => api.put(`/prompt-templates/${id}`, templateData),
+  
+  // 删除模板
+  deleteTemplate: (id) => api.delete(`/prompt-templates/${id}`),
+  
+  // 点赞/取消点赞模板
+  toggleLike: (id) => api.post(`/prompt-templates/${id}/like`),
+  
+  // 使用模板（记录使用统计）
+  useTemplate: (id, aiModel) => api.post(`/prompt-templates/${id}/use`, { aiModel }),
+  
+  // 搜索模板
+  searchTemplates: (keyword, categoryId = null, page = 0, size = 20) => {
+    const params = { keyword, page, size };
+    if (categoryId) params.categoryId = categoryId;
+    return api.get('/prompt-templates', { params });
+  }
 };
 
 // 导出默认api实例

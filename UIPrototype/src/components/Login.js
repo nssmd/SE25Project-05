@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 import userService from '../services/UserService';
+import ThemeToggle from './ThemeToggle';
 import './Auth.css';
 
 const Login = ({ onLogin }) => {
@@ -76,6 +77,9 @@ const Login = ({ onLogin }) => {
 
   return (
     <div className="auth-container">
+      <div className="auth-theme-toggle">
+        <ThemeToggle variant="button" showLabel={false} />
+      </div>
       <div className="auth-background">
         <div className="gradient-blob blob-1"></div>
         <div className="gradient-blob blob-2"></div>
@@ -137,6 +141,7 @@ const Login = ({ onLogin }) => {
                 name="rememberMe"
                 checked={formData.rememberMe}
                 onChange={handleInputChange}
+                style={{width: '20px', height: '20px'}}
               />
               <span className="checkmark"></span>
               记住我

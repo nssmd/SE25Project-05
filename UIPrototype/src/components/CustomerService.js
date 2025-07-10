@@ -52,7 +52,7 @@ const CustomerService = ({ isOpen, onClose }) => {
       id: 3,
       category: '使用相关',
       question: '如何使用AI对话功能？',
-      answer: '登录后进入主界面，选择"文生文"功能，在输入框中输入您的问题，点击发送即可开始对话。'
+      answer: '登录后进入主界面，选择"智能对话"功能，在输入框中输入您的问题，点击发送即可开始对话。'
     },
     {
       id: 4,

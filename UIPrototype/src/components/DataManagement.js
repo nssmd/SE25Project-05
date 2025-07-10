@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { dataAPI, chatAPI, historyAPI } from '../services/api';
 import './DataManagement.css';
+import UserCorner from "./UserCorner";
 
 const DataManagement = ({ user, onLogout }) => {
   const navigate = useNavigate();
@@ -208,13 +209,13 @@ const DataManagement = ({ user, onLogout }) => {
   return (
     <div className="data-management">
       <header className="page-header">
-        <button 
-          className="back-button"
-          onClick={() => navigate('/dashboard')}
-        >
-          <ArrowLeft size={20} />
-          返回主界面
-        </button>
+        {/*<button */}
+        {/*  className="back-button"*/}
+        {/*  onClick={() => navigate('/dashboard')}*/}
+        {/*>*/}
+        {/*  <ArrowLeft size={20} />*/}
+        {/*  返回主界面*/}
+        {/*</button>*/}
         <div className="header-content">
           <h1>数据管理</h1>
           <p>管理您的对话数据，设置自动清理规则</p>
@@ -228,10 +229,7 @@ const DataManagement = ({ user, onLogout }) => {
             <RefreshCw size={16} />
             刷新
           </button>
-          <div className="user-info">
-            <span>{user?.username || user?.name}</span>
-            <button onClick={onLogout} className="logout-btn">退出</button>
-          </div>
+          <UserCorner user={user} onLogout={onLogout} />
         </div>
       </header>
       

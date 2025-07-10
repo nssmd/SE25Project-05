@@ -1,0 +1,550 @@
+/* 移动端工具类样式 */
+
+/* 消息内容优化 */
+.message-content {
+  max-width: 95vw !important;
+  word-break: break-word !important;
+  word-wrap: break-word !important;
+  white-space: pre-line !important;
+  line-height: 1.8 !important;
+  font-size: 1.05rem !important;
+  border-radius: 12px !important;
+  padding: 0.85rem 1.1rem !important;
+  margin: 0.2rem 0 !important;
+  box-sizing: border-box !important;
+  overflow-x: auto !important;
+}
+
+.message-content p {
+  margin: 0.5em 0 !important;
+  line-height: 1.8 !important;
+}
+
+.message-content ul,
+.message-content ol {
+  margin: 0.5em 0 0.5em 1.5em !important;
+  padding-left: 1.5em !important;
+}
+
+.message-content li {
+  margin-bottom: 0.3em !important;
+  line-height: 1.7 !important;
+}
+
+/* 数据微调、数据管理、个人中心和消息中心界面深色模式优化 */
+
+/* 导航菜单深色模式优化 */
+.dark-mode .nav-menu {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 导航菜单项深色模式优化 */
+.dark-mode .nav-menu-item {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border-primary) !important;
+  transition: all 0.2s ease !important;
+}
+
+/* 导航菜单项悬停效果 */
+.dark-mode .nav-menu-item:hover {
+  background-color: var(--bg-hover) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 导航菜单项激活状态 */
+.dark-mode .nav-menu-item.active {
+  background-color: var(--primary-bg) !important;
+  border-left: 3px solid var(--primary-500) !important;
+}
+
+/* 导航菜单图标深色模式优化 */
+.dark-mode .nav-menu-item .icon,
+.dark-mode .nav-menu-item svg {
+  color: var(--text-primary) !important;
+  fill: var(--text-primary) !important;
+}
+
+/* 导航菜单文字深色模式优化 */
+.dark-mode .nav-menu-item .text {
+  color: var(--text-primary) !important;
+}
+
+/* 特殊处理历史搜索项的浅蓝色背景 */
+.dark-mode .nav-menu-item.search {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .nav-menu-item.search:hover {
+  background-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.dark-mode .nav-menu-item.search .icon,
+.dark-mode .nav-menu-item.search .text {
+  color: var(--primary-400) !important;
+}
+
+/* 数据微调界面深色模式优化 */
+.dark-mode .data-tuning-container {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .data-tuning-header {
+  background-color: var(--bg-primary) !important;
+  border-bottom: 1px solid var(--border-primary) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .data-tuning-title {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .data-tuning-description {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .data-tuning-card {
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .data-tuning-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3) !important;
+  border-color: var(--primary-400) !important;
+  transform: translateY(-2px) !important;
+}
+
+.dark-mode .data-tuning-card-title {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .data-tuning-card-description {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .data-tuning-form input,
+.dark-mode .data-tuning-form textarea,
+.dark-mode .data-tuning-form select {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .data-tuning-form input:focus,
+.dark-mode .data-tuning-form textarea:focus,
+.dark-mode .data-tuning-form select:focus {
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
+}
+
+.dark-mode .data-tuning-form label {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .data-tuning-form button {
+  background-color: var(--primary-500) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.dark-mode .data-tuning-form button:hover {
+  background-color: var(--primary-600) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+}
+
+.dark-mode .data-tuning-form button:disabled {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-tertiary) !important;
+  cursor: not-allowed !important;
+}
+
+/* 数据管理界面深色模式优化 */
+.dark-mode .data-management-container {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .data-management-header {
+  background-color: var(--bg-primary) !important;
+  border-bottom: 1px solid var(--border-primary) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .data-management-title {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .data-management-filters {
+  background-color: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 8px !important;
+}
+
+.dark-mode .data-table {
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .data-table th {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 2px solid var(--border-primary) !important;
+}
+
+.dark-mode .data-table td {
+  border-bottom: 1px solid var(--border-primary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .data-table tr:hover td {
+  background-color: var(--bg-hover) !important;
+}
+
+.dark-mode .data-table tr:nth-child(even) {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.dark-mode .pagination {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-primary) !important;
+}
+
+.dark-mode .pagination-btn {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border-primary) !important;
+}
+
+.dark-mode .pagination-btn:hover:not(.disabled) {
+  background-color: var(--bg-hover) !important;
+  color: var(--primary-500) !important;
+  border-color: var(--primary-400) !important;
+}
+
+.dark-mode .pagination-btn.active {
+  background-color: var(--primary-500) !important;
+  color: white !important;
+  border-color: var(--primary-500) !important;
+}
+
+.dark-mode .pagination-btn.disabled {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-tertiary) !important;
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
+}
+
+/* 个人中心界面深色模式优化 */
+.dark-mode .profile-container {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .profile-header {
+  background-color: var(--bg-primary) !important;
+  border-bottom: 1px solid var(--border-primary) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .profile-avatar {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-700)) !important;
+  border: 3px solid var(--bg-primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .profile-name {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .profile-email {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .profile-section {
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .profile-section-title {
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border-primary) !important;
+}
+
+.dark-mode .profile-form label {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .profile-form input,
+.dark-mode .profile-form textarea,
+.dark-mode .profile-form select {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .profile-form input:focus,
+.dark-mode .profile-form textarea:focus,
+.dark-mode .profile-form select:focus {
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
+}
+
+.dark-mode .profile-form button {
+  background-color: var(--primary-500) !important;
+  color: white !important;
+}
+
+.dark-mode .profile-form button:hover {
+  background-color: var(--primary-600) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+}
+
+.dark-mode .profile-stats {
+  background-color: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+}
+
+.dark-mode .stat-item {
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .stat-value {
+  color: var(--primary-500) !important;
+}
+
+.dark-mode .stat-label {
+  color: var(--text-tertiary) !important;
+}
+
+/* 消息中心界面深色模式优化 */
+.dark-mode .message-center-container {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .message-center-header {
+  background-color: var(--bg-primary) !important;
+  border-bottom: 1px solid var(--border-primary) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .message-center-title {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .message-list {
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .message-item {
+  border-bottom: 1px solid var(--border-primary) !important;
+  transition: all 0.2s ease !important;
+}
+
+.dark-mode .message-item:hover {
+  background-color: var(--bg-hover) !important;
+}
+
+.dark-mode .message-item:last-child {
+  border-bottom: none !important;
+}
+
+.dark-mode .message-item.unread {
+  background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+.dark-mode .message-item.unread:hover {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+.dark-mode .message-sender {
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+}
+
+.dark-mode .message-date {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .message-preview {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .message-badge {
+  background-color: var(--primary-500) !important;
+  color: white !important;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.4) !important;
+}
+
+.dark-mode .message-empty {
+  color: var(--text-tertiary) !important;
+  text-align: center !important;
+  padding: 2rem !important;
+}
+
+.dark-mode .message-empty svg {
+  color: var(--text-tertiary) !important;
+  opacity: 0.5 !important;
+}
+
+.dark-mode .message-empty h3 {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .message-empty p {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .message-detail {
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .message-header {
+  border-bottom: 1px solid var(--border-primary) !important;
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode .message-subject {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .message-info {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode .message-body {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .message-actions {
+  border-top: 1px solid var(--border-primary) !important;
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode .message-btn {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border-primary) !important;
+}
+
+.dark-mode .message-btn:hover {
+  background-color: var(--bg-hover) !important;
+  color: var(--primary-500) !important;
+  border-color: var(--primary-400) !important;
+}
+
+.dark-mode .message-btn.primary {
+  background-color: var(--primary-500) !important;
+  color: white !important;
+  border-color: var(--primary-500) !important;
+}
+
+.dark-mode .message-btn.primary:hover {
+  background-color: var(--primary-600) !important;
+  border-color: var(--primary-600) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+}
+
+.dark-mode .message-compose {
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .message-compose-header {
+  border-bottom: 1px solid var(--border-primary) !important;
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode .message-compose-body textarea {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+  min-height: 200px !important;
+}
+
+.dark-mode .message-compose-body textarea:focus {
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* 内联样式的颜色覆盖 */
+.dark-mode .message-bubble[style*="backgroundColor: #e8f5e8"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.dark-mode .message-bubble[style*="backgroundColor: #e3f2fd"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.dark-mode .message-bubble[style*="border: 1px solid #4caf50"] {
+  border-color: var(--border-primary) !important;
+}
+
+.dark-mode .message-bubble[style*="border: 1px solid #2196f3"] {
+  border-color: var(--border-primary) !important;
+}
+
+.dark-mode .message-text[style*="color: #000000"] {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode [style*="backgroundColor: #e8f5e8"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.dark-mode [style*="backgroundColor: #e3f2fd"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.dark-mode [style*="border: 1px solid #4caf50"] {
+  border-color: var(--border-primary) !important;
+}
+
+.dark-mode [style*="border: 1px solid #2196f3"] {
+  border-color: var(--border-primary) !important;
+}
+
+.dark-mode [style*="color: #000000"] {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode [style*="backgroundColor: #f9fafb"] {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode [style*="backgroundColor: #ffffff"] {
+  background-color: var(--bg-primary) !important;
+}
+
+.dark-mode [style*="borderBottom: 1px solid #e5e7eb"] {
+  border-bottom-color: var(--border-primary) !important;
+}
+
+.dark-mode [style*="color: #374151"] {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode [style*="color: #6b7280"] {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-mode [style*="color: #666666"] {
+  color: var(--text-tertiary) !important;
+} 

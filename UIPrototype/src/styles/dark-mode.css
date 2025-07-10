@@ -1,0 +1,223 @@
+/* Web端主要界面暗色模式样式 */
+
+.dark-mode .sidebar {
+  background: var(--bg-primary) !important;
+  border-right-color: var(--border-primary) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .sidebar-header {
+  background: var(--bg-primary) !important;
+  border-bottom-color: var(--border-primary) !important;
+}
+
+.dark-mode .sidebar-nav {
+  background: var(--bg-primary) !important;
+}
+
+.dark-mode .main-header {
+  background: var(--bg-primary) !important;
+  border-bottom-color: var(--border-primary) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .header-left h1 {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .model-status {
+  background: transparent !important;
+}
+
+.dark-mode .status-item {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .content-area {
+  background: var(--bg-secondary) !important;
+}
+
+.dark-mode .feature-content {
+  background: var(--bg-primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark-mode .feature-header {
+  background: var(--bg-primary) !important;
+  border-bottom-color: var(--border-primary) !important;
+}
+
+.dark-mode .feature-title h2 {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .feature-icon {
+  color: var(--primary-500) !important;
+}
+
+.dark-mode .chat-layout {
+  background: var(--bg-primary) !important;
+}
+
+.dark-mode .chat-list-sidebar {
+  background: var(--bg-primary) !important;
+  border-right-color: var(--border-primary) !important;
+}
+
+.dark-mode .chat-list-header {
+  background: var(--bg-tertiary) !important;
+  border-bottom-color: var(--border-primary) !important;
+}
+
+.dark-mode .chat-list {
+  background: var(--bg-primary) !important;
+}
+
+.dark-mode .chat-header {
+  background: var(--bg-primary) !important;
+  border-bottom-color: var(--border-primary) !important;
+}
+
+.dark-mode .chat-container {
+  background: var(--bg-primary) !important;
+}
+
+.dark-mode .chat-messages {
+  background: var(--bg-secondary) !important;
+}
+
+.dark-mode .dashboard {
+  background: var(--bg-secondary) !important;
+}
+
+.dark-mode .main-content {
+  background: var(--bg-secondary) !important;
+}
+
+/* 聊天项暗色模式修复 */
+.dark-mode .chat-item {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 深色模式下聊天面板chat-item字体颜色增强 */
+.dark-mode .chat-item,
+.dark-mode .chat-item .chat-title,
+.dark-mode .chat-item .chat-meta,
+.dark-mode .chat-item .message-count,
+.dark-mode .chat-item .last-activity {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .chat-item .chat-meta,
+.dark-mode .chat-item .message-count,
+.dark-mode .chat-item .last-activity {
+  color: var(--text-secondary) !important;
+}
+
+/* 聊天输入框通用优化样式（与深色模式一致） */
+.chat-input {
+  background: var(--bg-primary) !important;
+  border-top: 1.5px solid var(--border-primary) !important;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.10) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  margin: 0 !important;
+  padding: 0.5rem 1rem !important;
+  min-height: 56px !important;
+  border-radius: 0 0 16px 16px !important;
+}
+
+.chat-input input {
+  flex: 1 !important;
+  padding: 0.5rem 1rem !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 20px !important;
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  font-size: 1rem !important;
+  outline: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.chat-input input:focus {
+  border-color: var(--primary-500) !important;
+  background: var(--bg-primary) !important;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.08) !important;
+}
+
+.chat-input input::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+.chat-input .send-button {
+  width: 38px !important;
+  height: 38px !important;
+  background: var(--primary-500) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 19px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 1px 4px rgba(59,130,246,0.10) !important;
+  flex-shrink: 0 !important;
+}
+
+.chat-input .send-button:hover:not(:disabled) {
+  background: var(--primary-600) !important;
+  transform: scale(1.05) !important;
+}
+
+.chat-input .send-button:disabled {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-tertiary) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* 聊天输入框暗色模式修复 */
+.dark-mode input,
+.dark-mode textarea {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+  color: var(--text-tertiary) !important;
+} 
+
+/* 深色模式下按钮和标签字体颜色增强 */
+.dark-mode .tab,
+.dark-mode .chat-list-header,
+.dark-mode .sidebar,
+.dark-mode .sidebar-nav,
+.dark-mode .sidebar-header,
+.dark-mode .main-header,
+.dark-mode .feature-header,
+.dark-mode .feature-title h2,
+.dark-mode .chat-header,
+.dark-mode .chat-list-header h3,
+.dark-mode .new-chat-btn,
+.dark-mode .hide-sidebar-btn,
+.dark-mode .toggle-chat-list,
+.dark-mode .start-chat-btn,
+.dark-mode button,
+.dark-mode .btn {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .tab.active,
+.dark-mode .new-chat-btn,
+.dark-mode .start-chat-btn,
+.dark-mode .toggle-chat-list.prominent {
+  color: #fff !important;
+  font-weight: 600 !important;
+} 

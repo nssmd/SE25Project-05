@@ -215,11 +215,9 @@ const AdminPanel = () => {
   // 获取权限名称
   const getPermissionName = (key) => {
     const names = {
-      text_to_text: '文生文',
-      text_to_image: '文生图',
-      image_to_image: '图生图',
-      image_to_text: '图生文',
-      text_to_video: '文生视频',
+      text_to_text: '智能对话',
+      smart_image_generation: '智能生图',
+      prompt_template_library: 'AI模板库',
       text_to_3d: '文生3D',
       chat: '基础聊天',
       file_upload: '文件上传',
@@ -248,10 +246,8 @@ const AdminPanel = () => {
     const rolePermissions = {
       admin: {
         text_to_text: true,
-        text_to_image: true,
-        image_to_image: true,
-        image_to_text: true,
-        text_to_video: true,
+        smart_image_generation: true,
+        prompt_template_library: true,
         text_to_3d: true,
         chat: true,
         file_upload: true,
@@ -259,10 +255,8 @@ const AdminPanel = () => {
       },
       support: {
         text_to_text: true,
-        text_to_image: false,
-        image_to_image: false,
-        image_to_text: true,
-        text_to_video: false,
+        smart_image_generation: false,
+        prompt_template_library: true,
         text_to_3d: false,
         chat: true,
         file_upload: true,
@@ -270,10 +264,8 @@ const AdminPanel = () => {
       },
       user: {
         text_to_text: true,
-        text_to_image: false,
-        image_to_image: false,
-        image_to_text: false,
-        text_to_video: false,
+        smart_image_generation: false,
+        prompt_template_library: false,
         text_to_3d: false,
         chat: true,
         file_upload: false,
@@ -335,15 +327,16 @@ const AdminPanel = () => {
           </div>
 
           <div className="users-table">
-            <div className="table-header">
-              <div>用户信息</div>
-              <div>角色</div>
-              <div>状态</div>
-              <div>最后登录</div>
-              <div>对话数</div>
-              <div>操作</div>
-            </div>
-            
+            {filteredUsers.length > 0 && (
+              <div className="table-header">
+                <div>用户信息</div>
+                <div>角色</div>
+                <div>状态</div>
+                <div>最后登录</div>
+                <div>对话数</div>
+                <div>操作</div>
+              </div>
+            )}
             {/* 调试信息 */}
             {users.length === 0 && !isLoading && (
               <div className="no-users-message">

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { userAPI, authAPI } from '../services/api';
 import './Profile.css';
+import UserCorner from "./UserCorner";
 
 const Profile = ({ user, onLogout, onUpdateUser }) => {
   const navigate = useNavigate();
@@ -344,14 +345,12 @@ const Profile = ({ user, onLogout, onUpdateUser }) => {
   return (
     <div className="profile-page">
       <div className="profile-header-bar">
-        <button className="back-button" onClick={() => navigate('/dashboard')}>
-          <ArrowLeft size={20} />
-          <span className="back-text">返回</span>
-        </button>
+        {/*<button className="back-button" onClick={() => navigate('/dashboard')}>*/}
+        {/*  <ArrowLeft size={20} />*/}
+        {/*  <span className="back-text">返回</span>*/}
+        {/*</button>*/}
         <h1>个人中心</h1>
-        <button className="logout-btn" onClick={onLogout}>
-          退出登录
-        </button>
+        <UserCorner user={user} onLogout={onLogout} />
       </div>
 
       <div className="profile-container">

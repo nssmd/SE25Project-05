@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Register from './components/Register';
@@ -10,15 +10,52 @@ import HistorySearch from './components/HistorySearch';
 import DataManagement from './components/DataManagement';
 import AdminPanel from './components/AdminPanel';
 import MessageCenter from './components/MessageCenter';
+import { ThemeProvider } from './contexts/ThemeContext';
 import userService from './services/UserService';
 import { authAPI } from './services/api';
+import './theme.css';
 import './App.css';
-import './mobile.css';
+import './styles/mobile.css';
+import FeatureContent from "./components/FeatureContent";
+import Sidebar from './components/Sidebar';
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showSidebar, setShowSidebar] = useState(true);
+
+  const toggleSidebar = () => {
+      setShowSidebar(!showSidebar);
+  };
+
+    // 移动端默认隐藏侧边栏
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 768) {
+                setShowSidebar(false);
+            }
+        };
+        
+        // 初始化时检查屏幕大小
+        handleResize();
+        
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    // const appRef = useRef();
+    //
+    // useEffect(() => {
+    //     const handleClickOutside = (e) => {
+    //         if (showSidebar && !appRef.current.contains(e.target)) {
+    //             setShowSidebar(false);
+    //         }
+    //     };
+    //     document.addEventListener('mousedown', handleClickOutside);
+    //     return () => document.removeEventListener('mousedown', handleClickOutside);
+    // }, [showSidebar]);
 
   useEffect(() => {
     // 检查本地存储中的用户信息和token，并验证token有效性
@@ -166,95 +203,115 @@ function App() {
   }
 
   return (
-    <Router>
-    <div className="App">
-        <Routes>
-          <Route 
-            path="/login" 
-            element={
-              !isAuthenticated ? 
-              <Login onLogin={handleLogin} /> : 
-              <Navigate to="/dashboard" replace />
-            } 
-          />
-          <Route 
-            path="/register" 
-            element={
-              !isAuthenticated ? 
-              <Register onRegister={handleLogin} /> : 
-              <Navigate to="/dashboard" replace />
-            } 
-          />
-          <Route 
-            path="/dashboard" 
-            element={
-              isAuthenticated ? 
-              <Dashboard user={user} onLogout={handleLogout} /> : 
-              <Navigate to="/login" replace />
-            } 
-          />
-          <Route 
-            path="/finetuning" 
-            element={
-              isAuthenticated ? 
-              <DataFinetuning user={user} onLogout={handleLogout} /> : 
-              <Navigate to="/login" replace />
-            } 
-          />
-          <Route 
-            path="/profile" 
-            element={
-              isAuthenticated ? 
-              <Profile user={user} onLogout={handleLogout} /> : 
-              <Navigate to="/login" replace />
-            } 
-          />
-          <Route 
-            path="/history" 
-            element={
-              isAuthenticated ? 
-              <HistorySearch user={user} onLogout={handleLogout} /> : 
-              <Navigate to="/login" replace />
-            } 
-          />
-          <Route 
-            path="/data-management" 
-            element={
-              isAuthenticated ? 
-              <DataManagement user={user} onLogout={handleLogout} /> : 
-              <Navigate to="/login" replace />
-            } 
-          />
-          
-          <Route 
-            path="/messages" 
-            element={
-              isAuthenticated ? 
-              <MessageCenter user={user} onLogout={handleLogout} /> : 
-              <Navigate to="/login" replace />
-            } 
-          />
-          
-          {/* 管理员专用路由 */}
-          <Route 
-            path="/admin" 
-            element={
-              isAuthenticated && hasRole('admin') ? 
-              <AdminPanel user={user} onLogout={handleLogout} /> : 
-              <Navigate to="/dashboard" replace />
-            } 
-          />
-          
-          <Route 
-            path="/" 
-            element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} 
-          />
-        </Routes>
-        
-        {/* 客服组件 - 仅在登录后显示 */}
-        {isAuthenticated && <CustomerService user={user} />}
-    </div>
-    </Router>
+    <ThemeProvider>
+      <Router>
+      <div className="App">
+          {isAuthenticated &&
+              <button
+                  className="floating-sidebar-toggle"
+                  onClick={toggleSidebar}
+                  aria-label={showSidebar ? "隐藏侧边栏" : "显示侧边栏"}
+              >
+              {showSidebar ? <ChevronLeft/> : <ChevronRight/>}
+          </button>}
+          {isAuthenticated && <Sidebar user={user} onLogout={handleLogout} showSidebar={showSidebar} />}
+          <main className={`main-content ${showSidebar ? 'sidebar-open' : 'sidebar-closed'}`}>
+              <Routes>
+                  <Route
+                      path="/login"
+                      element={
+                          !isAuthenticated ?
+                              <Login onLogin={handleLogin} /> :
+                              <Navigate to="/dashboard" replace />
+                      }
+                  />
+                  <Route
+                      path="/register"
+                      element={
+                          !isAuthenticated ?
+                              <Register onRegister={handleLogin} /> :
+                              <Navigate to="/dashboard" replace />
+                      }
+                  />
+                  <Route
+                      path="/dashboard"
+                      element={
+                          isAuthenticated ?
+                              <Dashboard 
+                                  user={user} 
+                                  onLogout={handleLogout} 
+                                  showSidebar={showSidebar}
+                                  setShowSidebar={setShowSidebar}
+                              /> :
+                              <Navigate to="/login" replace />
+                      }
+                  >
+                      <Route path=":featureId" element={<FeatureContent/>}/>
+                  </Route>
+                  <Route
+                      path="/finetuning"
+                      element={
+                          isAuthenticated ?
+                              <DataFinetuning user={user} onLogout={handleLogout} /> :
+                              <Navigate to="/login" replace />
+                      }
+                  />
+                  <Route
+                      path="/profile"
+                      element={
+                          isAuthenticated ?
+                              <Profile user={user} onLogout={handleLogout} /> :
+                              <Navigate to="/login" replace />
+                      }
+                  />
+                  <Route
+                      path="/history"
+                      element={
+                          isAuthenticated ?
+                              <HistorySearch user={user} onLogout={handleLogout} /> :
+                              <Navigate to="/login" replace />
+                      }
+                  />
+                  <Route
+                      path="/data-management"
+                      element={
+                          isAuthenticated ?
+                              <DataManagement user={user} onLogout={handleLogout} /> :
+                              <Navigate to="/login" replace />
+                      }
+                  />
+
+                  <Route
+                      path="/messages"
+                      element={
+                          isAuthenticated ?
+                              <MessageCenter user={user} onLogout={handleLogout} /> :
+                              <Navigate to="/login" replace />
+                      }
+                  />
+
+                  {/* 管理员专用路由 */}
+                  <Route
+                      path="/admin"
+                      element={
+                          isAuthenticated && hasRole('admin') ?
+                              <AdminPanel user={user} onLogout={handleLogout} /> :
+                              <Navigate to="/dashboard" replace />
+                      }
+                  />
+
+                  <Route
+                      path="/"
+                      element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />}
+                  />
+              </Routes>
+
+              {/* 客服组件 - 仅在登录后显示 */}
+              {isAuthenticated && <CustomerService user={user} />}
+          </main>
+      </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 

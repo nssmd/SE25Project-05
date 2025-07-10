@@ -1,0 +1,454 @@
+/* 移动端布局样式 */
+
+@media (max-width: 768px) {
+  /* 移动端顶栏优化 */
+  .main-header {
+    padding: 0.75rem 1rem !important;
+    min-height: 60px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important; /* 改为从左开始对齐 */
+    gap: 1rem !important; /* 添加间距 */
+    border-bottom: 1px solid var(--border-primary) !important;
+    background: var(--bg-primary) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .header-left {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important; /* 居中对齐，避免被floating-sidebar-toggle遮挡 */
+    gap: 0.5rem !important;
+    flex: 1 !important; /* 占据更多空间以便居中 */
+    min-width: 0 !important;
+    overflow: hidden !important;
+    padding-left: 50px !important; /* 为floating-sidebar-toggle留出空间 */
+    padding-right: 50px !important; /* 保持平衡 */
+  }
+
+  .header-left h1 {
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    color: var(--text-primary) !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    max-width: 150px !important; /* 限制标题最大宽度 */
+  }
+
+  .header-left p {
+    display: none !important; /* 移动端隐藏描述文字 */
+  }
+
+  .header-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex: 0 1 auto !important; /* 改为自动大小，不占据过多空间 */
+    justify-content: flex-end !important; /* 靠右对齐 */
+    min-width: 0 !important;
+  }
+
+  /* 移动端隐藏用户名和退出登录按钮 */
+  .main-header .user-name,
+  .main-header .user-email,
+  .main-header .logout-btn,
+  .main-header .logout-button,
+  .main-header .user-info span,
+  .main-header .user-details,
+  .main-header .user-info .user-details {
+    display: none !important;
+  }
+
+  .hide-header-btn {
+    display: none !important; /* 移动端隐藏隐藏按钮 */
+  }
+
+  /* 移动端隐藏mobile-menu-btn，因为已有floating-sidebar-toggle */
+  .main-header .mobile-menu-btn {
+    display: none !important;
+  }
+
+  /* 统一的main-header按钮样式 */
+  .main-header .theme-toggle-btn,
+  .main-header .header-btn {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 8px !important;
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-primary) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: var(--text-primary) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    flex-shrink: 0 !important;
+  }
+
+  .main-header .theme-toggle-btn:hover,
+  .main-header .header-btn:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--primary-500) !important;
+    border-color: var(--primary-300) !important;
+  }
+
+  .main-header .theme-toggle-btn:active,
+  .main-header .header-btn:active {
+    transform: scale(0.95) !important;
+  }
+
+  /* 移动端按钮组布局优化 */
+  .header-right .model-status {
+    max-width: none !important; /* 移除宽度限制，确保所有status-item都能显示 */
+    overflow: visible !important; /* 允许内容溢出显示 */
+    flex: 0 1 auto !important; /* 让model-status自动调整大小 */
+  }
+
+  /* 确保按钮不会被挤压 */
+  .header-right .theme-toggle-btn,
+  .header-right .header-btn {
+    flex-shrink: 0 !important;
+  }
+
+  /* 移动端历史记录显示优化 */
+  .chat-layout {
+    flex-direction: column !important;
+    height: 100% !important;
+    flex: 1 !important;
+    overflow: hidden !important;
+    position: relative !important; /* 确保正确的定位上下文 */
+    display: flex !important; /* 确保flex布局 */
+  }
+
+  /* 当显示历史记录时，只隐藏对话容器，保留模式选择栏 */
+  .chat-layout .chat-list-sidebar:not(.hidden) ~ .chat-container {
+    display: none !important;
+  }
+
+  /* 确保模式选择栏始终显示 */
+  .feature-header {
+    display: flex !important;
+    position: relative !important;
+    z-index: 50 !important;
+  }
+
+  /* 确保feature-content的布局正确 */
+  .feature-content {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    position: relative !important;
+    z-index: 1 !important;
+    overflow: hidden !important; /* 防止内容溢出 */
+  }
+
+  /* 确保各组件层级关系正确 */
+  .main-header {
+    z-index: 100 !important;
+  }
+
+  .feature-header {
+    z-index: 90 !important;
+  }
+
+  .chat-header {
+    z-index: 80 !important;
+    position: relative !important; /* 强制使用相对定位 */
+  }
+
+  .chat-list-sidebar {
+    z-index: 70 !important;
+  }
+
+  .chat-container {
+    z-index: 60 !important;
+    position: relative !important; /* 确保正确的定位上下文 */
+  }
+
+  .chat-messages {
+    z-index: 50 !important;
+    position: relative !important; /* 确保消息区域正确定位 */
+  }
+
+  .chat-input {
+    z-index: 1000 !important;
+  }
+
+  /* 防止组件互相覆盖的额外保护 */
+  .content-area {
+    position: relative !important;
+    z-index: 10 !important;
+    overflow: hidden !important;
+  }
+
+  /* 当隐藏历史记录时，对话容器占据全部空间 */
+  .chat-layout .chat-list-sidebar.hidden ~ .chat-container {
+    flex: 1 !important;
+    height: 100% !important;
+    order: 1 !important;
+    display: flex !important;
+  }
+
+  /* 当显示历史记录时，隐藏输入框 */
+  .chat-layout .chat-list-sidebar:not(.hidden) + .chat-container .chat-input,
+  .chat-layout .chat-list-sidebar:not(.hidden) ~ .chat-container .chat-input {
+    display: none !important;
+  }
+
+  /* 当隐藏历史记录时，确保输入框显示 */
+  .chat-layout .chat-list-sidebar.hidden ~ .chat-container .chat-input {
+    display: flex !important;
+  }
+
+  /* 历史记录列表在移动端的优化 */
+  .chat-list-sidebar {
+    width: 100% !important;
+    height: auto !important;
+    flex: 1 !important;
+    border-right: none !important;
+    border-top: 1px solid var(--border-primary) !important;
+    order: 1 !important;
+    margin: 0 !important;
+  }
+
+  .chat-list-sidebar.hidden {
+    height: 0 !important;
+    overflow: hidden !important;
+    flex: 0 !important;
+    border-top: none !important;
+  }
+
+  /* 对话容器在移动端的优化 */
+  .chat-container {
+    order: 2 !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+  }
+
+  /* 对话容器适配 */
+  .chat-container {
+    padding-bottom: 0 !important;
+    height: calc(100vh - 280px) !important; /* 减去顶部栏(60px)、双行模型选择栏(160px)和chat-header(60px) */
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important; /* 确保正确的定位上下文 */
+    margin-top: 0 !important; /* 确保没有额外的上边距 */
+    clear: both !important; /* 清除浮动 */
+  }
+
+  /* 确保消息能够正常滚动并占据更多空间 */
+  .chat-messages {
+    overflow-y: auto !important;
+    flex: 1 !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 1rem !important;
+    padding-bottom: 10rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+    box-sizing: border-box !important;
+    position: relative !important; /* 确保正确的定位 */
+    margin-top: 0 !important; /* 确保不会被上方元素遮挡 */
+    top: 0 !important; /* 确保从顶部开始 */
+    border-top: 1px solid transparent !important; /* 确保与上方有足够间距 */
+  }
+
+  /* 对话消息区域适配底部输入框 */
+  .chat-messages {
+    padding-bottom: 10rem !important; /* 为底部输入框留出更多空间 */
+    margin-bottom: 0 !important;
+    min-height: calc(100vh - 360px) !important; /* 减去顶部栏+双行模型选择栏+chat-header+输入框高度 */
+    box-sizing: border-box !important;
+  }
+
+  /* 空状态页面适配底部输入框 */
+  .empty-chat {
+    margin-bottom: 10rem !important; /* 避免被输入框遮挡 */
+    height: calc(100vh - 360px) !important; /* 减去顶部栏+双行模型选择栏+chat-header+输入框高度 */
+    min-height: 300px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 2rem !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 防止消息被输入框遮挡的额外保护 */
+  .chat-messages::after {
+    content: "" !important;
+    display: block !important;
+    height: 3rem !important;
+    width: 100% !important;
+  }
+}
+
+/* 小屏手机布局优化 */
+@media (max-width: 480px) {
+  /* 极小屏幕的顶栏优化 */
+  .main-header {
+    padding: 0.5rem 0.75rem !important;
+    min-height: 56px !important;
+    gap: 0.75rem !important; /* 稍微小一些的间距 */
+  }
+
+  .main-header .header-left h1 {
+    font-size: 1rem !important;
+    max-width: 140px !important; /* 极小屏幕调整标题宽度，适应居中布局 */
+  }
+
+  .header-left {
+    padding-left: 45px !important; /* 极小屏幕稍微减小内边距 */
+    padding-right: 45px !important; /* 保持平衡 */
+  }
+
+  /* 极小屏幕也隐藏mobile-menu-btn */
+  .main-header .mobile-menu-btn {
+    display: none !important;
+  }
+
+  /* 极小屏幕统一按钮样式 */
+  .main-header .theme-toggle-btn,
+  .main-header .header-btn {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 8px !important;
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-primary) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: var(--text-primary) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    flex-shrink: 0 !important;
+  }
+
+  .main-header .theme-toggle-btn:hover,
+  .main-header .header-btn:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--primary-500) !important;
+    border-color: var(--primary-300) !important;
+  }
+
+  .main-header .theme-toggle-btn:active,
+  .main-header .header-btn:active {
+    transform: scale(0.95) !important;
+  }
+
+  .header-right {
+    gap: 0.25rem !important;
+    justify-content: flex-end !important; /* 极小屏幕也靠右对齐 */
+  }
+
+  /* 极小屏幕的按钮也不被挤压 */
+  .header-right .theme-toggle-btn,
+  .header-right .header-btn {
+    flex-shrink: 0 !important;
+  }
+
+  /* 极小屏幕也隐藏用户名和退出登录按钮 */
+  .main-header .user-name,
+  .main-header .user-email,
+  .main-header .logout-btn,
+  .main-header .logout-button,
+  .main-header .user-info span,
+  .main-header .user-details,
+  .main-header .user-info .user-details {
+    display: none !important;
+  }
+
+  /* 极小屏幕的对话消息区域适配 */
+  .chat-messages {
+    padding-bottom: 8rem !important; /* 为输入框留更多空间 */
+    min-height: calc(100vh - 290px) !important;
+    max-height: calc(100vh - 290px) !important;
+  }
+
+  .chat-container {
+    height: calc(100vh - 210px) !important; /* 减去更小的顶部栏高度、扩展后的模型选择栏和chat-header */
+  }
+
+  /* 极小屏幕的空状态页面适配 */
+  .empty-chat {
+    margin-bottom: 8rem !important;
+    height: calc(100vh - 290px) !important;
+    min-height: 250px !important;
+  }
+
+  /* iOS设备键盘优化 */
+  @supports (-webkit-appearance: none) {
+    .chat-input {
+      padding-bottom: env(safe-area-inset-bottom, 0.75rem) !important;
+    }
+
+    /* iOS键盘弹出时的处理 */
+    .chat-input input:focus {
+      transform: translateY(0) !important;
+    }
+  }
+}
+
+/* 桌面端样式 - 确保正常显示 */
+@media (min-width: 769px) {
+  /* 桌面端显示原有的chat-header */
+  .chat-header {
+    display: flex !important;
+  }
+
+  /* 桌面端显示chat-list-header */
+  .chat-list-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 1rem 1.5rem !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+    background: var(--bg-tertiary) !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* 桌面端隐藏移动端对话控制 */
+  .mobile-chat-controls {
+    display: none !important;
+  }
+
+  /* 桌面端恢复历史记录列表原有padding */
+  .chat-list {
+    padding: 0.5rem !important;
+  }
+
+  /* 桌面端feature-header恢复原有样式 */
+  .feature-header {
+    flex-direction: row !important;
+    align-items: center !important;
+    min-height: 60px !important;
+  }
+
+  .feature-header-row {
+    flex: 1 !important;
+    justify-content: flex-start !important;
+  }
+
+  .feature-title {
+    flex: 1 !important;
+  }
+
+  .model-selector {
+    flex-shrink: 0 !important;
+  }
+
+  /* 桌面端恢复用户名和退出登录按钮的显示 */
+  .main-header .user-name,
+  .main-header .user-email,
+  .main-header .logout-btn,
+  .main-header .logout-button,
+  .main-header .user-info span,
+  .main-header .user-details,
+  .main-header .user-info .user-details {
+    display: flex !important;
+  }
+} 

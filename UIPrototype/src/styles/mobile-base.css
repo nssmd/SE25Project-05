@@ -1,7 +1,47 @@
-/* 移动端通用适配样式 */
+/* 移动端基础样式 */
 
 /* 全局移动端优化 */
 @media (max-width: 768px) {
+  /* 移动端侧边栏遮罩 - 仅在移动端生效 */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  /* 移动端浮动按钮优化 */
+  .floating-sidebar-toggle {
+    left: 12px !important;
+    top: 10px !important; /* 更靠上的位置 */
+    background: var(--bg-primary) !important; /* 使用主题色 */
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 12px !important; /* 更现代的圆角 */
+    backdrop-filter: blur(10px) !important; /* 毛玻璃效果 */
+  }
+
+  .floating-sidebar-toggle:hover {
+    background: var(--bg-hover) !important;
+    color: var(--primary-500) !important;
+    border-color: var(--primary-300) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    transform: scale(1.05) !important;
+  }
+
+  .floating-sidebar-toggle:active {
+    transform: scale(0.95) !important;
+  }
+
   * {
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
@@ -100,6 +140,15 @@
 
 /* 小屏手机优化 */
 @media (max-width: 480px) {
+  /* 极小屏幕浮动按钮优化 */
+  .floating-sidebar-toggle {
+    left: 10px !important;
+    top: 8px !important; /* 极小屏幕更靠上 */
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 10px !important;
+  }
+
   html {
     font-size: 13px;
   }
@@ -169,20 +218,6 @@
   }
 }
 
-/* 暗色模式移动端适配 */
-@media (prefers-color-scheme: dark) and (max-width: 768px) {
-  .card, .modal, .panel {
-    background: #1f2937;
-    border-color: #374151;
-  }
-
-  input, textarea, select {
-    background: #374151;
-    border-color: #4b5563;
-    color: #f9fafb;
-  }
-}
-
 /* 无障碍优化 */
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -192,13 +227,15 @@
   }
 }
 
-/* 高对比度模式 */
-@media (prefers-contrast: high) {
-  .card, .modal, .panel {
-    border: 2px solid;
-  }
-  
-  button {
-    border: 2px solid;
+/* 高对比度模式 - 仅在支持的浏览器中使用 */
+@supports (prefers-contrast: high) {
+  @media (prefers-contrast: high) {
+    .card, .modal, .panel {
+      border: 2px solid;
+    }
+    
+    button {
+      border: 2px solid;
+    }
   }
 } 

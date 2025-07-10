@@ -335,10 +335,25 @@ const MessageCenter = ({ user, onLogout }) => {
         content: newMessage
       });
 
+      // 立即在本地添加客服发送的消息
+      const newMessageObj = {
+        id: Date.now(),
+        content: newMessage,
+        createdAt: new Date().toISOString(),
+        isFromCustomer: false,  // 客服发送的消息
+        senderType: 'SUPPORT'
+      };
+
+      // 更新当前选中客户的消息列表
+      setSelectedCustomer(prev => ({
+        ...prev,
+        messages: [...(prev.messages || []), newMessageObj]
+      }));
+
       setNewMessage('');
       showNotification('消息发送成功', 'success');
       
-      // 刷新客户对话列表
+      // 刷新客户对话列表（更新最后消息时间等）
       await loadCustomerChats();
       
     } catch (error) {
@@ -508,7 +523,7 @@ const MessageCenter = ({ user, onLogout }) => {
                   const senderInfo = getSenderInfo(message);
                   return (
                   <div 
-                    key={message.id} 
+                  key={message.id} 
                     className={`message-item ${!message.isRead ? 'unread' : ''}`}
                     >
                       <div className="message-avatar">
@@ -670,7 +685,8 @@ const MessageCenter = ({ user, onLogout }) => {
                         </button>
                       </div>
                     </div>
-
+                    {/* 1. 客服在自己视角里发言在右侧，用户在左侧 */}
+                    {/* 2. 美化消息框*/}
                     {/* 消息区域 */}
                     <div className="chat-messages">
                       {supportChat.length === 0 ? (
@@ -685,48 +701,72 @@ const MessageCenter = ({ user, onLogout }) => {
                             <div 
                               key={msg.id || index} 
                               className={`message ${msg.senderType === 'USER' ? 'own' : 'other'}`}
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: msg.senderType === 'USER' ? 'flex-end' : 'flex-start',
+                                gap: '0px'
+                              }}
                             >
-                              <div className="message-content">
-                                <div 
-                                  className="message-bubble"
-                                  style={{
-                                    backgroundColor: msg.senderType === 'SUPPORT' ? '#4ade80' : '#e5e7eb',
-                                    color: '#000000',
-                                    padding: '12px 16px',
-                                    borderRadius: '18px',
-                                    maxWidth: '70%',
-                                    wordBreak: 'break-word'
-                                  }}
-                                >
-                                  <div className="message-text" style={{ color: '#000000' }}>
+                              <div className="message-container" style={{ 
+                                display: 'flex', 
+                                alignItems: 'flex-end', 
+                                gap: '12px',
+                                flexDirection: msg.senderType === 'USER' ? 'row' : 'row-reverse'
+                              }}>
+                                <div className="message-bubble" 
+                                style={{ 
+                                  flex: 1,
+                                  maxWidth: '100%',
+                                  wordBreak: 'break-word',
+                                  padding: '8px 10px',
+                                  border: msg.senderType === 'USER' ? '1px solid #4caf50' : '1px solid #2196f3',
+                                  borderRadius: '18px',
+                                  backgroundColor: msg.senderType === 'USER' ? '#e8f5e8' : '#e3f2fd',
+                                  
+                                  color: '#000000',
+                                }}>
+                                  <div className="message-text" 
+                                  style={{ 
+                                    backgroundColor: 'transparent',
+                                    padding: '10px 12px' ,
+                                    fontSize: '14px',
+                                    fontWeight: '500',
+                                    color: '#000000'
+                                    }}>
                                     {msg.content}
                                   </div>
                                 </div>
-                                <div className="message-time" style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>
-                                  {formatTime(msg.createdAt)}
-                                </div>
-                              </div>
-                              <div className="message-avatar">
-                                <span 
-                                  className={msg.senderType === 'USER' ? 'user-avatar' : 'support-avatar'}
+                                <div 
                                   style={{
-                                    display: 'inline-flex',
+                                    display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     width: '32px',
                                     height: '32px',
                                     borderRadius: '50%',
-                                    backgroundColor: msg.senderType === 'USER' ? '#3b82f6' : '#10b981',
+                                    backgroundColor: msg.senderType === 'USER' ? '#10b981' : '#3b82f6',
                                     color: 'white',
                                     fontSize: '14px',
-                                    fontWeight: 'bold'
+                                    fontWeight: 'bold',
+                                    flexShrink: 0
                                   }}
-                                >
+                                 > 
                                   {msg.senderType === 'USER' ? 
                                     (user?.username?.charAt(0) || 'U') : 
                                     (selectedSupport.username?.charAt(0) || 'S')
                                   }
-                                </span>
+                                </div>
+                              </div>
+                              <div className="message-time" style={{ 
+                                fontSize: '12px', 
+                                color: '#6b7280', 
+                                marginTop: '4px',
+                                alignSelf: msg.senderType === 'USER' ? 'flex-end' : 'flex-start',
+                                paddingRight: msg.senderType === 'USER' ? '44px' : '0',
+                                paddingLeft: msg.senderType === 'USER' ? '0' : '44px'
+                              }}>
+                                {formatTime(msg.createdAt)}
                               </div>
                             </div>
                           ))}
@@ -734,109 +774,33 @@ const MessageCenter = ({ user, onLogout }) => {
                 )}
               </div>
 
-                    {/* 输入区域 */}
-                    <div 
-                      className="chat-input"
-                      style={{
-                        padding: '20px',
-                        backgroundColor: '#ffffff',
-                        borderTop: '1px solid #e5e7eb',
-                        borderRadius: '0 0 12px 12px'
-                      }}
-                    >
-                      <div 
-                        className="input-container"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'flex-end',
-                          gap: '12px',
-                          backgroundColor: '#f9fafb',
-                          borderRadius: '16px',
-                          padding: '12px',
-                          border: '1px solid #e5e7eb',
-                          transition: 'all 0.2s ease'
+                    {/* 输入区域（用户/管理员视角） */}
+                    <div className="chat-input-bar">
+                      <textarea
+                        className="chat-textarea"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        placeholder={selectedSupport ? `发送消息...` : '回复客户...'}
+                        rows="1"
+                        disabled={isLoading}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            sendToSupport();
+                          }
                         }}
+                        onInput={(e) => {
+                          e.target.style.height = 'auto';
+                          e.target.style.height = Math.min(e.target.scrollHeight, 80) + 'px';
+                        }}
+                      />
+                      <button 
+                        className="send-button"
+                        onClick={sendToSupport}
+                        disabled={!newMessage.trim() || isLoading}
                       >
-                <textarea
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                          placeholder={`向 ${selectedSupport.username} 发送消息...`}
-                          rows="1"
-                  disabled={isLoading}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      sendToSupport();
-                    }
-                  }}
-                          style={{
-                            flex: 1,
-                            border: 'none',
-                            background: 'transparent',
-                            resize: 'none',
-                            outline: 'none',
-                            fontSize: '14px',
-                            lineHeight: '20px',
-                            color: '#374151',
-                            padding: '8px 0',
-                            minHeight: '20px',
-                            maxHeight: '80px',
-                            fontFamily: 'inherit'
-                          }}
-                          onInput={(e) => {
-                            e.target.style.height = 'auto';
-                            e.target.style.height = Math.min(e.target.scrollHeight, 80) + 'px';
-                          }}
-                />
-                <button 
-                          className="send-button"
-                  onClick={sendToSupport}
-                  disabled={!newMessage.trim() || isLoading}
-                          style={{
-                            backgroundColor: newMessage.trim() ? '#10b981' : '#d1d5db',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '12px',
-                            width: '40px',
-                            height: '40px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: newMessage.trim() ? 'pointer' : 'not-allowed',
-                            transition: 'all 0.2s ease',
-                            transform: newMessage.trim() ? 'scale(1)' : 'scale(0.95)',
-                            boxShadow: newMessage.trim() ? '0 2px 8px rgba(16, 185, 129, 0.3)' : 'none'
-                          }}
-                          onMouseEnter={(e) => {
-                            if (newMessage.trim()) {
-                              e.target.style.backgroundColor = '#059669';
-                              e.target.style.transform = 'scale(1.05)';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (newMessage.trim()) {
-                              e.target.style.backgroundColor = '#10b981';
-                              e.target.style.transform = 'scale(1)';
-                            }
-                          }}
-                        >
-                          {isLoading ? (
-                            <div 
-                              className="loading-spinner"
-                              style={{
-                                width: '16px',
-                                height: '16px',
-                                border: '2px solid transparent',
-                                borderTop: '2px solid white',
-                                borderRadius: '50%',
-                                animation: 'spin 1s linear infinite'
-                              }}
-                            ></div>
-                          ) : (
-                            <Send size={16} />
-                          )}
-                        </button>
-                      </div>
+                        {isLoading ? <div className="loading-spinner"></div> : <Send size={18} />}
+                      </button>
                     </div>
                   </>
                 ) : (
@@ -1018,7 +982,7 @@ const MessageCenter = ({ user, onLogout }) => {
                         backgroundColor: '#f9fafb',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '12px',
+                        justifyContent: 'space-between',
                         flexShrink: 0
                       }}
                     >
@@ -1140,28 +1104,10 @@ const MessageCenter = ({ user, onLogout }) => {
 
                     <div 
                       className="chat-input-section"
-                      style={{
-                        padding: '16px 20px',
-                        backgroundColor: '#ffffff',
-                        borderTop: '1px solid #e5e7eb',
-                        flexShrink: 0
-                      }}
                     >
-                      <div 
-                        style={{
-                          display: 'flex',
-                          alignItems: 'flex-end',
-                          gap: '12px',
-                          backgroundColor: '#f9fafb',
-                          borderRadius: '16px',
-                          padding: '12px',
-                          border: '1px solid #e5e7eb',
-                          transition: 'all 0.2s ease',
-                          maxWidth: '100%'
-                        }}
-                      >
+                      <div className="chat-input-bar">
                         <textarea
-                          className="chat-input"
+                          className="chat-textarea"
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
                           placeholder="回复客户..."
@@ -1173,73 +1119,18 @@ const MessageCenter = ({ user, onLogout }) => {
                               replyToCustomer();
                             }
                           }}
-                          style={{
-                            flex: 1,
-                            border: 'none',
-                            background: 'transparent',
-                            resize: 'none',
-                            outline: 'none',
-                            fontSize: '14px',
-                            lineHeight: '20px',
-                            color: '#374151',
-                            padding: '8px 0',
-                            minHeight: '20px',
-                            maxHeight: '80px',
-                            fontFamily: 'inherit'
-                          }}
                           onInput={(e) => {
                             e.target.style.height = 'auto';
                             e.target.style.height = Math.min(e.target.scrollHeight, 80) + 'px';
                           }}
                         />
                         <button 
-                          className="send-btn"
+                          className="send-button"
                           onClick={replyToCustomer}
                           disabled={!newMessage.trim() || isLoading}
-                          style={{
-                            backgroundColor: newMessage.trim() ? '#10b981' : '#d1d5db',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '12px',
-                            width: '40px',
-                            height: '40px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: newMessage.trim() ? 'pointer' : 'not-allowed',
-                            transition: 'all 0.2s ease',
-                            transform: newMessage.trim() ? 'scale(1)' : 'scale(0.95)',
-                            boxShadow: newMessage.trim() ? '0 2px 8px rgba(16, 185, 129, 0.3)' : 'none'
-                          }}
-                          onMouseEnter={(e) => {
-                            if (newMessage.trim()) {
-                              e.target.style.backgroundColor = '#059669';
-                              e.target.style.transform = 'scale(1.05)';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (newMessage.trim()) {
-                              e.target.style.backgroundColor = '#10b981';
-                              e.target.style.transform = 'scale(1)';
-                            }
-                          }}
                         >
-                          {isLoading ? (
-                            <div 
-                              className="loading-spinner"
-                              style={{
-                                width: '16px',
-                                height: '16px',
-                                border: '2px solid transparent',
-                                borderTop: '2px solid white',
-                                borderRadius: '50%',
-                                animation: 'spin 1s linear infinite'
-                              }}
-                            ></div>
-                          ) : (
-                  <Send size={18} />
-                          )}
-                </button>
+                          {isLoading ? <div className="loading-spinner"></div> : <Send size={18} />}
+                        </button>
                       </div>
                     </div>
                   </>

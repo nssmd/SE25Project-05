@@ -23,6 +23,61 @@ code {
 
 .App {
   min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  flex-direction: row;
+}
+
+.main-content {
+  display: flex;
+  flex-grow: 1;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.sidebar-closed {
+  margin-left: -250px;
+}
+
+@media (max-width: 768px) {
+  .main-content.sidebar-open {
+    margin-left: -250px;
+  }
+
+  .main-content.sidebar-closed {
+    margin-left: -250px;
+  }
+}
+
+.floating-sidebar-toggle {
+  position: fixed;
+  left: 12px;
+  top: 12px;
+  z-index: 2000;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  width: 42px;
+  height: 42px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.floating-sidebar-toggle:hover {
+  background: var(--bg-hover);
+  color: var(--primary-500);
+  border-color: var(--primary-300);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: scale(1.05);
+}
+
+.floating-sidebar-toggle:active {
+  transform: scale(0.95);
 }
 
 /* Global button styles */
@@ -93,4 +148,44 @@ input, textarea, select {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* 深色模式浮动按钮适配 */
+.dark-mode .floating-sidebar-toggle {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .floating-sidebar-toggle:hover {
+  background: var(--bg-hover);
+  color: var(--primary-500);
+  border-color: var(--primary-400);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.dark-mode .floating-sidebar-toggle:active {
+  background: var(--bg-secondary);
+}
+
+/* 桌面端响应式浮动按钮优化 */
+@media (min-width: 1024px) {
+  .floating-sidebar-toggle {
+    left: 16px;
+    top: 16px;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .floating-sidebar-toggle {
+    left: 20px;
+    top: 20px;
+    width: 46px;
+    height: 46px;
+    border-radius: 16px;
+  }
 }

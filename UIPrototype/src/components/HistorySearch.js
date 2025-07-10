@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, Calendar, Clock, MessageSquare, Filter, X, ArrowLeft } from 'lucide-react';
 import { historyAPI } from '../services/api';
 import './HistorySearch.css';
+import UserCorner from "./UserCorner";
 
 const HistorySearch = ({ user, onLogout }) => {
   const navigate = useNavigate();
@@ -63,10 +64,8 @@ const HistorySearch = ({ user, onLogout }) => {
   const getAiTypeIcon = (type) => {
     const icons = {
       'text_to_text': '💬',
-      'text_to_image': '🎨',
-      'image_to_image': '🖼️',
-      'image_to_text': '📝',
-      'text_to_video': '🎥',
+      'smart_image_generation': '🎨',
+      'prompt_template_library': '🧠',
       'text_to_3d': '🎲'
     };
     return icons[type] || '💬';
@@ -75,14 +74,12 @@ const HistorySearch = ({ user, onLogout }) => {
   // 获取AI类型名称
   const getAiTypeName = (type) => {
     const names = {
-      'text_to_text': '文生文',
-      'text_to_image': '文生图',
-      'image_to_image': '图生图',
-      'image_to_text': '图生文',
-      'text_to_video': '文生视频',
+      'text_to_text': '智能对话',
+      'smart_image_generation': '智能生图',
+      'prompt_template_library': 'AI模板库',
       'text_to_3d': '文生3D'
     };
-    return names[type] || '文生文';
+    return names[type] || '智能对话';
   };
 
   // 格式化日期
@@ -128,21 +125,18 @@ const HistorySearch = ({ user, onLogout }) => {
   return (
     <div className="history-search">
       <header className="page-header">
-        <button 
-          className="back-button"
-          onClick={() => navigate('/dashboard')}
-        >
-          <ArrowLeft size={20} />
-          返回主界面
-        </button>
+        {/*<button */}
+        {/*  className="back-button"*/}
+        {/*  onClick={() => navigate('/dashboard')}*/}
+        {/*>*/}
+        {/*  <ArrowLeft size={20} />*/}
+        {/*  返回主界面*/}
+        {/*</button>*/}
         <div className="header-content">
           <h1>历史记录搜索</h1>
           <p>搜索您的对话历史，快速找到需要的内容</p>
         </div>
-        <div className="user-info">
-          <span>{user?.username || user?.name}</span>
-          <button onClick={onLogout} className="logout-btn">退出</button>
-        </div>
+        <UserCorner user={user} onLogout={onLogout} />
       </header>
       
       <div className="search-content">
@@ -200,12 +194,10 @@ const HistorySearch = ({ user, onLogout }) => {
               onChange={(e) => setFilters({...filters, aiType: e.target.value})}
             >
               <option value="all">全部功能</option>
-              <option value="text-to-text">文生文</option>
-              <option value="text-to-image">文生图</option>
-              <option value="image-to-text">图生文</option>
-              <option value="image-to-image">图生图</option>
+              <option value="text-to-text">智能对话</option>
+              <option value="smart-image-generation">智能生图</option>
+              <option value="prompt-template-library">AI模板库</option>
               <option value="text-to-3d">文生3D</option>
-              <option value="text-to-video">文生视频</option>
             </select>
           </div>
 

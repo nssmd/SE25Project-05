@@ -1,0 +1,903 @@
+/* 移动端深色模式样式 */
+
+/* 深色模式移动端完整适配 */
+@media (max-width: 768px) {
+  /* 移动端侧边栏遮罩深色模式适配 */
+  .dark-mode .sidebar-overlay {
+    background: rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(8px) !important;
+  }
+
+  /* 移动端浮动按钮深色模式适配 */
+  .dark-mode .floating-sidebar-toggle {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-primary) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark-mode .floating-sidebar-toggle:hover {
+    background: var(--bg-hover) !important;
+    color: var(--primary-500) !important;
+    border-color: var(--primary-400) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .dark-mode .floating-sidebar-toggle:active {
+    background: var(--bg-secondary) !important;
+  }
+
+  /* 移动端全局背景深色适配 */
+  .dark-mode {
+    background: var(--bg-secondary) !important;
+  }
+
+  .dark-mode body {
+    background: var(--bg-secondary) !important;
+  }
+
+  .dark-mode .content-area {
+    background: var(--bg-secondary) !important;
+  }
+
+  .dark-mode .feature-content {
+    background: var(--bg-secondary) !important;
+  }
+
+  /* 移动端顶栏深色适配 */
+  .dark-mode .main-header {
+    background: var(--bg-primary) !important;
+    border-bottom-color: var(--border-primary) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark-mode .header-left h1 {
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .header-left p {
+    color: var(--text-tertiary) !important;
+  }
+
+  /* 深色模式下统一按钮样式 */
+  .dark-mode .main-header .theme-toggle-btn,
+  .dark-mode .main-header .header-btn {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-primary) !important;
+  }
+
+  .dark-mode .main-header .theme-toggle-btn:hover,
+  .dark-mode .main-header .header-btn:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--primary-500) !important;
+    border-color: var(--primary-300) !important;
+  }
+
+  /* 深色模式下的model-status容器背景与页面一致 */
+  .dark-mode .model-status {
+    background: transparent !important; /* 透明背景，与父容器保持一致 */
+  }
+
+  .dark-mode .model-status .status-item {
+    background: var(--bg-tertiary) !important; /* 和web端保持一致 */
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .model-status .status-item:first-child::after {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .model-status .status-item::after {
+    color: var(--primary-500) !important;
+  }
+
+  /* 深色模式下也隐藏用户名和退出登录按钮 */
+  .dark-mode .main-header .user-name,
+  .dark-mode .main-header .user-email,
+  .dark-mode .main-header .logout-btn,
+  .dark-mode .main-header .logout-button,
+  .dark-mode .main-header .user-info span,
+  .dark-mode .main-header .user-details,
+  .dark-mode .main-header .user-info .user-details {
+    display: none !important;
+  }
+
+  /* 深色模式下显示模型状态图标 */
+  .dark-mode .model-status svg,
+  .dark-mode .model-status .status-icon {
+    display: inline-flex !important; /* 显示图标 */
+    width: 1rem !important; /* 和web端一致的大小 */
+    height: 1rem !important; /* 和web端一致的大小 */
+    flex-shrink: 0 !important;
+    color: var(--text-secondary) !important; /* 深色模式下的颜色 */
+  }
+
+  /* 移动端功能选择栏深色适配 */
+  .dark-mode .feature-header {
+    background: var(--bg-primary) !important;
+    border-bottom-color: var(--border-primary) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .dark-mode .feature-title h2 {
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .feature-icon {
+    color: var(--primary-500) !important;
+  }
+
+  .dark-mode .model-selector label {
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .model-select {
+    background: var(--bg-primary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .model-select:focus {
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3) !important;
+  }
+
+  .dark-mode .model-select:hover {
+    border-color: var(--primary-400) !important;
+  }
+
+  /* 移动端对话控制深色适配 */
+  .dark-mode .mobile-chat-controls {
+    background: var(--bg-secondary) !important;
+    border-top-color: var(--border-secondary) !important;
+  }
+
+  .dark-mode .mobile-chat-controls .new-chat-btn.mobile {
+    background: var(--primary-500) !important;
+    color: white !important;
+  }
+
+  .dark-mode .mobile-chat-controls .new-chat-btn.mobile:hover {
+    background: var(--primary-600) !important;
+  }
+
+  .dark-mode .mobile-chat-controls .toggle-chat-list {
+    background: var(--bg-primary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .mobile-chat-controls .toggle-chat-list:hover {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--primary-400) !important;
+    color: var(--primary-500) !important;
+  }
+
+  .dark-mode .mobile-chat-controls .toggle-chat-list.prominent {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border-color: var(--primary-500) !important;
+  }
+
+  .dark-mode .mobile-chat-controls .chat-title {
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .mobile-chat-controls .chat-message-count {
+    color: var(--text-tertiary) !important;
+    background: var(--bg-primary) !important;
+  }
+
+  /* 移动端历史记录深色适配 */
+  .dark-mode .chat-list {
+    background: var(--bg-primary) !important;
+  }
+
+  .dark-mode .chat-list-sidebar {
+    background: var(--bg-primary) !important;
+  }
+
+  .dark-mode .chat-item {
+    background: var(--bg-primary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .chat-item:hover {
+    background: var(--bg-secondary) !important;
+    border-color: var(--primary-300) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark-mode .chat-item.active {
+    background: var(--primary-50) !important;
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3) !important;
+  }
+
+  .dark-mode .chat-title {
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .chat-meta {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .message-count {
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .last-activity {
+    color: var(--text-tertiary) !important;
+  }
+
+  /* 移动端 more-actions-btn 深色模式 */
+  .dark-mode .more-actions-btn {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--border-secondary) !important;
+    color: var(--text-primary) !important; /* 深色模式下更明显的颜色 */
+  }
+
+  .dark-mode .more-actions-btn:hover {
+    background: var(--bg-hover) !important;
+    border-color: var(--border-focus) !important;
+    color: var(--primary-500) !important;
+  }
+
+  .dark-mode .more-actions-btn:active {
+    background: var(--bg-secondary) !important;
+  }
+
+  /* 移动端context menu定位优化 - 显示在左侧 */
+  .context-menu {
+    position: fixed !important;
+    transform: translateX(-100%) !important; /* 向左偏移自身宽度 */
+    min-width: 180px !important; /* 增加最小宽度以确保内容可见 */
+    max-width: 220px !important; /* 限制最大宽度 */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+    border-radius: 12px !important; /* 更圆润的边角 */
+    padding: 0.75rem 0 !important; /* 增加内边距 */
+    backdrop-filter: blur(10px) !important; /* 添加毛玻璃效果 */
+    z-index: 2000 !important; /* 提高层级确保在最上层 */
+    animation: contextMenuSlideIn 0.2s ease-out !important; /* 添加进入动画 */
+  }
+
+  @keyframes contextMenuSlideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-100%) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-100%) scale(1);
+    }
+  }
+
+  .context-menu-item {
+    padding: 0.75rem 1rem !important; /* 增加触摸目标 */
+    font-size: 0.9rem !important; /* 稍微增大字体 */
+    gap: 0.75rem !important; /* 增加图标和文字间距 */
+    border-radius: 8px !important; /* 为菜单项添加圆角 */
+    margin: 0 0.5rem !important; /* 为菜单项添加左右边距 */
+    transition: all 0.2s ease !important;
+  }
+
+  .context-menu-item:hover {
+    background-color: var(--bg-tertiary) !important; /* 使用主题色 */
+    transform: translateX(2px) !important; /* 轻微向右移动 */
+  }
+
+  .context-menu-item.delete:hover {
+    background-color: var(--error-bg) !important; /* 删除项使用错误色背景 */
+    color: var(--error) !important;
+  }
+
+  .context-menu-divider {
+    margin: 0.5rem 1rem !important; /* 增加分割线边距 */
+    background-color: var(--border-primary) !important; /* 使用主题色 */
+    opacity: 0.5 !important;
+  }
+
+  /* 移动端空状态深色适配 */
+  .dark-mode .empty-chats {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .empty-chats h3 {
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .empty-chats p {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .empty-chats svg {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .start-chat-btn {
+    background: var(--primary-500) !important;
+    color: white !important;
+  }
+
+  .dark-mode .start-chat-btn:hover {
+    background: var(--primary-600) !important;
+  }
+
+  /* 移动端显示历史按钮深色适配 */
+  .dark-mode .toggle-chat-list {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .toggle-chat-list:hover {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--primary-400) !important;
+    color: var(--primary-500) !important;
+  }
+
+  .dark-mode .toggle-chat-list.prominent {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 2px 8px rgba(96, 165, 250, 0.5) !important;
+    animation: pulse 2s infinite !important;
+  }
+
+  .dark-mode .toggle-chat-list.prominent:hover {
+    background: var(--primary-600) !important;
+    border-color: var(--primary-600) !important;
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.6) !important;
+  }
+
+  /* 移动端对话头部深色适配 */
+  .dark-mode .chat-header {
+    background: var(--bg-primary) !important;
+    border-bottom-color: var(--border-primary) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .dark-mode .current-chat-info h4 {
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .chat-message-count {
+    color: var(--text-tertiary) !important;
+  }
+
+  /* 移动端输入框深色适配 */
+  .dark-mode .chat-input {
+    background: var(--bg-primary) !important;
+    border-top-color: var(--border-primary) !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .dark-mode .chat-input input,
+  .dark-mode .chat-input textarea {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .chat-input input:focus,
+  .dark-mode .chat-input textarea:focus {
+    border-color: var(--primary-500) !important;
+    background: var(--bg-primary) !important;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3) !important;
+  }
+
+  .dark-mode .chat-input input::placeholder,
+  .dark-mode .chat-input textarea::placeholder {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .send-button {
+    background: var(--primary-500) !important;
+    color: white !important;
+  }
+
+  .dark-mode .send-button:hover:not(:disabled) {
+    background: var(--primary-600) !important;
+  }
+
+  .dark-mode .send-button:disabled {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-tertiary) !important;
+  }
+
+  /* 移动端对话消息深色适配 */
+  .dark-mode .chat-messages {
+    background: var(--bg-primary) !important;
+  }
+
+  .dark-mode .chat-container {
+    background: var(--bg-primary) !important;
+  }
+
+  .dark-mode .empty-chat {
+    background: var(--bg-primary) !important;
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .empty-chat h3 {
+    color: var(--text-secondary) !important;
+  }
+
+  .dark-mode .empty-chat p {
+    color: var(--text-tertiary) !important;
+  }
+
+  .dark-mode .empty-chat svg {
+    color: var(--text-tertiary) !important;
+  }
+
+  /* 移动端通用按钮深色适配 */
+  .dark-mode .btn,
+  .dark-mode button {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .btn:hover,
+  .dark-mode button:hover {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--primary-400) !important;
+    color: var(--primary-500) !important;
+  }
+
+  .dark-mode .btn-primary,
+  .dark-mode button.primary {
+    background: var(--primary-500) !important;
+    color: white !important;
+    border-color: var(--primary-500) !important;
+  }
+
+  .dark-mode .btn-primary:hover,
+  .dark-mode button.primary:hover {
+    background: var(--primary-600) !important;
+    border-color: var(--primary-600) !important;
+  }
+
+  /* 移动端输入框深色适配 */
+  .dark-mode input,
+  .dark-mode textarea,
+  .dark-mode select {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode input:focus,
+  .dark-mode textarea:focus,
+  .dark-mode select:focus {
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3) !important;
+  }
+
+  .dark-mode input::placeholder,
+  .dark-mode textarea::placeholder {
+    color: var(--text-tertiary) !important;
+  }
+
+  /* 移动端卡片深色适配 */
+  .dark-mode .card,
+  .dark-mode .modal,
+  .dark-mode .panel {
+    background: var(--bg-primary) !important;
+    border-color: var(--border-primary) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  }
+}
+
+/* 极小屏幕深色模式适配 */
+@media (max-width: 480px) {
+  /* 极小屏幕浮动按钮深色模式适配 */
+  .dark-mode .floating-sidebar-toggle {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .dark-mode .floating-sidebar-toggle:hover {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  /* 极小屏幕特定的深色模式调整 */
+  .dark-mode .main-header {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .dark-mode .feature-header {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark-mode .chat-input {
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .dark-mode .send-button {
+    box-shadow: 0 2px 6px rgba(96, 165, 250, 0.6) !important;
+  }
+
+  .dark-mode .send-button:hover:not(:disabled) {
+    box-shadow: 0 3px 8px rgba(96, 165, 250, 0.7) !important;
+  }
+
+  .dark-mode .toggle-chat-list.prominent {
+    box-shadow: 0 2px 6px rgba(96, 165, 250, 0.6) !important;
+  }
+
+  .dark-mode .toggle-chat-list.prominent:hover {
+    box-shadow: 0 3px 8px rgba(96, 165, 250, 0.7) !important;
+  }
+
+  .dark-mode .chat-item:hover {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .dark-mode .card,
+  .dark-mode .modal,
+  .dark-mode .panel {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  /* 极小屏幕深色模式下也隐藏用户名和退出登录按钮 */
+  .dark-mode .main-header .user-name,
+  .dark-mode .main-header .user-email,
+  .dark-mode .main-header .logout-btn,
+  .dark-mode .main-header .logout-button,
+  .dark-mode .main-header .user-info span,
+  .dark-mode .main-header .user-details,
+  .dark-mode .main-header .user-info .user-details {
+    display: none !important;
+  }
+
+  /* 极小屏幕深色模式下显示模型状态图标 */
+  .dark-mode .model-status svg,
+  .dark-mode .model-status .status-icon {
+    display: inline-flex !important; /* 显示图标 */
+    width: 0.9rem !important; /* 极小屏幕稍微小一点 */
+    height: 0.9rem !important; /* 极小屏幕稍微小一点 */
+    flex-shrink: 0 !important;
+    color: var(--text-secondary) !important; /* 深色模式下的颜色 */
+  }
+
+  /* 极小屏幕深色模式下的 more-actions-btn */
+  .dark-mode .more-actions-btn {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--border-secondary) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark-mode .more-actions-btn:hover {
+    background: var(--bg-hover) !important;
+    border-color: var(--border-focus) !important;
+    color: var(--primary-500) !important;
+  }
+
+  /* 极小屏幕context menu优化 */
+  .context-menu {
+    min-width: 160px !important; /* 极小屏幕减小最小宽度 */
+    max-width: 200px !important; /* 极小屏幕减小最大宽度 */
+    padding: 0.5rem 0 !important; /* 减少内边距 */
+    border-radius: 10px !important; /* 稍微小一点的圆角 */
+  }
+
+  .context-menu-item {
+    padding: 0.6rem 0.75rem !important; /* 减少触摸目标 */
+    font-size: 0.85rem !important; /* 稍微减小字体 */
+    gap: 0.5rem !important; /* 减少图标和文字间距 */
+  }
+
+  .context-menu-divider {
+    margin: 0.4rem 0.75rem !important; /* 减少分割线边距 */
+  }
+}
+
+/* 全局深色模式适配 */
+.dark-mode {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* 深色模式下的全局背景适配 */
+.dark-mode html {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode body {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode .content-area {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode .feature-content {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode .dashboard {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark-mode .main-content {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* 深色模式动画过渡优化 */
+.dark-mode * {
+  transition: background-color 0.3s ease, 
+              border-color 0.3s ease, 
+              color 0.3s ease,
+              box-shadow 0.3s ease !important;
+}
+
+/* 深色模式下的图标颜色调整 */
+.dark-mode svg {
+  color: inherit !important;
+}
+
+.dark-mode .feature-icon {
+  color: var(--primary-500) !important;
+}
+
+.dark-mode .theme-toggle-btn svg {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .model-status svg {
+  display: inline-flex !important; /* 显示图标 */
+  width: 1rem !important; /* 和web端一致的大小 */
+  height: 1rem !important; /* 和web端一致的大小 */
+  flex-shrink: 0 !important;
+  color: var(--text-secondary) !important;
+}
+
+/* 深色模式下的滚动条适配 */
+.dark-mode ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+  background: var(--bg-tertiary) !important;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background: var(--border-secondary) !important;
+  border-radius: 4px;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted) !important;
+}
+
+/* 深色模式下的文本选择 */
+.dark-mode ::selection {
+  background-color: var(--primary-600) !important;
+  color: white !important;
+}
+
+/* 深色模式下的边框线适配 */
+.dark-mode hr,
+.dark-mode .divider {
+  border-color: var(--border-primary) !important;
+}
+
+/* 深色模式下的列表项适配 */
+.dark-mode .list-item {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .list-item:hover {
+  background: var(--bg-secondary) !important;
+  border-color: var(--primary-300) !important;
+}
+
+/* 深色模式下的表格适配 */
+.dark-mode table {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode table th {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode table td {
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode table tr:hover {
+  background: var(--bg-hover) !important;
+}
+
+/* 深色模式下的导航标签适配 */
+.dark-mode .nav-tabs,
+.dark-mode .tabs {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.dark-mode .nav-tab,
+.dark-mode .tab {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .nav-tab:hover,
+.dark-mode .tab:hover {
+  background: var(--bg-tertiary) !important;
+  color: var(--primary-500) !important;
+}
+
+.dark-mode .nav-tab.active,
+.dark-mode .tab.active {
+  background: var(--primary-500) !important;
+  color: white !important;
+  border-color: var(--primary-500) !important;
+}
+
+/* 深色模式下的模态框适配 */
+.dark-mode .modal-dialog {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6) !important;
+}
+
+.dark-mode .modal-header {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .modal-body {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .modal-footer {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* 深色模式下的表单适配 */
+.dark-mode .form-group {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .form-label {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode .form-control {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .form-control:focus {
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3) !important;
+}
+
+/* 深色模式下的代码块适配 */
+.dark-mode code,
+.dark-mode pre {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* 深色模式下的引用块适配 */
+.dark-mode blockquote {
+  background: var(--bg-secondary) !important;
+  border-left-color: var(--primary-500) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 深色模式下的提示框适配 */
+.dark-mode .alert {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .alert-success {
+  background: var(--success-bg) !important;
+  border-color: var(--success) !important;
+  color: var(--success) !important;
+}
+
+.dark-mode .alert-warning {
+  background: var(--warning-bg) !important;
+  border-color: var(--warning) !important;
+  color: var(--warning) !important;
+}
+
+.dark-mode .alert-error {
+  background: var(--error-bg) !important;
+  border-color: var(--error) !important;
+  color: var(--error) !important;
+}
+
+.dark-mode .alert-info {
+  background: var(--info-bg) !important;
+  border-color: var(--info) !important;
+  color: var(--info) !important;
+}
+
+/* 深色模式下的工具栏适配 */
+.dark-mode .toolbar {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.dark-mode .toolbar button {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .toolbar button:hover {
+  background: var(--bg-tertiary) !important;
+  color: var(--primary-500) !important;
+}
+
+/* 桌面端深色模式完整适配 */
+@media (min-width: 769px) {
+  /* 桌面端深色模式恢复用户名和退出登录按钮的显示 */
+  .dark-mode .main-header .user-name,
+  .dark-mode .main-header .user-email,
+  .dark-mode .main-header .logout-btn,
+  .dark-mode .main-header .logout-button,
+  .dark-mode .main-header .user-info span,
+  .dark-mode .main-header .user-details,
+  .dark-mode .main-header .user-info .user-details {
+    display: flex !important;
+  }
+
+  /* 桌面端深色模式恢复模型状态图标的显示 */
+  .dark-mode .model-status svg,
+  .dark-mode .model-status .status-icon {
+    display: inline-flex !important;
+  }
+
+  /* 桌面端深色模式也隐藏after伪元素，使用svg图标 */
+  .dark-mode .model-status .status-item::after {
+    display: none !important;
+  }
+}
+
+/* 桌面端大屏幕深色模式适配 */
+@media (min-width: 1440px) {
+  /* 大屏幕桌面端深色模式恢复用户名和退出登录按钮的显示 */
+  .dark-mode .main-header .user-name,
+  .dark-mode .main-header .user-email,
+  .dark-mode .main-header .logout-btn,
+  .dark-mode .main-header .logout-button,
+  .dark-mode .main-header .user-info span,
+  .dark-mode .main-header .user-details,
+  .dark-mode .main-header .user-info .user-details {
+    display: flex !important;
+  }
+
+  /* 大屏幕桌面端深色模式恢复模型状态图标的显示 */
+  .dark-mode .model-status svg,
+  .dark-mode .model-status .status-icon {
+    display: inline-flex !important;
+  }
+
+  /* 大屏幕桌面端深色模式也隐藏after伪元素，使用svg图标 */
+  .dark-mode .model-status .status-item::after {
+    display: none !important;
+  }
+} 
