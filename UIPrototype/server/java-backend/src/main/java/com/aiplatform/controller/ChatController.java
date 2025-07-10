@@ -10,6 +10,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,7 +44,8 @@ public class ChatController {
             // 解析请求参数
             String title = (String) request.get("title");
             String aiTypeStr = (String) request.get("aiType");
-            Chat.AiType aiType = Chat.AiType.text_to_text; // 默认值
+            String aiModel = (String) request.get("aiModel"); // 获取模型参数
+            Chat.AiType aiType = Chat.AiType.text_to_text; // 默认值，与实体类保持一致
             
             if (aiTypeStr != null) {
                 try {
@@ -51,14 +55,22 @@ public class ChatController {
                 }
             }
             
+            log.info("创建聊天会话: title={}, aiType={}, aiModel={}", title, aiType, aiModel);
+            
             // 创建聊天会话
             Chat chat = chatService.createChat(userId, title, aiType);
+            
+            // 如果指定了模型，更新模型设置
+            if (aiModel != null && !aiModel.trim().isEmpty()) {
+                chat = chatService.updateChatModel(chat.getId(), aiModel);
+            }
             
             // 准备响应数据
             Map<String, Object> chatData = new HashMap<>();
             chatData.put("id", chat.getId());
             chatData.put("title", chat.getTitle());
             chatData.put("aiType", chat.getAiType().name());
+            chatData.put("aiModel", chat.getAiModel()); // 包含模型信息
             chatData.put("createdAt", chat.getCreatedAt());
             chatData.put("messageCount", chat.getMessageCount());
             
@@ -91,20 +103,69 @@ public class ChatController {
             Long userId = getCurrentUserId();
             
             String userMessage = (String) request.get("content");
-            String roleStr = (String) request.get("role");
+            String aiType = (String) request.getOrDefault("aiType", "text_to_text");
+            String model = (String) request.get("model");
+            String aiModel = (String) request.get("aiModel"); // 获取模型参数
             
-            if (userMessage == null || userMessage.trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(createErrorResponse("消息内容不能为空"));
+            // 处理附件
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> attachments = (List<Map<String, Object>>) request.get("attachments");
+            
+            // 如果既没有文本内容也没有附件，返回错误
+            if ((userMessage == null || userMessage.trim().isEmpty()) && (attachments == null || attachments.isEmpty())) {
+                return ResponseEntity.badRequest().body(createErrorResponse("消息内容和附件不能同时为空"));
             }
             
-            log.info("用户消息: {}", userMessage);
+            // 如果没有文本内容但有附件，设置默认文本
+            if (userMessage == null || userMessage.trim().isEmpty()) {
+                userMessage = "请分析这张图片";
+            }
+            
+            log.info("用户消息: {}, AI类型: {}, 模型: {}, 附件数量: {}", 
+                     userMessage, aiType, model != null ? model : aiModel, 
+                     attachments != null ? attachments.size() : 0);
             
             // 保存用户消息
             Message userMessageEntity = chatService.sendMessage(
                 chatId, userId, userMessage, Message.MessageRole.user);
             
-            // 生成AI回复
-            String aiResponse = chatService.generateAIResponse(userMessage);
+            // 如果有附件，关联到消息
+            if (attachments != null && !attachments.isEmpty()) {
+                chatService.attachFilesToMessage(userMessageEntity.getId(), attachments);
+            }
+            
+            // 构建AI参数
+            Map<String, Object> aiOptions = new HashMap<>();
+            if (request.containsKey("imageUrl")) {
+                aiOptions.put("imageUrl", request.get("imageUrl"));
+            }
+            if (request.containsKey("audioFile")) {
+                aiOptions.put("audioFile", request.get("audioFile"));
+            }
+            if (request.containsKey("inputs")) {
+                aiOptions.put("inputs", request.get("inputs"));
+            }
+            if (request.containsKey("maxTokens")) {
+                aiOptions.put("maxTokens", request.get("maxTokens"));
+            }
+            if (request.containsKey("temperature")) {
+                aiOptions.put("temperature", request.get("temperature"));
+            }
+            if (request.containsKey("size")) {
+                aiOptions.put("size", request.get("size"));
+            }
+            if (request.containsKey("quality")) {
+                aiOptions.put("quality", request.get("quality"));
+            }
+            
+            // 如果有附件，传递消息ID以便AI服务获取图片
+            if (attachments != null && !attachments.isEmpty()) {
+                aiOptions.put("messageId", userMessageEntity.getId());
+            }
+            
+            // 生成AI回复 - 使用新的智能对话接口（优先使用 aiModel 参数）
+            String effectiveModel = aiModel != null ? aiModel : model;
+            String aiResponse = chatService.generateAIResponse(userMessage, aiType, effectiveModel, aiOptions);
             
             // 保存AI回复消息
             Message aiMessageEntity = chatService.sendMessage(
@@ -262,6 +323,73 @@ public class ChatController {
         } catch (Exception e) {
             log.error("更新对话标题系统异常: ", e);
             return ResponseEntity.internalServerError().body(createErrorResponse("操作失败"));
+        }
+    }
+
+    @Operation(summary = "更新对话模型", description = "更新聊天会话使用的AI模型")
+    @PatchMapping("/{chatId}/model")
+    public ResponseEntity<Map<String, Object>> updateModel(
+            @PathVariable Long chatId, 
+            @RequestBody Map<String, Object> request) {
+        try {
+            log.info("更新对话模型: {}", chatId);
+            
+            Long userId = getCurrentUserId();
+            String aiModel = (String) request.get("aiModel");
+            
+            if (aiModel == null || aiModel.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(createErrorResponse("模型参数不能为空"));
+            }
+            
+            Chat chat = chatService.updateChatModel(chatId, userId, aiModel);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("aiModel", chat.getAiModel());
+            response.put("message", "模型更新成功");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (BusinessException e) {
+            log.error("更新对话模型业务异常: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(createErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("更新对话模型系统异常: ", e);
+            return ResponseEntity.internalServerError().body(createErrorResponse("操作失败"));
+        }
+    }
+
+    @Operation(summary = "获取用户聊天列表", description = "获取当前用户的聊天会话列表")
+    @GetMapping("/list")
+    public ResponseEntity<Map<String, Object>> getUserChatList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        try {
+            log.info("获取用户聊天列表: page={}, size={}", page, size);
+            
+            // 获取当前用户ID
+            Long userId = getCurrentUserId();
+            
+            // 获取聊天列表
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Chat> chatPage = chatService.getUserChats(userId, pageable);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("chats", chatPage.getContent());
+            response.put("totalElements", chatPage.getTotalElements());
+            response.put("totalPages", chatPage.getTotalPages());
+            response.put("currentPage", page);
+            response.put("size", size);
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (BusinessException e) {
+            log.error("获取聊天列表业务异常: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(createErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("获取聊天列表系统异常: ", e);
+            return ResponseEntity.internalServerError().body(createErrorResponse("获取聊天列表失败"));
         }
     }
 

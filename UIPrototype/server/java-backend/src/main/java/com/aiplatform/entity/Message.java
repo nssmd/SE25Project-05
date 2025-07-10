@@ -58,6 +58,11 @@ public class Message {
     @JsonIgnore
     private Chat chat;
 
+    // 关联附件
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "message_id")
+    private java.util.List<MessageAttachment> attachments;
+
     // 业务方法
     public boolean isUserMessage() {
         return role == MessageRole.user;
@@ -84,6 +89,25 @@ public class Message {
 
     public boolean belongsToChat(Long chatId) {
         return this.chatId != null && this.chatId.equals(chatId);
+    }
+
+    // 附件相关方法
+    public boolean hasAttachments() {
+        return attachments != null && !attachments.isEmpty();
+    }
+
+    public boolean hasImages() {
+        return hasAttachments() && attachments.stream()
+                .anyMatch(MessageAttachment::isImage);
+    }
+
+    public java.util.List<MessageAttachment> getImageAttachments() {
+        if (!hasAttachments()) {
+            return java.util.Collections.emptyList();
+        }
+        return attachments.stream()
+                .filter(MessageAttachment::isImage)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     // 设置创建时间

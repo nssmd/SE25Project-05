@@ -2,9 +2,11 @@ package com.aiplatform.service;
 
 import com.aiplatform.entity.Chat;
 import com.aiplatform.entity.Message;
+import com.aiplatform.entity.MessageAttachment;
 import com.aiplatform.entity.User;
 import com.aiplatform.repository.ChatRepository;
 import com.aiplatform.repository.MessageRepository;
+import com.aiplatform.repository.MessageAttachmentRepository;
 import com.aiplatform.repository.UserRepository;
 import com.aiplatform.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +28,9 @@ public class ChatService {
 
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
+    private final MessageAttachmentRepository messageAttachmentRepository;
     private final UserRepository userRepository;
+    private final AiService aiService;
 
     /**
      * 创建新的聊天会话
@@ -40,7 +45,7 @@ public class ChatService {
         Chat chat = new Chat();
         chat.setUserId(userId);
         chat.setTitle(title != null && !title.trim().isEmpty() ? title : "新对话");
-        chat.setAiType(aiType != null ? aiType : Chat.AiType.text_to_text);
+        chat.setAiType(aiType != null ? aiType : Chat.AiType.conversation);
         chat.setIsFavorite(false);
         chat.setIsProtected(false);
         chat.setMessageCount(0);
@@ -88,7 +93,26 @@ public class ChatService {
         chatRepository.findByIdAndUserId(chatId, userId)
             .orElseThrow(() -> new BusinessException("聊天会话不存在或无权限访问"));
         
-        return messageRepository.findByChatIdOrderByCreatedAtAsc(chatId);
+        // 获取消息列表
+        List<Message> messages = messageRepository.findByChatIdOrderByCreatedAtAsc(chatId);
+        
+        // 手动加载每个消息的附件信息
+        for (Message message : messages) {
+            List<MessageAttachment> attachments = messageAttachmentRepository.findByMessageIdOrderByCreatedAtAsc(message.getId());
+            log.debug("消息 {} 的附件数量: {}", message.getId(), attachments.size());
+            
+            // 为每个附件添加调试信息
+            for (MessageAttachment attachment : attachments) {
+                log.debug("附件详情: fileName={}, originalName={}, isImage={}, fileUrl={}", 
+                        attachment.getFileName(), attachment.getOriginalName(), 
+                        attachment.isImage(), attachment.getFileUrl());
+            }
+            
+            message.setAttachments(attachments);
+        }
+        
+        log.info("返回 {} 条消息", messages.size());
+        return messages;
     }
 
     /**
@@ -97,6 +121,15 @@ public class ChatService {
     public Page<Chat> getUserChats(Long userId, Pageable pageable) {
         log.info("获取用户聊天列表: userId={}", userId);
         return chatRepository.findByUserIdOrderByLastActivityDesc(userId, pageable);
+    }
+
+    /**
+     * 根据ID获取聊天会话
+     */
+    public Chat getChatById(Long chatId) {
+        log.info("根据ID获取聊天会话: chatId={}", chatId);
+        return chatRepository.findById(chatId)
+                .orElseThrow(() -> new BusinessException("聊天会话不存在"));
     }
 
     /**
@@ -158,27 +191,135 @@ public class ChatService {
     }
 
     /**
-     * 生成AI回复（临时实现）
+     * 生成AI回复
      */
-    public String generateAIResponse(String userMessage) {
+    public String generateAIResponse(String userMessage, String aiType, String model, Map<String, Object> options) {
         if (userMessage == null || userMessage.trim().isEmpty()) {
             return "请输入您的问题。";
         }
         
-        String message = userMessage.toLowerCase().trim();
+        try {
+            // 使用新的AiService生成回复
+            return aiService.generateResponse(userMessage, aiType, model, options);
+            
+        } catch (Exception e) {
+            log.error("AI回复生成失败: ", e);
+            return "抱歉，AI服务暂时遇到问题，请稍后再试。如果问题持续存在，请联系管理员。";
+        }
+    }
+
+    /**
+     * 更新聊天会话的AI模型
+     */
+    public Chat updateChatModel(Long chatId, String modelId) {
+        Chat chat = chatRepository.findById(chatId)
+            .orElseThrow(() -> new BusinessException("聊天会话不存在"));
         
-        if (message.contains("你好") || message.contains("hello")) {
-            return "你好！我是AI助手，很高兴为您服务。有什么我可以帮助您的吗？";
-        } else if (message.contains("天气")) {
-            return "很抱歉，我目前无法获取实时天气信息。您可以查看天气预报应用或网站获取准确的天气信息。";
-        } else if (message.contains("时间")) {
-            return "当前时间是：" + LocalDateTime.now().toString();
-        } else if (message.contains("帮助")) {
-            return "我是您的AI助手，可以回答问题、提供建议、协助处理各种任务。请告诉我您需要什么帮助？";
-        } else if (message.contains("功能")) {
-            return "我目前支持文本对话功能。未来将支持图像生成、图像识别、视频生成等更多AI功能。";
+        chat.setAiModel(modelId);
+        Chat savedChat = chatRepository.save(chat);
+        
+        log.info("更新聊天模型: chatId={}, model={}", chatId, modelId);
+        return savedChat;
+    }
+
+    /**
+     * 更新聊天会话的AI模型（带用户权限验证）
+     */
+    public Chat updateChatModel(Long chatId, Long userId, String modelId) {
+        Chat chat = chatRepository.findByIdAndUserId(chatId, userId)
+            .orElseThrow(() -> new BusinessException("聊天会话不存在或无权限访问"));
+        
+        chat.setAiModel(modelId);
+        Chat savedChat = chatRepository.save(chat);
+        
+        log.info("更新聊天模型: chatId={}, userId={}, model={}", chatId, userId, modelId);
+        return savedChat;
+    }
+
+    /**
+     * 检查AI服务状态
+     */
+    public boolean isAIServiceAvailable() {
+        return aiService.isAIServiceAvailable();
+    }
+
+    /**
+     * 获取当前AI模型
+     */
+    public String getCurrentAIModel() {
+        return aiService.getCurrentModel();
+    }
+
+        /**
+     * 为消息关联附件
+     */
+    public void attachFilesToMessage(Long messageId, List<Map<String, Object>> attachments) {
+        log.info("为消息关联附件: messageId={}, 附件数量={}", messageId, attachments.size());
+        
+        for (Map<String, Object> attachment : attachments) {
+            String fileId = (String) attachment.get("fileId");
+            String fileName = (String) attachment.get("fileName");
+            String originalName = (String) attachment.get("originalName");
+            String fileType = (String) attachment.get("fileType");
+            
+            log.debug("处理附件: fileId={}, fileName={}, originalName={}, fileType={}", fileId, fileName, originalName, fileType);
+            
+            MessageAttachment existingAttachment = null;
+            
+            // 1. 先尝试通过 fileId 查找附件（fileId 是系统生成的文件名）
+            if (fileId != null) {
+                existingAttachment = messageAttachmentRepository.findByFileName(fileId);
+            }
+            
+            // 2. 如果通过 fileId 没找到，尝试通过 fileName 查找
+            if (existingAttachment == null && fileName != null) {
+                existingAttachment = messageAttachmentRepository.findByFileName(fileName);
+            }
+            
+            // 3. 如果还没找到，尝试通过 originalName 查找未关联的附件
+            if (existingAttachment == null && originalName != null) {
+                List<MessageAttachment> unassignedAttachments = messageAttachmentRepository.findByMessageIdIsNull();
+                for (MessageAttachment unassigned : unassignedAttachments) {
+                    if (originalName.equals(unassigned.getOriginalName())) {
+                        existingAttachment = unassigned;
+                        break;
+                    }
+                }
+            }
+            
+            if (existingAttachment != null) {
+                existingAttachment.setMessageId(messageId);
+                messageAttachmentRepository.save(existingAttachment);
+                log.info("附件关联成功: fileName={}, originalName={}, messageId={}", 
+                        existingAttachment.getFileName(), existingAttachment.getOriginalName(), messageId);
+            } else {
+                log.warn("未找到附件记录: fileId={}, fileName={}, originalName={}", fileId, fileName, originalName);
+                // 调试信息：列出所有未关联的附件
+                List<MessageAttachment> unassignedAttachments = messageAttachmentRepository.findByMessageIdIsNull();
+                log.debug("当前未关联的附件数量: {}", unassignedAttachments.size());
+                for (MessageAttachment unassigned : unassignedAttachments) {
+                    log.debug("未关联附件: fileName={}, originalName={}", unassigned.getFileName(), unassigned.getOriginalName());
+                }
+            }
+        }
+    }
+
+    /**
+     * 通过文件名列表关联附件到消息
+     */
+    public void attachFilesByNames(Long messageId, List<String> fileNames) {
+        log.info("通过文件名关联附件: messageId={}, 文件数量={}", messageId, fileNames.size());
+        
+        List<MessageAttachment> attachments = messageAttachmentRepository.findByFileNameIn(fileNames);
+        for (MessageAttachment attachment : attachments) {
+            if (attachment.getMessageId() == null) {
+                attachment.setMessageId(messageId);
+                messageAttachmentRepository.save(attachment);
+                log.info("附件关联成功: fileName={}, messageId={}", attachment.getFileName(), messageId);
         } else {
-            return "我理解您的问题：\"" + userMessage + "\"。这是一个很好的问题！作为AI助手，我会尽力为您提供帮助和回答。请问您还有其他问题吗？";
+                log.warn("附件已关联到其他消息: fileName={}, currentMessageId={}", 
+                        attachment.getFileName(), attachment.getMessageId());
+            }
         }
     }
 } 

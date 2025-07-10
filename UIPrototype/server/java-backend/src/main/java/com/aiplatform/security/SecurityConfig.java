@@ -42,6 +42,12 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 
+                // 文件访问 - 允许公开访问（用于显示图片）
+                .requestMatchers("/files/**").permitAll()
+                
+                // AI服务状态检查接口 - 允许公开访问
+                .requestMatchers("/ai/status", "/ai/config").permitAll()
+                
                 // 客服工作台端点 - 只有客服可以访问
                 .requestMatchers("/admin/support/**").hasRole("support")
                 

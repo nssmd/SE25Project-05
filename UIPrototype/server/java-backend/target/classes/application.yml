@@ -72,6 +72,21 @@ spring:
           starttls:
             enable: true
 
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+    properties:
+      hibernate:
+        force_lazy_loading: false
+
 # JWT配置
 jwt:
   secret: ${JWT_SECRET:aiChatPlatformSecretKey123456789}
@@ -87,6 +102,21 @@ file:
 
 # AI模型配置
 ai:
+  openrouter:
+    api-key: ${OPENAI_API_KEY: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}
+    base-url: ${OPENAI_API_URL:https://openrouter.ai/api/v1}
+    default-model: ${DEFAULT_TEXT_MODEL:openai/gpt-4.1-nano}
+    timeout: ${AI_TIMEOUT:30000}
+    max-tokens: ${AI_MAX_TOKENS:2000}
+    temperature: ${AI_TEMPERATURE:0.7}
+  # 阿里云DashScope配置
+  dashscope:
+    api-key: sk-035757578e9f4f38870ca5527a5f719c
+    enabled: ${DASHSCOPE_ENABLED:true}
+    timeout: ${DASHSCOPE_TIMEOUT:60000}
+    default-model: ${DASHSCOPE_DEFAULT_MODEL:wanx-v1}
+    default-size: ${DASHSCOPE_DEFAULT_SIZE:1024*1024}
+    default-style: ${DASHSCOPE_DEFAULT_STYLE:<auto>}
   openai:
     api-key: ${OPENAI_API_KEY:}
     base-url: ${OPENAI_BASE_URL:https://api.openai.com}
@@ -99,6 +129,21 @@ ai:
     models:
       - claude-3-sonnet
       - claude-3-haiku
+  # 本地计算服务器配置
+  local:
+    enabled: ${LOCAL_AI_ENABLED:true}
+    base-url: ${LOCAL_AI_BASE_URL:http://202.120.38.3:55322}
+    api-key: ${LOCAL_AI_API_KEY:}  # 如果需要API密钥
+    timeout: ${LOCAL_AI_TIMEOUT:60000}  # 本地模型可能需要更长时间
+    max-tokens: ${LOCAL_AI_MAX_TOKENS:4000}
+    temperature: ${LOCAL_AI_TEMPERATURE:0.7}
+    models:
+      - name: "local-llama-13b"
+        display-name: "本地Llama 13B"
+        supports-images: false
+      - name: "local-qwen-14b"  
+        display-name: "本地Qwen 14B"
+        supports-images: false
 
 # 系统配置
 app:

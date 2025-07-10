@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "support_chats")
 @Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 public class SupportChat extends BaseEntity {
@@ -34,12 +36,6 @@ public class SupportChat extends BaseEntity {
     @Column(name = "is_read", nullable = false)
     private Boolean isRead = false;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
     // 发送者类型枚举
     public enum SenderType {
         USER("用户"),
@@ -56,17 +52,7 @@ public class SupportChat extends BaseEntity {
         }
     }
 
-    // 设置创建和更新时间
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
 
     // 业务方法
     public boolean belongsToUser(Long userId) {

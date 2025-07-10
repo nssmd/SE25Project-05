@@ -14,9 +14,6 @@ import java.time.LocalDateTime;
 
 public class UserDTO {
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class UserRegisterRequest {
         @NotBlank(message = "用户名不能为空")
@@ -33,11 +30,25 @@ public class UserDTO {
 
         @NotBlank(message = "确认密码不能为空")
         private String confirmPassword;
+
+        public UserRegisterRequest() {}
+        public UserRegisterRequest(String username, String email, String password, String confirmPassword) {
+            this.username = username;
+            this.email = email;
+            this.password = password;
+            this.confirmPassword = confirmPassword;
+        }
+
+        public String getUsername() { return username; }
+        public void setUsername(String username) { this.username = username; }
+        public String getEmail() { return email; }
+        public void setEmail(String email) { this.email = email; }
+        public String getPassword() { return password; }
+        public void setPassword(String password) { this.password = password; }
+        public String getConfirmPassword() { return confirmPassword; }
+        public void setConfirmPassword(String confirmPassword) { this.confirmPassword = confirmPassword; }
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class UserLoginRequest {
         @NotBlank(message = "邮箱不能为空")
         private String email;
@@ -46,6 +57,20 @@ public class UserDTO {
         private String password;
 
         private boolean rememberMe = false;
+
+        public UserLoginRequest() {}
+        public UserLoginRequest(String email, String password, boolean rememberMe) {
+            this.email = email;
+            this.password = password;
+            this.rememberMe = rememberMe;
+        }
+
+        public String getEmail() { return email; }
+        public void setEmail(String email) { this.email = email; }
+        public String getPassword() { return password; }
+        public void setPassword(String password) { this.password = password; }
+        public boolean isRememberMe() { return rememberMe; }
+        public void setRememberMe(boolean rememberMe) { this.rememberMe = rememberMe; }
     }
 
     @Data

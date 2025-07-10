@@ -29,6 +29,9 @@ public class Chat {
     @Column(name = "ai_type", nullable = false)
     private AiType aiType = AiType.text_to_text;
 
+    @Column(name = "ai_model", length = 100)
+    private String aiModel = "openai/gpt-4.1-nano";
+
     @Column(name = "is_favorite", nullable = false)
     private Boolean isFavorite = false;
 
@@ -49,9 +52,9 @@ public class Chat {
 
     // AI类型枚举 - 匹配数据库enum
     public enum AiType {
-        text_to_text("文生文"),
+        text_to_text("智能对话"), // 兼容历史数据
+        conversation("智能对话"), // 合并文生文和图生文，支持多模态对话
         text_to_image("文生图"),
-        image_to_text("图生文"),
         image_to_image("图生图"),
         text_to_3d("文生3D"),
         text_to_video("文生视频");
