@@ -1,0 +1,4 @@
+node_modules/
+node_modules/.cache/
+server/java-backend/logs/ai-chat-backend.log
+server/java-backend/logs

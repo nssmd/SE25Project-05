@@ -103,7 +103,7 @@ file:
 # AI模型配置
 ai:
   openrouter:
-    api-key: ${OPENAI_API_KEY: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}
+    api-key: ${OPENAI_API_KEY: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}
     base-url: ${OPENAI_API_URL:https://openrouter.ai/api/v1}
     default-model: ${DEFAULT_TEXT_MODEL:openai/gpt-4.1-nano}
     timeout: ${AI_TIMEOUT:30000}

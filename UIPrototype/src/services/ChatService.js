@@ -36,6 +36,7 @@ class ChatService {
       }
 
       const errors = this.validateMessageData(messageData);
+      console.log(errors);
       if (errors.length > 0) {
         throw new Error(errors[0]);
       }
