@@ -1,3 +1,4 @@
+/* Sidebar主容器 - 优化深色模式支持 */
 .sidebar {
     width: 250px;
     background: var(--bg-primary);
@@ -6,6 +7,15 @@
     flex-direction: column;
     box-shadow: var(--shadow-md);
     transition: transform 0.3s ease-in-out;
+    position: relative;
+    z-index: 1000;
+}
+
+/* 深色模式下的Sidebar样式 */
+.dark-mode .sidebar {
+    background: var(--bg-primary);
+    border-right-color: var(--border-primary);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar.open {
@@ -16,9 +26,17 @@
     transform: translateX(-100%);
 }
 
+/* Sidebar头部优化 */
 .sidebar-header {
     padding: 1.5rem;
     border-bottom: 1px solid var(--border-primary);
+    background: var(--bg-primary);
+    backdrop-filter: blur(10px);
+}
+
+.dark-mode .sidebar-header {
+    background: var(--bg-primary);
+    border-bottom-color: var(--border-primary);
 }
 
 .logo {
@@ -34,6 +52,10 @@
     color: var(--primary-500);
 }
 
+.dark-mode .logo-icon {
+    color: var(--primary-400);
+}
+
 .logo span {
     font-size: 1.25rem;
     font-weight: 700;
@@ -43,10 +65,49 @@
     background-clip: text;
 }
 
+.dark-mode .logo span {
+    background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Sidebar导航区域优化 */
 .sidebar-nav {
     flex: 1;
     padding: 1rem 0;
     overflow-y: auto;
+    background: var(--bg-primary);
+}
+
+.dark-mode .sidebar-nav {
+    background: var(--bg-primary);
+}
+
+/* 导航区域滚动条优化 */
+.sidebar-nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+.dark-mode .sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .nav-section {
@@ -63,6 +124,11 @@
     letter-spacing: 0.05em;
 }
 
+.dark-mode .nav-section h3 {
+    color: #a0aec0;
+}
+
+/* 导航项优化 */
 .nav-item {
     display: flex;
     align-items: center;
@@ -76,17 +142,34 @@
     color: #4a5568;
     font-size: 0.9rem;
     text-align: left;
+    position: relative;
+}
+
+.dark-mode .nav-item {
+    color: #e2e8f0;
 }
 
 .nav-item:hover {
     background: #f0f9ff;
     color: #3b82f6;
+    transform: translateX(4px);
+}
+
+.dark-mode .nav-item:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #60a5fa;
 }
 
 .nav-item.active {
     background: #3b82f6;
     color: white;
     position: relative;
+    font-weight: 600;
+}
+
+.dark-mode .nav-item.active {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
 }
 
 .nav-item.active::before {
@@ -99,11 +182,21 @@
     background: #1d4ed8;
 }
 
+.dark-mode .nav-item.active::before {
+    background: #60a5fa;
+}
+
 .nav-icon {
     width: 1.25rem;
     height: 1.25rem;
+    transition: transform 0.2s ease;
 }
 
+.nav-item:hover .nav-icon {
+    transform: scale(1.1);
+}
+
+/* 管理员专用导航项优化 */
 .nav-item.admin-only {
     background: linear-gradient(135deg, #f59e0b, #d97706);
     color: white;
@@ -111,6 +204,12 @@
     border-radius: 8px;
     font-weight: 600;
     box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+    border: none;
+}
+
+.dark-mode .nav-item.admin-only {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    box-shadow: 0 2px 4px rgba(245, 158, 11, 0.4);
 }
 
 .nav-item.admin-only:hover {
@@ -119,9 +218,20 @@
     box-shadow: 0 4px 8px rgba(245, 158, 11, 0.4);
 }
 
+.dark-mode .nav-item.admin-only:hover {
+    box-shadow: 0 4px 8px rgba(245, 158, 11, 0.5);
+}
+
+/* Sidebar底部优化 */
 .sidebar-footer {
     padding: 1rem 1.5rem;
     border-top: 1px solid #e2e8f0;
+    background: var(--bg-primary);
+}
+
+.dark-mode .sidebar-footer {
+    border-top-color: var(--border-primary);
+    background: var(--bg-primary);
 }
 
 .logout-button {
@@ -139,12 +249,69 @@
     font-size: 0.9rem;
 }
 
+.dark-mode .logout-button {
+    border-color: var(--border-primary);
+    color: #a0aec0;
+}
+
 .logout-button:hover {
     background: #fed7d7;
     border-color: #feb2b2;
     color: #e53e3e;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(229, 62, 62, 0.2);
 }
 
+.dark-mode .logout-button:hover {
+    background: rgba(229, 62, 62, 0.1);
+    border-color: #f56565;
+    color: #f56565;
+    box-shadow: 0 2px 4px rgba(245, 101, 101, 0.3);
+}
+
+/* AI模板库页面的Sidebar特殊样式 */
+.prompt-template-library .sidebar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border-right-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .prompt-template-library .sidebar {
+    background: rgba(45, 55, 72, 0.95);
+    border-right-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.prompt-template-library .sidebar-header {
+    background: rgba(255, 255, 255, 0.9);
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark-mode .prompt-template-library .sidebar-header {
+    background: rgba(45, 55, 72, 0.9);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.prompt-template-library .sidebar-nav {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.dark-mode .prompt-template-library .sidebar-nav {
+    background: rgba(45, 55, 72, 0.9);
+}
+
+.prompt-template-library .sidebar-footer {
+    background: rgba(255, 255, 255, 0.9);
+    border-top-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark-mode .prompt-template-library .sidebar-footer {
+    background: rgba(45, 55, 72, 0.9);
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 响应式设计优化 */
 @media (max-width: 768px) {
     .sidebar {
         width: 250px;
@@ -155,6 +322,16 @@
         flex-direction: column;
         box-shadow: var(--shadow-md);
         transition: transform 0.3s ease-in-out;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+    }
+
+    .dark-mode .sidebar {
+        background: var(--bg-primary);
+        border-right-color: var(--border-primary);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
 
     .sidebar.open {
@@ -163,5 +340,39 @@
 
     .sidebar.closed {
         transform: translateX(-100%);
+    }
+
+    /* 移动端AI模板库页面的Sidebar样式 */
+    .prompt-template-library .sidebar {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+    }
+
+    .dark-mode .prompt-template-library .sidebar {
+        background: rgba(45, 55, 72, 0.98);
+    }
+}
+
+/* 大屏幕优化 */
+@media (min-width: 1200px) {
+    .sidebar {
+        width: 280px;
+    }
+    
+    .nav-item {
+        padding: 0.875rem 1.75rem;
+        font-size: 0.95rem;
+    }
+    
+    .nav-icon {
+        width: 1.375rem;
+        height: 1.375rem;
+    }
+}
+
+/* 超宽屏幕优化 */
+@media (min-width: 1400px) {
+    .sidebar {
+        width: 300px;
     }
 }
