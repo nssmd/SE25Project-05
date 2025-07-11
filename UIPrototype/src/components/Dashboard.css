@@ -1314,3 +1314,28 @@
   }
 }
  
+.restore-header-btn {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 3000;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-primary, #fff);
+  color: var(--primary-500, #2563eb);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  border: 1px solid var(--border-primary, #e5e7eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.restore-header-btn:hover {
+  background: var(--bg-hover, #f1f5f9);
+  color: var(--primary-700, #1d4ed8);
+  border-color: var(--primary-300, #93c5fd);
+  transform: scale(1.08);
+}
+ 

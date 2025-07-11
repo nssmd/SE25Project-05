@@ -32,7 +32,8 @@ import {
   AlertCircle,
   DollarSign,
   ArrowLeft,
-  Menu
+  Menu,
+  ChevronDown
 } from 'lucide-react';
 import { chatAPI, aiAPI, fileAPI, promptTemplateAPI } from '../services/api';
 import ThemeToggle from './ThemeToggle';
@@ -1454,6 +1455,16 @@ const Dashboard = ({ user, onLogout, showSidebar, setShowSidebar }) => {
 
   return (
     <div className="dashboard">
+      {/* 悬浮恢复按钮 */}
+      {!showHeader && (
+        <button
+          className="restore-header-btn"
+          onClick={() => setShowHeader(true)}
+          title="恢复顶部栏"
+        >
+          <ChevronDown size={22} />
+        </button>
+      )}
       {/* 移动端侧边栏遮罩 - 仅在移动端且侧边栏显示时显示 */}
       {isMobile && showSidebar && (
         <div 
@@ -1508,14 +1519,14 @@ const Dashboard = ({ user, onLogout, showSidebar, setShowSidebar }) => {
             <p>选择下方功能开始您的AI之旅</p>
           </div>
           <div className="header-right">
-            <div className="model-status">
-              <div className="status-item" data-count="4">
-                <Cloud size={14} />
-                <span>云端模型</span>
+            <div className="model-status" onClick={checkAIStatus} style={{cursor: 'pointer'}} title="点击刷新AI状态">
+              <div className={`status-item ${aiStatus.available ? 'ai-online' : 'ai-offline'}`}> 
+                {aiStatus.available ? <Cloud size={16} /> : <Cpu size={16} />}
+                <span>AI状态: {aiStatus.service}</span>
               </div>
-              <div className="status-item" data-count="2">
-                <Cpu size={14} />
-                <span>本地模型</span>
+              <div className="status-item">
+                <Brain size={16} />
+                <span>模型: {aiStatus.model}</span>
               </div>
             </div>
             <ThemeToggle variant="button" />
