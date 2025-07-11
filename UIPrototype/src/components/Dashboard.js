@@ -1448,6 +1448,8 @@ const Dashboard = ({ user, onLogout, showSidebar, setShowSidebar }) => {
     handleUseTemplate: handleUseTemplate,
     handleViewTemplate: handleViewTemplate,
     handleCreateTemplate: handleCreateTemplate,
+    // 移动端状态
+    isMobile: isMobile,
   }
 
   return (

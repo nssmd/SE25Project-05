@@ -16,6 +16,7 @@ import { authAPI } from './services/api';
 import './theme.css';
 import './App.css';
 import './styles/mobile.css';
+import './styles/mobile-fixes.css';
 import FeatureContent from "./components/FeatureContent";
 import Sidebar from './components/Sidebar';
 import { ChevronLeft, ChevronRight } from "lucide-react";

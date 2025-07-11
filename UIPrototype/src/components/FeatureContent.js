@@ -24,6 +24,7 @@ import {
     Crown
 } from "lucide-react";
 import formatTime from "../utils/formatTime";
+import { fileAPI } from '../services/api';
 
 const FeatureContent = () => {
     const {
@@ -50,9 +51,6 @@ const FeatureContent = () => {
         features,
         availableModels,
         modelsByFeature,
-        uploadedImages,
-        isUploading,
-        uploadProgress,
         dragOver,
         imageGenerationPrompt,
         setImageGenerationPrompt,
@@ -82,11 +80,9 @@ const FeatureContent = () => {
         createTemplateForm,
         setCreateTemplateForm,
         handleModelChange,
-        handleFileSelect,
         handleDrop,
         handleDragOver,
         handleDragLeave,
-        removeUploadedImage,
         handleSmartImageGeneration,
         handleReferenceImageUpload,
         removeReferenceImage,
@@ -100,9 +96,69 @@ const FeatureContent = () => {
         handleViewTemplate,
         handleCreateTemplate,
         setActiveTab,
+        isMobile,
     } = useOutletContext();
 
     const fileInputRef = useRef(null);
+    const [uploadedImages, setUploadedImages] = React.useState([]);
+    const [isUploading, setIsUploading] = React.useState(false);
+    const [uploadProgress, setUploadProgress] = React.useState(0);
+
+    // 上传文件选择
+    const handleFileSelect = async (event) => {
+        const files = Array.from(event.target.files);
+        await uploadFiles(files);
+    };
+
+    // 上传文件核心逻辑
+    const uploadFiles = async (files) => {
+        if (!files.length) return;
+        setIsUploading(true);
+        setUploadProgress(0);
+        try {
+            for (const file of files) {
+                if (!file.type.startsWith('image/')) {
+                    alert(`文件 ${file.name} 不是图片格式，已跳过`);
+                    continue;
+                }
+                if (file.size > 50 * 1024 * 1024) {
+                    alert(`文件 ${file.name} 大小超过50MB，已跳过`);
+                    continue;
+                }
+                const response = await fileAPI.upload(file, setUploadProgress);
+                if (!response.data || !response.data.data) {
+                    alert('文件上传失败');
+                    continue;
+                }
+                const fileData = response.data.data;
+                setUploadedImages(prev => [...prev, {
+                    id: fileData.fileName,
+                    name: fileData.originalName || file.name,
+                    url: fileData.fileUrl,
+                    size: fileData.fileSize,
+                    type: fileData.mimeType,
+                    systemFileName: fileData.fileName
+                }]);
+            }
+        } catch (e) {
+            alert('文件上传失败: ' + e.message);
+        } finally {
+            setIsUploading(false);
+            setUploadProgress(0);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    };
+
+    // 删除图片
+    const removeUploadedImage = async (imageId) => {
+        try {
+            await fileAPI.deleteFile(imageId);
+        } catch (e) {
+            // 即使删除失败也从界面移除
+        }
+        setUploadedImages(prev => prev.filter(img => img.id !== imageId));
+    };
+
     const currentFeature = features.find(f => f.id === activeTab);
 
     // 渲染模型选择器
@@ -137,7 +193,13 @@ const FeatureContent = () => {
                             <div className="chat-list-actions">
                                 <button
                                     className="new-chat-btn"
-                                    onClick={createNewChat}
+                                    onClick={() => {
+                                        createNewChat();
+                                        // 移动端点击新建对话后隐藏侧边栏
+                                        if (isMobile) {
+                                            setShowChatList(false);
+                                        }
+                                    }}
                                     title="新建对话"
                                 >
                                     <Plus size={16} />
@@ -159,7 +221,16 @@ const FeatureContent = () => {
                                 <div className="empty-chats">
                                     <MessageSquare size={24} />
                                     <p>还没有对话记录</p>
-                                    <button onClick={createNewChat} className="start-chat-btn">
+                                    <button 
+                                        onClick={() => {
+                                            createNewChat();
+                                            // 移动端点击开始对话后隐藏侧边栏
+                                            if (isMobile) {
+                                                setShowChatList(false);
+                                            }
+                                        }} 
+                                        className="start-chat-btn"
+                                    >
                                         开始对话
                                     </button>
                                 </div>
@@ -168,7 +239,13 @@ const FeatureContent = () => {
                                     <div
                                         key={chat.id}
                                         className={`chat-item ${currentChat?.id === chat.id ? 'active' : ''}`}
-                                        onClick={() => switchChat(chat)}
+                                        onClick={() => {
+                                            switchChat(chat);
+                                            // 移动端点击历史记录后隐藏侧边栏
+                                            if (isMobile) {
+                                                setShowChatList(false);
+                                            }
+                                        }}
                                         onContextMenu={(e) => showContextMenu(e, chat.id)}
                                     >
                                         <div className="chat-item-content">
@@ -228,60 +305,7 @@ const FeatureContent = () => {
                             </div>
                         </div>
 
-                {/* 文件上传区域 */}
-                <div 
-                    className={`file-upload-area ${dragOver ? 'drag-over' : ''}`}
-                    onDrop={handleDrop}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                >
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleFileSelect}
-                        multiple
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                    />
-                    
-                    {uploadedImages.length > 0 && (
-                        <div className="uploaded-images">
-                            {uploadedImages.map((image, index) => (
-                                <div key={image.id} className="uploaded-image">
-                                    <img src={image.url} alt={image.name} />
-                                    <button
-                                        className="remove-image-btn"
-                                        onClick={() => removeUploadedImage(image.id)}
-                                    >
-                                        <X size={12} />
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                    
-                    {isUploading && (
-                        <div className="upload-progress">
-                            <div className="progress-bar">
-                                <div 
-                                    className="progress-fill" 
-                                    style={{ width: `${uploadProgress}%` }}
-                                ></div>
-                            </div>
-                            <span>{uploadProgress}%</span>
-                        </div>
-                    )}
-                    
-                    {!isUploading && uploadedImages.length === 0 && (
-                        <div className="upload-prompt">
-                            <Upload size={24} />
-                            <p>拖拽图片到此处或点击上传</p>
-                            <button onClick={() => fileInputRef.current?.click()}>
-                                选择文件
-                            </button>
-                        </div>
-                    )}
-                        </div>
+
 
                         <div className="chat-messages">
                             {chatHistory.length === 0 && !isLoading && (
@@ -319,6 +343,17 @@ const FeatureContent = () => {
                             <div ref={messagesEndRef} />
                         </div>
 
+                        {/* 图片预览区 */}
+                        {uploadedImages.length > 0 && (
+                            <div className="uploaded-images" style={{ display: 'flex', gap: '8px', padding: '8px 0' }}>
+                                {uploadedImages.map(image => (
+                                    <div key={image.id} className="uploaded-image" style={{ position: 'relative' }}>
+                                        <img src={image.url} alt={image.name} style={{ width: 60, height: 60, borderRadius: 8, objectFit: 'cover' }} />
+                                        <button className="remove-image-btn" style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer' }} onClick={() => removeUploadedImage(image.id)}><X size={12} /></button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                         <div className="chat-input">
                             <input
                                 type="text"
@@ -328,6 +363,22 @@ const FeatureContent = () => {
                                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                                 disabled={isLoading}
                             />
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                style={{ display: 'none' }}
+                                accept="image/*"
+                                multiple
+                                onChange={handleFileSelect}
+                            />
+                            <button
+                                onClick={() => fileInputRef.current?.click()}
+                                className="upload-button"
+                                title="上传图片"
+                                disabled={isUploading}
+                            >
+                                {isUploading ? `${uploadProgress}%` : <Upload size={20} />}
+                            </button>
                             <button
                                 onClick={handleSendMessage}
                                 disabled={isLoading || !inputText.trim()}
