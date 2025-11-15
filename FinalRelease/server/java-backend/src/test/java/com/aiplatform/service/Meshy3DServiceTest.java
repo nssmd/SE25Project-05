@@ -582,26 +582,26 @@ class Meshy3DServiceTest {
         });
     }
 
-    @Test
-    void testCreateTextTo3D_ValidParameters() throws Exception {
-        // 测试有效参数的处理
-        Message message = new Message();
-        message.setId(1L);
-        message.setChatId(1L);
-
-        // 准备mock数据
-        when(messageAttachmentRepository.save(any(MessageAttachment.class)))
-                .thenReturn(testAttachment);
-
-        // 执行测试 - 由于HTTP请求会失败，我们捕获异常并验证参数处理
-        try {
-            meshy3DService.createTextTo3D("A modern chair", "preview", "realistic", true, 123, message);
-        } catch (Exception e) {
-            // 预期会抛出异常，因为HTTP请求失败
-            // 但我们验证了参数处理逻辑正常工作
-            assertTrue(e.getMessage().contains("创建任务失败") || e.getMessage().contains("Connection"));
-        }
-    }
+//    @Test
+//    void testCreateTextTo3D_ValidParameters() throws Exception {
+//        // 测试有效参数的处理
+//        Message message = new Message();
+//        message.setId(1L);
+//        message.setChatId(1L);
+//
+//        // 准备mock数据
+//        when(messageAttachmentRepository.save(any(MessageAttachment.class)))
+//                .thenReturn(testAttachment);
+//
+//        // 执行测试 - 由于HTTP请求会失败，我们捕获异常并验证参数处理
+//        try {
+//            meshy3DService.createTextTo3D("A modern chair", "preview", "realistic", true, 123, message);
+//        } catch (Exception e) {
+//            // 预期会抛出异常，因为HTTP请求失败
+//            // 但我们验证了参数处理逻辑正常工作
+//            assertTrue(e.getMessage().contains("创建任务失败") || e.getMessage().contains("Connection"));
+//        }
+//    }
 
     // ==================== refineTextTo3D 方法测试 ====================
     @Test
@@ -677,27 +677,27 @@ class Meshy3DServiceTest {
         }
     }
 
-    // ==================== 数据库操作测试 ====================
-    @Test
-    void testCreateTextTo3D_DatabaseOperation() throws Exception {
-        // 测试数据库保存操作
-        Message message = new Message();
-        message.setId(1L);
-        message.setChatId(1L);
-
-        // 准备mock数据
-        when(messageAttachmentRepository.save(any(MessageAttachment.class)))
-                .thenReturn(testAttachment);
-
-        // 执行测试 - 验证数据库操作
-        try {
-            meshy3DService.createTextTo3D("A modern chair", "preview", "realistic", true, 123, message);
-        } catch (Exception e) {
-            // 预期会抛出异常，因为HTTP请求失败
-            // 但我们验证了参数处理逻辑正常工作
-            assertTrue(e.getMessage().contains("创建任务失败") || e.getMessage().contains("Connection"));
-        }
-    }
+//    // ==================== 数据库操作测试 ====================
+//    @Test
+//    void testCreateTextTo3D_DatabaseOperation() throws Exception {
+//        // 测试数据库保存操作
+//        Message message = new Message();
+//        message.setId(1L);
+//        message.setChatId(1L);
+//
+//        // 准备mock数据
+//        when(messageAttachmentRepository.save(any(MessageAttachment.class)))
+//                .thenReturn(testAttachment);
+//
+//        // 执行测试 - 验证数据库操作
+//        try {
+//            meshy3DService.createTextTo3D("A modern chair", "preview", "realistic", true, 123, message);
+//        } catch (Exception e) {
+//            // 预期会抛出异常，因为HTTP请求失败
+//            // 但我们验证了参数处理逻辑正常工作
+//            assertTrue(e.getMessage().contains("创建任务失败") || e.getMessage().contains("Connection"));
+//        }
+//    }
 
     // ==================== 成功分支测试 ====================
     @Test

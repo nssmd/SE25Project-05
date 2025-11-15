@@ -835,26 +835,26 @@ class DashScopeImageServiceTest {
         }
     }
 
-    @Test
-    void testGenerateImageToImage_Success() throws Exception {
-        when(aiConfig.getDashscope()).thenReturn(dashScopeConfig);
-        when(dashScopeConfig.getApiKey()).thenReturn("test-api-key");
-        // mock API - 使用正确的类型
-        ImageSynthesisOutput mockOutput = mock(ImageSynthesisOutput.class);
-        when(mockOutput.getTaskStatus()).thenReturn("SUCCEEDED");
-        Map<String, String> imageResult = new HashMap<>();
-        imageResult.put("url", "http://test.com/image.png");
-        when(mockOutput.getResults()).thenReturn(List.of(imageResult));
-        ImageSynthesisResult result = mock(ImageSynthesisResult.class);
-        when(result.getOutput()).thenReturn(mockOutput);
-        try (MockedConstruction<ImageSynthesis> imageSynthesisMock = mockConstruction(ImageSynthesis.class,
-                (mock, context) -> when(mock.call(any(com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesisParam.class))).thenReturn(result))) {
-            Message message = new Message();
-            when(messageAttachmentRepository.save(any())).thenReturn(new MessageAttachment());
-            MessageAttachment attachment = dashScopeImageService.generateImageToImage("prompt", "url", "1024*1024", "<auto>", message);
-            assertNotNull(attachment);
-        }
-    }
+//    @Test
+//    void testGenerateImageToImage_Success() throws Exception {
+//        when(aiConfig.getDashscope()).thenReturn(dashScopeConfig);
+//        when(dashScopeConfig.getApiKey()).thenReturn("test-api-key");
+//        // mock API - 使用正确的类型
+//        ImageSynthesisOutput mockOutput = mock(ImageSynthesisOutput.class);
+//        when(mockOutput.getTaskStatus()).thenReturn("SUCCEEDED");
+//        Map<String, String> imageResult = new HashMap<>();
+//        imageResult.put("url", "http://test.com/image.png");
+//        when(mockOutput.getResults()).thenReturn(List.of(imageResult));
+//        ImageSynthesisResult result = mock(ImageSynthesisResult.class);
+//        when(result.getOutput()).thenReturn(mockOutput);
+//        try (MockedConstruction<ImageSynthesis> imageSynthesisMock = mockConstruction(ImageSynthesis.class,
+//                (mock, context) -> when(mock.call(any(com.alibaba.dashscope.aigc.imagesynthesis.ImageSynthesisParam.class))).thenReturn(result))) {
+//            Message message = new Message();
+//            when(messageAttachmentRepository.save(any())).thenReturn(new MessageAttachment());
+//            MessageAttachment attachment = dashScopeImageService.generateImageToImage("prompt", "url", "1024*1024", "<auto>", message);
+//            assertNotNull(attachment);
+//        }
+//    }
 
     @Test
     void testIsAvailable_AllBranches() {

@@ -60,6 +60,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 public class AdminControllerTest {
 
+
+
     @Configuration
     @EnableAutoConfiguration(exclude = {
         HibernateJpaAutoConfiguration.class,
@@ -80,6 +82,7 @@ public class AdminControllerTest {
                 .authorizeHttpRequests(auth -> auth
                     .anyRequest().permitAll()  // 允许所有请求
                 );
+//            assert False;
             return http.build();
         }
     }
@@ -142,6 +145,7 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$.content").isArray())
                 .andExpect(jsonPath("$.content.length()").value(2))
                 .andExpect(jsonPath("$.totalElements").value(2));
+//        assert false;
         
         System.out.println("✅ 获取用户列表成功测试通过");
     }

@@ -19,7 +19,7 @@ import './styles/mobile-fixes.css';
 import FeatureContent from "./components/FeatureContent";
 import Sidebar from './components/Sidebar';
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
+//TMP
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);

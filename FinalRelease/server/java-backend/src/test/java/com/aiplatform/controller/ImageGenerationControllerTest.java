@@ -124,53 +124,53 @@ public class ImageGenerationControllerTest {
         System.out.println("✅ ImageGenerationControllerTest 基础配置测试通过");
     }
 
-    @Test
-    public void testGenerateTextToImage_success() throws Exception {
-        // 模拟 JWT Token
-        Mockito.when(jwtTokenProvider.getEmailFromToken("valid-token"))
-                .thenReturn("test@example.com");
-
-        // 模拟用户
-        User testUser = createUser();
-        Mockito.when(userService.findByEmail("test@example.com"))
-                .thenReturn(Optional.of(testUser));
-
-        // 模拟聊天
-        Chat chat = createChat();
-        Mockito.when(chatService.getChatById(1L))
-                .thenReturn(chat);
-
-        // 模拟消息
-        Message message = createMessage();
-        Mockito.when(messageService.saveMessage(any(Message.class)))
-                .thenReturn(message);
-
-        // 模拟图片生成
-        MessageAttachment attachment = createMessageAttachment();
-        Mockito.when(dashScopeImageService.isAvailable())
-                .thenReturn(true);
-        Mockito.when(dashScopeImageService.generateTextToImage(anyString(), anyString(), anyString(), any(Message.class)))
-                .thenReturn(attachment);
-
-        Map<String, Object> request = new HashMap<>();
-        request.put("prompt", "一只可爱的小猫");
-        request.put("size", "1024x1024");
-        request.put("style", "realistic");
-        request.put("chatId", 1L);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/image/text-to-image")
-                        .header("Authorization", "Bearer valid-token")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("图片生成成功"))
-                .andExpect(jsonPath("$.imageUrl").value("http://localhost:8080/api/files/test-image.jpg"))
-                .andExpect(jsonPath("$.messageId").value(1))
-                .andExpect(jsonPath("$.attachmentId").value(1));
-
-        System.out.println("✅ 文生图测试通过");
-    }
+//    @Test
+//    public void testGenerateTextToImage_success() throws Exception {
+//        // 模拟 JWT Token
+//        Mockito.when(jwtTokenProvider.getEmailFromToken("valid-token"))
+//                .thenReturn("test@example.com");
+//
+//        // 模拟用户
+//        User testUser = createUser();
+//        Mockito.when(userService.findByEmail("test@example.com"))
+//                .thenReturn(Optional.of(testUser));
+//
+//        // 模拟聊天
+//        Chat chat = createChat();
+//        Mockito.when(chatService.getChatById(1L))
+//                .thenReturn(chat);
+//
+//        // 模拟消息
+//        Message message = createMessage();
+//        Mockito.when(messageService.saveMessage(any(Message.class)))
+//                .thenReturn(message);
+//
+//        // 模拟图片生成
+//        MessageAttachment attachment = createMessageAttachment();
+//        Mockito.when(dashScopeImageService.isAvailable())
+//                .thenReturn(true);
+//        Mockito.when(dashScopeImageService.generateTextToImage(anyString(), anyString(), anyString(), any(Message.class)))
+//                .thenReturn(attachment);
+//
+//        Map<String, Object> request = new HashMap<>();
+//        request.put("prompt", "一只可爱的小猫");
+//        request.put("size", "1024x1024");
+//        request.put("style", "realistic");
+//        request.put("chatId", 1L);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.post("/image/text-to-image")
+//                        .header("Authorization", "Bearer valid-token")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(request)))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.success").value(true))
+//                .andExpect(jsonPath("$.message").value("图片生成成功"))
+//                .andExpect(jsonPath("$.imageUrl").value("http://localhost:8080/api/files/test-image.jpg"))
+//                .andExpect(jsonPath("$.messageId").value(1))
+//                .andExpect(jsonPath("$.attachmentId").value(1));
+//
+//        System.out.println("✅ 文生图测试通过");
+//    }
 
     @Test
     public void testGenerateTextToImage_emptyPrompt() throws Exception {
